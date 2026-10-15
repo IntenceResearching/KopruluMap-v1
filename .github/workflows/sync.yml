@@ -7,12 +7,36 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Placeholder sync step
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run sync
+        id: sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/sync.py
+      - name: Create issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Sync pipeline to be implemented per spec (Этап A)."
+          gh issue create --title "Sync failed" --body "Автосинк упал. См. логи workflow run." || true
+      - name: Commit and push if changed
+        if: success()
+        run: |
+          git config user.name "sync-bot"
+          git config user.email "sync-bot@users.noreply.github.com"
+          git add data/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "sync: upstream @ $(python3 -c 'import json;print(json.load(open("data/meta.json")).get("sha","")[:7])')"
+            git push
+          fi
