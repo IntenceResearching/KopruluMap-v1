@@ -15,3 +15,7 @@
 
 ## Открытые вопросы
 - Заполнить `data/sources.json` реальными значениями (Этап 0).
+
+## Обновление: алерты
+- Discord-вебхук при падении и при успешном обновлении (через `secrets.DISCORD_WEBHOOK`).
+- Триггер `repository_dispatch` (types: upstream-updated) для мгновенного синка.
