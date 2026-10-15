@@ -98,7 +98,15 @@ def image_dimensions(data):
 def transform_csv(text, transform, img_w, img_h):
     reader = csv.DictReader(io.StringIO(text))
     rows = list(reader)
-    fieldnames = reader.fieldnames or []
+    fieldnames = [ (fn or "").strip() for fn in (reader.fieldnames or []) ]
+    # normalize row keys
+    norm_rows = []
+    for r in rows:
+        nr = {}
+        for k, v in r.items():
+            nr[(k or "").strip()] = v
+        norm_rows.append(nr)
+    rows = norm_rows
     t = transform or {}
     flip_y = t.get("flipY", False)
     scale = t.get("scale", 1)
