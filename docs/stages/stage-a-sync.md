@@ -19,3 +19,7 @@
 ## Обновление: алерты
 - Discord-вебхук при падении и при успешном обновлении (через `secrets.DISCORD_WEBHOOK`).
 - Триггер `repository_dispatch` (types: upstream-updated) для мгновенного синка.
+
+## Обновление: источники типа url
+- Поддержка прямых ссылок (в т.ч. Google Sheets published CSV) через `type: "url"`.
+- Ссылка-шаблон в `data/sources.json` (`systems-sheet`).

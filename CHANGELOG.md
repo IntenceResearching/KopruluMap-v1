@@ -1,5 +1,8 @@
 # Changelog
 
+## Stage A (upd) — url sources
+- Google Sheets published CSV support in sync.py + sources.json.
+
 ## Stage 2 — frontend skeleton
 - `?fresh=1` parsing, `#mapPlaceholder`, report `docs/stages/stage-2-frontend.md`.
 
