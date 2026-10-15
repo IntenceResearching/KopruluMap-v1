@@ -48,7 +48,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "no changes"
           else
-            git commit -m "sync: upstream @ $(python3 -c 'import json;print(json.load(open(\"data/meta.json\")).get(\"sha\",\"\")[:7])')"
+            SHA=$(python3 -c "import json; d=json.load(open('data/upstream/manifest.json')); print(list(d.get('sources',{}).values())[0].get('sha','')[:7])")
+            git commit -m "sync: upstream @ ${SHA}"
             git push
           fi
       - name: Notify Discord on success (changes)

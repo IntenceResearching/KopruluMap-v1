@@ -167,6 +167,7 @@ def validate_csv(rows, fieldnames, img_w, img_h):
 
 
 def main():
+    import datetime
     token = os.environ.get("GITHUB_TOKEN")
     sources_cfg = load_json(SOURCES)
     sources = sources_cfg.get("sources", [])
@@ -218,7 +219,9 @@ def main():
             (ROOT / target).parent.mkdir(parents=True, exist_ok=True)
             (ROOT / target).write_text(transformed_text, encoding="utf-8")
             print(f"   wrote {target} ({len(rows)} rows)")
-            manifest.setdefault("sources", {})[sid] = {"sha": sha}
+            overall_meta.update({"source": sid, "sha": sha, "generatedAt": datetime.datetime.utcnow().isoformat() + "Z"})
+            save_json(META, overall_meta)
+            manifest.setdefault("sources", {})[sid] = {"sha": sha, "updatedAt": overall_meta["generatedAt"]}
             save_json(MANIFEST, manifest)
             continue
 
