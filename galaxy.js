@@ -11,7 +11,7 @@
 
   function dismissLoader() {
     if (!loader) return;
-    window.setTimeout(function () { loader.style.display = 'none'; }, 900);
+    window.setTimeout(function () { loader.style.display = 'none'; }, 1600);
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', dismissLoader);
