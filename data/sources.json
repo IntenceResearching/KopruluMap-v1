@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "note": "Шаблон. Заполнить реальными owner/repo, веткой, путями после договорённостей (Этап 0).",
+  "sources": [
+    {
+      "id": "galaxy-main",
+      "repo": "OWNER/REPO",
+      "ref": "main",
+      "kind": "galaxy",
+      "files": [
+        { "path": "out/galaxy.png", "role": "background" },
+        { "path": "out/sectors.csv", "role": "sectors" }
+      ],
+      "image": { "autoConvert": true, "maxEdge": 6000, "quality": 82, "maxBytes": 15728640 },
+      "transform": { "flipY": true, "scale": 1, "offsetX": 0, "offsetY": 0 }
+    }
+  ]
+}
