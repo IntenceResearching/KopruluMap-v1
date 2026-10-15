@@ -2,6 +2,7 @@
   'use strict';
 
   var stage = document.getElementById('galaxyStage');
+  var layer = document.getElementById('mapLayer');
   var map = document.getElementById('galaxyMap');
   var hotspot = document.getElementById('sectorHotspot');
   var panel = document.getElementById('sectorPanel');
@@ -28,46 +29,44 @@
     dismissLoader();
   }
 
-  if (!hotspot || !stage || !map) return;
+  if (!hotspot || !stage || !map || !layer) return;
 
-  var px = parseFloat(hotspot.getAttribute('data-x'));   // % от стороны изображения
-  var py = parseFloat(hotspot.getAttribute('data-y'));
   var sectorName = hotspot.getAttribute('data-name') || 'Сектор';
   var defaultHref = hotspot.getAttribute('data-href') || 'sector.html';
 
-  // Те же параметры, что на странице сектора (app.js → CONFIG.view)
+  // Параметры — как на странице сектора (app.js → CONFIG.view)
   var CONFIG = {
     minFactor: 0.62,     // отъехать от режима «вся карта»
     maxFactor: 8,        // предел приближения (исходник карты 3000px)
     wheelStep: 0.0016,
     animateMs: 340,
     fitInset: 1,
+    panMargin: 0.25,     // край карты может уйти внутрь экрана на эту долю размера сцены
     dive: 2.6,           // финальный «прыжок» к сектору
     diveMs: 950
   };
 
   /* ---------- вид карты ----------
-     Карта — квадратный элемент со стороной base (= min сторона сцены).
-     view.s — масштаб относительно «вся карта», (tx,ty) — позиция левого верхнего
-     угла карты в координатах сцены. Хотспот и переход считаются из тех же чисел. */
+     Слой карты (#mapLayer) — квадрат со стороной base (= min сторона сцены).
+     view.s — масштаб относительно «вся карта», (tx,ty) — левый верхний угол слоя.
+     Хотспот живёт внутри слоя, его позиция и размер — в процентах карты,
+     поэтому он совпадает с квадратом на карте при любом зуме и панораме. */
   var base = 0;
   var view = { s: 1, tx: 0, ty: 0 };
   var anim = null;
+  var busy = false;
 
   function sceneSize() { return { w: stage.clientWidth, h: stage.clientHeight }; }
   function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 
-  // Край карты может уйти внутрь экрана на PAN_MARGIN доли размера сцены,
-  // а не упираться жёстко в границу. Поэтому карту можно вести свободно.
-  var PAN_MARGIN = 0.25;
-
+  // Края карты не упираются жёстко в экран: запас CONFIG.panMargin от размера сцены.
   function clampAxis(t, side, size) {
-    var m = size * PAN_MARGIN;
+    var m = size * CONFIG.panMargin;
     if (side <= size) {
-      var c = (size - side) / 2;            // карта меньше экрана: центр ± запас
+      var c = (size - side) / 2;
       return clamp(t, c - m, c + m);
     }
-    return clamp(t, size - side - m, m);    // карта больше экрана: край не дальше запаса
+    return clamp(t, size - side - m, m);
   }
 
   function clampState(st) {
@@ -90,23 +89,23 @@
     clampView();
   }
 
-  // точка на карте (в % стороны изображения) → координаты сцены
-  function mapPoint(xp, yp) {
+  // Прямоугольник элемента с data-cx / data-cy / data-size (проценты карты) → координаты сцены
+  function boxOf(el) {
+    var cx = parseFloat(el.getAttribute('data-cx'));
+    var cy = parseFloat(el.getAttribute('data-cy'));
+    var size = parseFloat(el.getAttribute('data-size'));
     var side = view.s * base;
-    return { x: view.tx + side * xp / 100, y: view.ty + side * yp / 100 };
-  }
-
-  function positionHotspot() {
-    var p = mapPoint(px, py);
-    hotspot.style.left = p.x + 'px';
-    hotspot.style.top = p.y + 'px';
+    var w = side * size / 100;
+    var x = view.tx + side * cx / 100;
+    var y = view.ty + side * cy / 100;
+    return { l: x - w / 2, t: y - w / 2, r: x + w / 2, b: y + w / 2, cx: x, cy: y, w: w };
   }
 
   function applyView() {
-    map.style.width = base + 'px';
-    map.style.height = base + 'px';
-    map.style.transform = 'translate(' + view.tx + 'px,' + view.ty + 'px) scale(' + view.s + ')';
-    positionHotspot();
+    layer.style.width = base + 'px';
+    layer.style.height = base + 'px';
+    layer.style.transform = 'translate(' + view.tx + 'px,' + view.ty + 'px) scale(' + view.s + ')';
+    layer.style.setProperty('--s', String(view.s));
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
   }
 
@@ -192,8 +191,7 @@
     pointers[e.pointerId] = p;
     cancelAnim();
     if (Object.keys(pointers).length === 1) {
-      // Захват указателя НЕ ставим на нажатии: иначе click уйдёт на сцену,
-      // а не на хотспот. Захват включаем только когда начался реальный drag.
+      // Захват указателя ставим только при реальном drag, иначе click уйдёт на сцену
       drag = { id: e.pointerId, sx: p.x, sy: p.y, tx: view.tx, ty: view.ty, moved: false };
     } else {
       drag = null;
@@ -258,8 +256,7 @@
   if (resetBtn) resetBtn.addEventListener('click', function () {
     if (busy) return;
     var sz = sceneSize();
-    var fit = { s: 1, tx: (sz.w - base) / 2, ty: (sz.h - base) / 2 };
-    animateTo(fit.s, fit.tx, fit.ty, CONFIG.animateMs);
+    animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
   });
 
   document.addEventListener('keydown', function (e) {
@@ -291,8 +288,6 @@
   document.addEventListener('DOMContentLoaded', layout);
 
   /* ---------- панель сектора: первый клик ---------- */
-  var busy = false;
-
   function showPanel() {
     if (panel) {
       if (panelTitle) panelTitle.textContent = sectorName;
@@ -321,16 +316,15 @@
   }
 
   /* ---------- переход: квадрат из 4 сегментов ----------
-     Старт — границы изображения (квадрат карты на экране) → 4 этапа сужения
-     в квадрат 48×48, ровно совпадающий с хотспотом → захват (пульс) →
-     плавный zoom ×2.6, зафиксированный в точке сектора → переход.
-     Всё считается из одних и тех же координат, что и позиция хотспота.      */
+     Старт — границы изображения (квадрат карты на экране) → 4 равных этапа
+     сужения в квадрат сектора → захват (подсветка) → плавный zoom ×2.6 с фиксацией
+     точки сектора → переход на страницу сектора.
+     Конечный квадрат берётся из той же геометрии, что и сам хотспот.          */
   var STAGE_START = [0, 400, 800, 1200]; // начало каждого этапа, мс
   var STAGE_LEN = 300;                   // длительность этапа, мс
-  var STAGE_TO = [0.25, 0.5, 0.75, 1]; // равные шаги: 4 этапа сужения
+  var STAGE_TO = [0.25, 0.5, 0.75, 1];   // равные шаги: 4 этапа сужения
   var LOCK_AT = 1500;
   var DIVE_AT = 1500;
-  var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
 
   var dim = null;
   var corners = [];
@@ -377,13 +371,12 @@
       if (ms <= s1) {
         var u = (ms - s0) / STAGE_LEN;
         var q = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
-        return prev + (STO(k) - prev) * q;
+        return prev + (STAGE_TO[k] - prev) * q;
       }
-      prev = STO(k);
+      prev = STAGE_TO[k];
     }
     return 1;
   }
-  function STO(k) { return STAGE_TO[k]; }
 
   function resetTransition() {
     busy = false;
@@ -392,7 +385,7 @@
     hotspot.classList.remove('is-locked');
   }
 
-  function runTransition(xp, yp, href) {
+  function runTransition(el, href) {
     if (busy) return;
     busy = true;
     cancelAnim();
@@ -400,12 +393,12 @@
 
     var side = view.s * base;
     var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
-    var c = mapPoint(xp, yp);
-    var half = hotspot.offsetWidth / 2 || 24;
-    var end = { l: c.x - half, t: c.y - half, r: c.x + half, b: c.y + half };
+    var end = boxOf(el);
+    var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
 
     setupCorners();
-    placeCorners(start.l, start.t, start.r, start.b); // сразу в стартовой позиции, без кадра-«вспышки»
+    placeCorners(start.l, start.t, start.r, start.b); // сразу в стартовой позиции, без вспышки
+
     var t0 = performance.now();
     var locked = false;
     var diving = false;
@@ -428,12 +421,12 @@
       if (!diving && ms >= DIVE_AT) {
         diving = true;
         // zoom с фиксацией точки сектора на экране
-        var hsPoint = mapPoint(xp, yp);
+        var c = boxOf(el);
         var nextS = clamp(view.s * CONFIG.dive, CONFIG.minFactor, CONFIG.maxFactor);
         var k = nextS / view.s;
         animateTo(nextS,
-          hsPoint.x - (hsPoint.x - view.tx) * k,
-          hsPoint.y - (hsPoint.y - view.ty) * k,
+          c.cx - (c.cx - view.tx) * k,
+          c.cy - (c.cy - view.ty) * k,
           CONFIG.diveMs);
       }
 
@@ -443,7 +436,7 @@
     window.requestAnimationFrame(frame);
   }
 
-  // Возврат назад (bfcache): сбрасываем состояние перехода, а не показываем залипший кадр
+  // Возврат назад (bfcache): сбрасываем переход, а не показываем залипший кадр
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) { resetTransition(); layout(); }
   });
@@ -451,7 +444,7 @@
   if (iconBtn) {
     iconBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      runTransition(px, py, defaultHref);
+      runTransition(hotspot, defaultHref);
     });
   }
 
@@ -460,9 +453,7 @@
       var btn = e.target.closest('.sector-list-item');
       if (!btn) return;
       e.preventDefault();
-      var x = parseFloat(btn.getAttribute('data-x'));
-      var y = parseFloat(btn.getAttribute('data-y'));
-      runTransition(x, y, btn.getAttribute('data-href') || defaultHref);
+      runTransition(btn, btn.getAttribute('data-href') || defaultHref);
     });
   }
 })();
