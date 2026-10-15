@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "note": "Источники. Два листа одной книги Google Sheets: systems (gid=0) и places (gid=1). Таблица должна быть опубликована (Publish to web → CSV).",
+  "sources": [
+    {
+      "id": "systems-sheet",
+      "type": "url",
+      "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrNzh4Te01vHYmnHxZQoNrTMmeeWjU2XbOGsTl9M6U8djTZ8evbNMmPTONwWZYbNeImHcqMpGiKKy7/pub?gid=0&single=true&output=csv",
+      "kind": "sheet",
+      "role": "systems",
+      "target": "data/systems.csv",
+      "transform": {
+        "flipY": false,
+        "scale": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    },
+    {
+      "id": "places-sheet",
+      "type": "url",
+      "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrNzh4Te01vHYmnHxZQoNrTMmeeWjU2XbOGsTl9M6U8djTZ8evbNMmPTONwWZYbNeImHcqMpGiKKy7/pub?gid=1415856610&single=true&output=csv",
+      "kind": "sheet",
+      "role": "places",
+      "target": "data/places.csv",
+      "transform": {
+        "flipY": false,
+        "scale": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    }
+  ]
+}

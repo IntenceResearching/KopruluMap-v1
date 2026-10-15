@@ -1,0 +1,16 @@
+# Changelog
+
+## Data model — sheet schema
+- `docs/stages/stage-data-model.md`, `data/systems-sheet-template.csv`.
+
+## Stage A (upd) — url sources
+- Google Sheets published CSV support in sync.py + sources.json.
+
+## Stage 2 — frontend skeleton
+- `?fresh=1` parsing, `#mapPlaceholder`, report `docs/stages/stage-2-frontend.md`.
+
+## Stage A — sync skeleton
+- `tools/sync.py`, `.github/workflows/sync.yml`, report `docs/stages/stage-a-sync.md`.
+
+## Stage 0 — 8436f41
+- Skeleton: `data/sources.json`, `data/meta.json`, `.github/workflows/sync.yml` (draft), report `docs/stages/stage-0-agreements.md`.

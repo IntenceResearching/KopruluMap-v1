@@ -178,6 +178,7 @@
     labels: [],
     overrides: null,
     tiles: null,
+    fresh: false,
     systemsById: {},
     planetsById: {},
     planetByName: {},
@@ -235,6 +236,87 @@
       .catch(function () { return fallback; });
   }
 
+  function splitCSVLine(line) {
+    var result = [];
+    var cur = '';
+    var inQuotes = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (inQuotes) {
+        if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+        else if (c === '"') { inQuotes = false; }
+        else { cur += c; }
+      } else {
+        if (c === '"') { inQuotes = true; }
+        else if (c === ',') { result.push(cur); cur = ''; }
+        else { cur += c; }
+      }
+    }
+    result.push(cur);
+    return result;
+  }
+
+  function parseCSV(text) {
+    var lines = String(text || '').split(/\r?\n/).filter(function (l) { return l.trim() !== ''; });
+    if (!lines.length) return [];
+    var headers = splitCSVLine(lines[0]).map(function (h) { return h.trim(); });
+    var rows = [];
+    for (var i = 1; i < lines.length; i++) {
+      var cols = splitCSVLine(lines[i]);
+      var obj = {};
+      headers.forEach(function (h, idx) { obj[h] = (cols[idx] || '').trim(); });
+      if (Object.keys(obj).every(function (k) { return obj[k] === ''; })) continue;
+      rows.push(obj);
+    }
+    return rows;
+  }
+
+  function fetchCSV(url) {
+    return fetch(url, { credentials: 'same-origin' })
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.text();
+      })
+      .then(parseCSV)
+      .catch(function () { return []; });
+  }
+
+  function mapSystemRow(row) {
+    var x = parseFloat(row.x); var y = parseFloat(row.y);
+    return {
+      id: row.system_id || row.id || row.name,
+      name: row.name || '',
+      nameEn: row.name || '',
+      coord: [isNaN(x) ? 0 : x, isNaN(y) ? 0 : y],
+      coordSource: 'conditional',
+      primaryFaction: row.faction || '',
+      factions: row.faction ? [row.faction] : [],
+      note: row.description || '',
+      sourceUrl: row.source_url || '',
+      worlds: [],
+      planetIds: []
+    };
+  }
+
+  function mapPlaceRow(row) {
+    var x = row.x ? parseFloat(row.x) : NaN;
+    var y = row.y ? parseFloat(row.y) : NaN;
+    return {
+      id: row.ID || row.id || row.name,
+      name: row.name || '',
+      nameEn: row.name || '',
+      placeTypes: [row.type || 'other'],
+      systemId: row.system_id || null,
+      system: row.system_id || null,
+      coord: (row.x && row.y && !isNaN(x) && !isNaN(y)) ? [x, y] : null,
+      primaryFaction: row.faction || '',
+      factions: row.faction ? [row.faction] : [],
+      note: row.description || '',
+      sourceUrl: row.source_url || '',
+      wikiCategories: []
+    };
+  }
+
   function loadDataset() {
     var inline = window.__MAP_DATA__;
     if (inline && inline.systems) {
@@ -255,16 +337,27 @@
     // Сначала метаданные: в них флаг сборки растра, от которого зависит, нужно ли
     // вообще запрашивать assets/tiles.json (иначе на каждый заход будет 404).
     return fetchJSON(dir + CONFIG.data.meta + suffix, {}).then(function (meta) {
+      if (meta && meta.generatedAt && !meta.generated) meta.generated = meta.generatedAt;
       var wantsRaster = !!(meta && meta.assets && meta.assets.hasRaster);
       return Promise.all([
         fetchJSON(dir + CONFIG.data.systems + suffix, []),
         fetchJSON(dir + CONFIG.data.planets + suffix, []),
         fetchJSON(dir + CONFIG.data.overrides + suffix, { systems: {} }),
         fetchJSON(dir + CONFIG.data.labels + suffix, []),
-        wantsRaster ? fetchJSON(CONFIG.tiles.manifest + suffix, null) : Promise.resolve(null)
+        wantsRaster ? fetchJSON(CONFIG.tiles.manifest + suffix, null) : Promise.resolve(null),
+        fetchCSV('data/systems.csv' + suffix),
+        fetchCSV('data/places.csv' + suffix)
       ]).then(function (parts) {
+        var systems = parts[0];
+        var planets = parts[1];
+        if ((!systems || !systems.length) && parts[5] && parts[5].length) {
+          systems = parts[5].map(mapSystemRow);
+        }
+        if ((!planets || !planets.length) && parts[6] && parts[6].length) {
+          planets = parts[6].map(mapPlaceRow);
+        }
         return {
-          meta: meta, systems: parts[0], planets: parts[1],
+          meta: meta, systems: systems, planets: planets,
           overrides: parts[2], labels: parts[3], tiles: parts[4]
         };
       });
@@ -2614,7 +2707,8 @@
     detectSkin();
     bindEvents();
 
-    loadDataset().then(function (data) {
+    try { state.fresh = new URLSearchParams(window.location.search).get('fresh') === '1'; } catch (e) { state.fresh = false; }
+  loadDataset().then(function (data) {
       state.meta = data.meta || {};
       state.systemsRaw = data.systems || [];
       state.planets = data.planets || [];

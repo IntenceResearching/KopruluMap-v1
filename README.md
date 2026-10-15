@@ -21,3 +21,11 @@ python3 -m http.server 8080 --bind 0.0.0.0
 | `app.js` | Логика: canvas-рендер, поиск, каталог, досье, админ-режим |
 | `styles.css`, `wiki-skin.css`, `timeline-skin.css`, `admin-ui.css`, `readability.css`, `minimal-skin.css` | Стили и скины |
 | `assets/` | Дизайн-ассеты |
+
+## Документация для админов
+
+Правила внесения данных: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
+
+## История изменений
+
+См. [CHANGELOG.md](CHANGELOG.md).
