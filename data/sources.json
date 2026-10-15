@@ -1,27 +1,23 @@
 {
   "version": 1,
-  "note": "Источники. Поддерживаются два типа: github (repo/ref/files) и url (прямая ссылка, в т.ч. Google Sheets published CSV).",
+  "note": "Источники. Два листа одной книги Google Sheets: systems (gid=0) и places (gid=1). Таблица должна быть опубликована (Publish to web → CSV).",
   "sources": [
-    {
-      "id": "galaxy-main",
-      "type": "github",
-      "repo": "OWNER/REPO",
-      "ref": "main",
-      "kind": "galaxy",
-      "files": [
-        { "path": "out/galaxy.png", "role": "background" },
-        { "path": "out/sectors.csv", "role": "sectors" }
-      ],
-      "image": { "autoConvert": true, "maxEdge": 6000, "quality": 82, "maxBytes": 15728640 },
-      "transform": { "flipY": true, "scale": 1, "offsetX": 0, "offsetY": 0 }
-    },
     {
       "id": "systems-sheet",
       "type": "url",
       "url": "https://docs.google.com/spreadsheets/d/1OlpLm6dwAF1tB-r6FVDoAyLFKrUXqiRhWZ6Pzdg4v1o/export?format=csv&gid=0",
       "kind": "sheet",
-      "role": "overrides",
-      "target": "data/system-overrides.csv",
+      "role": "systems",
+      "target": "data/systems.csv",
+      "transform": { "flipY": false, "scale": 1, "offsetX": 0, "offsetY": 0 }
+    },
+    {
+      "id": "places-sheet",
+      "type": "url",
+      "url": "https://docs.google.com/spreadsheets/d/1OlpLm6dwAF1tB-r6FVDoAyLFKrUXqiRhWZ6Pzdg4v1o/export?format=csv&gid=1",
+      "kind": "sheet",
+      "role": "places",
+      "target": "data/places.csv",
       "transform": { "flipY": false, "scale": 1, "offsetX": 0, "offsetY": 0 }
     }
   ]

@@ -54,3 +54,18 @@ data/sectors.csv, data/objects.csv, data/system-overrides.csv  (рабочие)
 
 ## Публикация Google Sheet
 Таблица должна быть опубликована: File → Share → Publish to web → CSV. Иначе sync получит 403/HTML.
+
+
+## Рекомендация по структуре Google Sheet
+
+Текущий лист содержит **две таблицы рядом в одном CSV** (блоки «Системы:» и «Места:»). Такой формат не парсится автоматически: заголовки дублируются, колонки сдвигаются, валидация невозможна.
+
+**Рекомендуется:** разделить на два листа (вкладки) в одной книге:
+- Вкладка `systems` (gid=0) — заголовок: `id,name,x,y,faction,description,source_url`
+- Вкладка `places` (gid=1) — заголовок: `id,name,type,system_id,x,y,faction,description,source_url`
+
+Каждая вкладка публикуется отдельно (File → Share → Publish to web → CSV для каждого gid). В `data/sources.json` тогда два источника типа `url` с разными `gid` и разными `target`.
+
+Альтернатива — один нормализованный лист с колонкой `type` (system/place/...) и `system_id` (FK), но системы тогда тоже строки с type=system и пустым system_id. Менее удобно для ручного ввода.
+
+Шаблоны: `data/systems-template.csv`, `data/places-template.csv`.
