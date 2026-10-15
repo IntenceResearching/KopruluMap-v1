@@ -21,9 +21,6 @@
   transform-origin: 50% 50%;
 }
 
-.galaxy-stage.is-zooming .galaxy-map {
-  transform: scale(2.6);
-}
 
 /* Square hotspot */
 .sector-hotspot {
@@ -70,15 +67,19 @@
   white-space: nowrap;
 }
 
-/* Zoom-in: narrowing square */
-.galaxy-stage.is-zooming .sector-hotspot {
-  animation: narrowSquare 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+/* 4-segment shrink animation */
+.sector-seg {
+  position: absolute;
+  background: rgba(3, 17, 15, 0.96);
+  z-index: 20;
+  animation: segShrink 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
 }
 
-@keyframes narrowSquare {
-  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
-  60%  { transform: translate(-50%, -50%) scale(0.55); opacity: 0.9; }
-  100% { transform: translate(-50%, -50%) scale(0.18); opacity: 0; }
+@keyframes segShrink {
+  from { transform: scale(1); opacity: 1; }
+  to   { transform: scale(0); opacity: 0; }
 }
 
 /* Side panel */

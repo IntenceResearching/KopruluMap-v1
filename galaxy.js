@@ -25,12 +25,9 @@
   var py = parseFloat(hotspot.getAttribute('data-y'));
   if (!isNaN(px)) hotspot.style.left = px + '%';
   if (!isNaN(py)) hotspot.style.top = py + '%';
-  if (map && !isNaN(px) && !isNaN(py)) {
-    map.style.transformOrigin = px + '% ' + py + '%';
-  }
 
   var target = hotspot.getAttribute('data-href') || 'index.html';
-  var zooming = false;
+  var animating = false;
 
   function showPanel() {
     if (panel) panel.hidden = false;
@@ -43,22 +40,54 @@
 
   hotspot.addEventListener('click', function (e) {
     e.preventDefault();
-    if (zooming) return;
+    if (animating) return;
     showPanel();
   });
 
   if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
+  // 4-сегментная анимация: квадрат, разделённый на 4 угла,
+  // сужается от границ страницы к точке сектора в 4 этапа.
+  function runSegmentAnimation() {
+    if (animating) return;
+    animating = true;
+    hidePanel();
+
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var tx = (isNaN(px) ? 50 : px) / 100 * w;
+    var ty = (isNaN(py) ? 50 : py) / 100 * h;
+
+    var segs = [
+      { left: 0,   top: 0,   width: tx,     height: ty,     origin: '100% 100%' },
+      { left: tx,  top: 0,   width: w - tx, height: ty,     origin: '0% 100%'   },
+      { left: 0,   top: ty,  width: tx,     height: h - ty, origin: '100% 0%'   },
+      { left: tx,  top: ty,  width: w - tx, height: h - ty, origin: '0% 0%'     }
+    ];
+
+    segs.forEach(function (sg, i) {
+      var div = document.createElement('div');
+      div.className = 'sector-seg';
+      div.style.left = sg.left + 'px';
+      div.style.top = sg.top + 'px';
+      div.style.width = sg.width + 'px';
+      div.style.height = sg.height + 'px';
+      div.style.transformOrigin = sg.origin;
+      div.style.animationDelay = (i * 0.38) + 's';
+      stage.appendChild(div);
+    });
+
+    // 4 этапа * 0.38 + длительность 0.42
+    var total = 4 * 0.38 * 1000 + 420;
+    window.setTimeout(function () {
+      window.location.href = target;
+    }, total);
+  }
+
   if (iconBtn) {
     iconBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      if (zooming) return;
-      zooming = true;
-      hidePanel();
-      stage.classList.add('is-zooming');
-      window.setTimeout(function () {
-        window.location.href = target;
-      }, 900);
+      runSegmentAnimation();
     });
   }
 })();
