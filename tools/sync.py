@@ -104,7 +104,14 @@ def transform_csv(text, transform, img_w, img_h):
     for r in rows:
         nr = {}
         for k, v in r.items():
-            nr[(k or "").strip()] = v
+            nr[(k or "").strip()] = (v or "").strip() if isinstance(v, str) else v
+        # skip completely empty rows
+        if all((str(v).strip() == "" for v in nr.values())):
+            continue
+        # skip rows without id if an id column exists
+        id_cols = [c for c in nr.keys() if c.lower() in ("id", "system_id", "place_id")]
+        if id_cols and str(nr.get(id_cols[0], "")).strip() == "":
+            continue
         norm_rows.append(nr)
     rows = norm_rows
     t = transform or {}
