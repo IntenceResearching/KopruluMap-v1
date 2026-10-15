@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#03110f">
-  <meta name="description" content="Интерактивный атлас сектора Копрулу: канонические планеты, луны, астероиды, станции, системы и карта.">
-  <title>Timeline Project — Koprulu Atlas (минимальный скин)</title>
+  <meta name="description" content="Интерактивный атлас: каркас.">
+  <title>Timeline Project — Map Atlas (минимальный скин)</title>
   <link rel="stylesheet" href="styles.css?v=b735c8065b0413b4">
   <link rel="stylesheet" href="wiki-skin.css?v=b735c8065b0413b4">
   <link rel="stylesheet" href="admin-ui.css?v=b735c8065b0413b4">
@@ -17,9 +17,9 @@
   <div class="timeline-loader" id="timelineLoader" role="status" aria-live="polite" aria-label="Загрузка атласа Timeline Project">
     <div class="timeline-loader-core">
       <img class="timeline-loader-logo" src="assets/timeline-project-logo.png?v=b735c8065b0413b4" alt="Timeline Project">
-      <div class="timeline-loader-status">Koprulu archive handshake</div>
+      <div class="timeline-loader-status">Archive handshake</div>
       <div class="timeline-loader-progress" aria-hidden="true"></div>
-      <div class="timeline-loader-meta">sector 2513 · canonical registry · secure link</div>
+      <div class="timeline-loader-meta">sector · registry · secure link</div>
     </div>
   </div>
   <div class="app-shell">
@@ -40,8 +40,8 @@
       </div>
       </div>
 
-      <div class="brand-lockup" aria-label="Koprulu Sector Atlas">
-        <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>KOPRULU ATLAS <i>·</i> 2513</span></div>
+      <div class="brand-lockup" aria-label="Map Atlas">
+        <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>MAP ATLAS</span></div>
       </div>
       <div class="topbar-right">
         <button class="admin-access-button" id="adminAccessButton" type="button"><span class="admin-lock" aria-hidden="true">⌑</span> Получить доступ администратора</button>
@@ -61,7 +61,7 @@
       <div class="map-vignette" aria-hidden="true"></div>
       <div class="map-grid-overlay" aria-hidden="true"></div>
 
-      <div class="coordinates-label" aria-hidden="true"><span>TIMELINE NAVIGATION GRID</span><span>SECTOR / 2513</span></div>
+      <div class="coordinates-label" aria-hidden="true"><span>TIMELINE NAVIGATION GRID</span><span>SECTOR</span></div>
       <section class="map-page-intro" aria-label="Текущий раздел">
         <div class="breadcrumb"><span>Лор</span><i>›</i><span>Вводная часть</span><i>›</i><b>Карта сектора</b></div>
         <h2>Карта сектора</h2>
@@ -171,7 +171,7 @@
           <div class="note-block"><span class="note-number">03</span><div><h3>Плавный зум без тяжёлой подложки</h3><p>Карта разбита на WebP-тайлы 512 × 512 в четырёх уровнях детализации (1 250 → 10 000 px). Canvas загружает только видимую область, использует грубый слой как подложку и хранит ограниченный LRU-кэш. Перетаскивание и масштабирование не пересоздают изображение целиком.</p></div></div>
           <div class="note-block"><span class="note-number">04</span><div><h3>Управление</h3><p>Колесо мыши или жест pinch — приблизить; зажми и перетаскивай — переместить; <kbd>+</kbd>/<kbd>−</kbd> — масштаб; <kbd>0</kbd> — вернуть обзор; <kbd>/</kbd> — фокус поиска. Наведи на узел, чтобы увидеть места системы, нажми — закрепить карточку.</p></div></div>
         </div>
-        <div class="modal-foot"><span>DATASET REV. 2513.10</span><span>NO ASTROMETRIC COORDINATES IN SOURCE</span></div>
+        <div class="modal-foot"><span>DATASET REV.</span><span>NO ASTROMETRIC COORDINATES IN SOURCE</span></div>
       </section>
     </div>
 
