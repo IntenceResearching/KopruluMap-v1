@@ -17,6 +17,7 @@
   var zoomOutBtn = document.getElementById('zoomOut');
   var resetBtn = document.getElementById('resetMap');
   var zoomPercent = document.getElementById('zoomPercent');
+  var preview = document.getElementById('sectorPreview');
 
   /* ---------- loader: полный логотип не меньше 1.6 с ---------- */
   function dismissLoader() {
@@ -111,6 +112,7 @@
     layer.style.transform = 'translate(' + Math.round(view.tx) + 'px,' + Math.round(view.ty) + 'px)';
     layer.style.setProperty('--s', String(view.s));
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
+    positionPreview();
   }
 
   function layout() {
@@ -291,8 +293,44 @@
   else window.addEventListener('load', layout);
   document.addEventListener('DOMContentLoaded', layout);
 
+  /* ---------- превью 300×300 при ховере на хотспот ---------- */
+  // Ставим слева от квадрата, если места нет — справа; всегда внутри сцены.
+  function positionPreview() {
+    if (!preview || !preview.classList.contains('is-on')) return;
+    var W = 300, H = 300, gap = 18, edge = 8;
+    var st = stage.getBoundingClientRect();
+    var h = hotspot.getBoundingClientRect();
+    var sw = stage.clientWidth, sh = stage.clientHeight;
+    var hl = h.left - st.left, hr = h.right - st.left;
+    var hcy = (h.top + h.bottom) / 2 - st.top;
+    var left = hl - gap - W;
+    if (left < edge) left = hr + gap;
+    if (left + W > sw - edge) left = clamp(hl + h.width / 2 - W / 2, edge, sw - W - edge);
+    var top = clamp(hcy - H / 2, edge, sh - H - edge);
+    preview.style.transform = 'translate(' + Math.round(left) + 'px,' + Math.round(top) + 'px)';
+  }
+
+  function showPreview() {
+    if (!preview || (panel && !panel.hidden) || busy) return;
+    preview.classList.add('is-on');
+    positionPreview();
+  }
+  function hidePreview() {
+    if (preview) preview.classList.remove('is-on');
+  }
+
+  hotspot.addEventListener('pointerenter', function (e) {
+    if (e.pointerType === 'mouse') showPreview();
+  });
+  hotspot.addEventListener('pointerleave', hidePreview);
+  hotspot.addEventListener('focus', function () {
+    if (hotspot.matches(':focus-visible')) showPreview();
+  });
+  hotspot.addEventListener('blur', hidePreview);
+
   /* ---------- панель сектора: первый клик ---------- */
   function showPanel() {
+    hidePreview();
     if (panel) {
       if (panelTitle) panelTitle.textContent = sectorName;
       panel.hidden = false;
@@ -394,6 +432,7 @@
     busy = true;
     cancelAnim();
     hidePanel();
+    hidePreview();
 
     var side = view.s * base;
     var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
