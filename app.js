@@ -178,6 +178,7 @@
     labels: [],
     overrides: null,
     tiles: null,
+    fresh: false,
     systemsById: {},
     planetsById: {},
     planetByName: {},
@@ -2614,7 +2615,8 @@
     detectSkin();
     bindEvents();
 
-    loadDataset().then(function (data) {
+    try { state.fresh = new URLSearchParams(window.location.search).get('fresh') === '1'; } catch (e) { state.fresh = false; }
+  loadDataset().then(function (data) {
       state.meta = data.meta || {};
       state.systemsRaw = data.systems || [];
       state.planets = data.planets || [];

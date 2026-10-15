@@ -1,5 +1,8 @@
 # Changelog
 
+## Stage 2 — frontend skeleton
+- `?fresh=1` parsing, `#mapPlaceholder`, report `docs/stages/stage-2-frontend.md`.
+
 ## Stage A — sync skeleton
 - `tools/sync.py`, `.github/workflows/sync.yml`, report `docs/stages/stage-a-sync.md`.
 

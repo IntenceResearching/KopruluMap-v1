@@ -260,3 +260,26 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 1px solid 
   .detail-panel { max-height: 49vh; }
   .map-hint { letter-spacing: .06em; }
 }
+
+/* map placeholder (three-level loader fallback) */
+.map-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(3, 17, 15, 0.85);
+  color: #7fffd4;
+  font-family: inherit;
+  z-index: 5;
+}
+.map-placeholder[hidden] { display: none; }
+.map-placeholder button {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid #7fffd4;
+  color: #7fffd4;
+  cursor: pointer;
+}
