@@ -57,13 +57,25 @@
   function sceneSize() { return { w: stage.clientWidth, h: stage.clientHeight }; }
   function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 
+  // Край карты может уйти внутрь экрана на PAN_MARGIN доли размера сцены,
+  // а не упираться жёстко в границу. Поэтому карту можно вести свободно.
+  var PAN_MARGIN = 0.25;
+
+  function clampAxis(t, side, size) {
+    var m = size * PAN_MARGIN;
+    if (side <= size) {
+      var c = (size - side) / 2;            // карта меньше экрана: центр ± запас
+      return clamp(t, c - m, c + m);
+    }
+    return clamp(t, size - side - m, m);    // карта больше экрана: край не дальше запаса
+  }
+
   function clampState(st) {
     var sz = sceneSize();
-    var side = st.s * base;
     var out = { s: clamp(st.s, CONFIG.minFactor, CONFIG.maxFactor), tx: st.tx, ty: st.ty };
-    side = out.s * base;
-    out.tx = side <= sz.w ? (sz.w - side) / 2 : clamp(out.tx, sz.w - side, 0);
-    out.ty = side <= sz.h ? (sz.h - side) / 2 : clamp(out.ty, sz.h - side, 0);
+    var side = out.s * base;
+    out.tx = clampAxis(out.tx, side, sz.w);
+    out.ty = clampAxis(out.ty, side, sz.h);
     return out;
   }
 
