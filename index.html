@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Карта галактики: переход к карте сектора.">
   <title>Timeline Project — Galaxy Map</title>
-  <link rel="stylesheet" href="styles.css?v=galaxy">
-  <link rel="stylesheet" href="timeline-skin.css?v=galaxy">
-  <link rel="stylesheet" href="galaxy.css?v=galaxy">
+  <link rel="stylesheet" href="styles.css?v=galaxy-hs2">
+  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs2">
+  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs2">
 </head>
 <body>
   <div class="timeline-loader" id="timelineLoader" role="status" aria-live="polite">
@@ -21,17 +21,18 @@
 
   <!-- Выезжающий список секторов -->
   <aside class="sectors-sidebar" id="sectorsSidebar" aria-label="Список секторов">
-    <button class="sectors-toggle" id="sectorsToggle" type="button" aria-expanded="true" aria-controls="sectorsList">
-      <span class="sectors-toggle-icon">▾</span>
-      <span>СЕКТОРЫ</span>
+    <button class="sectors-toggle" id="sectorsToggle" type="button" aria-expanded="true" aria-controls="sectorsList" aria-label="Свернуть/развернуть список секторов">
+      <span class="sectors-toggle-icon" aria-hidden="true">◀</span>
+      <span class="sectors-toggle-label">СЕКТОРЫ</span>
     </button>
+    <div class="sectors-list-title">СЕКТОРЫ</div>
     <ul class="sectors-list" id="sectorsList">
       <li>
         <button class="sector-list-item" type="button"
-                data-x="73.03" data-y="31.5" data-href="sector.html"
+                data-cx="73.8167" data-cy="32.3167" data-size="1.8667" data-href="sector.html"
                 data-name="Сектор Копрулу">
           <span class="sector-list-thumb">
-            <img src="assets/timeline-project-mark.webp" alt="" width="48" height="48">
+            <img src="assets/thumb-koprulu.jpg" alt="" width="48" height="48">
           </span>
           <span class="sector-list-name">Сектор Копрулу</span>
         </button>
@@ -40,15 +41,27 @@
   </aside>
 
   <main class="galaxy-stage" id="galaxyStage">
-    <img class="galaxy-map" id="galaxyMap" src="assets/galaxy-map.jpg" alt="Карта галактики" draggable="false">
+    <!-- Слой карты: масштабируется и двигается целиком, хотспот внутри него -->
+    <div class="map-layer" id="mapLayer">
+      <img class="galaxy-map" id="galaxyMap" src="assets/galaxy-map.jpg" alt="Карта галактики" draggable="false">
 
-    <!-- Квадратная кнопка-сектор -->
-    <button class="sector-hotspot" id="sectorHotspot" type="button"
-            data-x="73.03" data-y="31.5" data-href="sector.html"
-            aria-label="Выбрать сектор">
-      <span class="hotspot-square" aria-hidden="true"></span>
-      <span class="hotspot-label">SECTOR</span>
-    </button>
+      <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи -->
+      <button class="sector-hotspot" id="sectorHotspot" type="button"
+              data-cx="73.8167" data-cy="32.3167" data-size="1.8667"
+              data-href="sector.html" data-name="Сектор Копрулу"
+              aria-label="Сектор Копрулу"></button>
+    </div>
+
+    <!-- Управление картой: как на странице сектора -->
+    <div class="map-controls" aria-label="Управление картой">
+      <button class="map-control" id="zoomIn" type="button" title="Приблизить (+)" aria-label="Приблизить"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <div class="zoom-readout"><span id="zoomPercent">100%</span><span class="zoom-tick"></span></div>
+      <button class="map-control" id="zoomOut" type="button" title="Отдалить (−)" aria-label="Отдалить"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path></svg></button>
+      <div class="control-divider"></div>
+      <button class="map-control" id="resetMap" type="button" title="Показать всю карту (0)" aria-label="Показать всю карту"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path><path d="M9 4a8 8 0 0 1 10 5M15 20a8 8 0 0 1-10-5"></path></svg></button>
+    </div>
+
+    <div class="map-hint"><span class="mouse-icon"><i></i></span><span>ПЕРЕТАСКИВАЙ · КОЛЁСО МЫШИ — МАСШТАБ</span></div>
 
     <!-- Боковая панель с краткой информацией -->
     <aside class="sector-panel" id="sectorPanel" hidden aria-label="Информация о секторе">
@@ -75,6 +88,6 @@
     </div>
   </main>
 
-  <script src="galaxy.js?v=galaxy" defer></script>
+  <script src="galaxy.js?v=galaxy-hs2" defer></script>
 </body>
 </html>
