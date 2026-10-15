@@ -165,6 +165,49 @@ def main():
 
     for src in sources:
         sid = src["id"]
+        src_type = src.get("type", "github")
+
+        if src_type == "url":
+            url = src.get("url")
+            if not url or "SPREADSHEET_ID" in url:
+                fail(f"source {sid}: url not configured (still placeholder)")
+            print(f"== source {sid} (url)")
+            try:
+                data, headers = http_get(url, token)
+            except Exception as e:
+                fail(f"source {sid}: download failed: {e}")
+            if len(data) == 0:
+                fail(f"source {sid}: empty response")
+            # sha = hash of content (for change detection)
+            import hashlib
+            sha = hashlib.sha256(data).hexdigest()
+            stored = manifest.get("sources", {}).get(sid, {}).get("sha")
+            if stored == sha:
+                print(f"   up to date ({sha[:7]})")
+                continue
+            print(f"   new content {sha[:7]}")
+            # decode
+            try:
+                text = data.decode("utf-8-sig")
+            except UnicodeDecodeError:
+                text = data.decode("cp1251")
+            # transform (no image dims for sheet)
+            transformed_text, rows, fieldnames = transform_csv(text, src.get("transform", {}), None, None)
+            # basic validation: unique id if present
+            id_cols = [c for c in (fieldnames or []) if c.lower() in ("id", "system_id", "place_id")]
+            if id_cols:
+                ids = [r[id_cols[0]] for r in rows]
+                if len(set(ids)) != len(ids):
+                    fail(f"source {sid}: duplicate id")
+            target = src.get("target", f"data/{sid}.csv")
+            (ROOT / target).parent.mkdir(parents=True, exist_ok=True)
+            (ROOT / target).write_text(transformed_text, encoding="utf-8")
+            print(f"   wrote {target} ({len(rows)} rows)")
+            manifest.setdefault("sources", {})[sid] = {"sha": sha}
+            save_json(MANIFEST, manifest)
+            continue
+
+        # github type
         repo = src["repo"]
         ref = src.get("ref", "main")
         if repo == "OWNER/REPO" or "/" not in repo:
@@ -193,7 +236,6 @@ def main():
                 data, headers = http_get(url, token)
             except Exception as e:
                 fail(f"source {sid}: download failed {path}: {e}")
-            # validate size
             max_bytes = src.get("image", {}).get("maxBytes", 100 * 1024 * 1024)
             if len(data) > max_bytes:
                 fail(f"source {sid}: file too large {path}: {len(data)} > {max_bytes}")

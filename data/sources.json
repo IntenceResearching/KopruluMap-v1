@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "note": "Шаблон. Заполнить реальными owner/repo, веткой, путями после договорённостей (Этап 0).",
+  "note": "Источники. Поддерживаются два типа: github (repo/ref/files) и url (прямая ссылка, в т.ч. Google Sheets published CSV).",
   "sources": [
     {
       "id": "galaxy-main",
+      "type": "github",
       "repo": "OWNER/REPO",
       "ref": "main",
       "kind": "galaxy",
@@ -13,6 +14,15 @@
       ],
       "image": { "autoConvert": true, "maxEdge": 6000, "quality": 82, "maxBytes": 15728640 },
       "transform": { "flipY": true, "scale": 1, "offsetX": 0, "offsetY": 0 }
+    },
+    {
+      "id": "systems-sheet",
+      "type": "url",
+      "url": "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/export?format=csv&gid=0",
+      "kind": "sheet",
+      "role": "overrides",
+      "target": "data/system-overrides.csv",
+      "transform": { "flipY": false, "scale": 1, "offsetX": 0, "offsetY": 0 }
     }
   ]
 }
