@@ -19,16 +19,20 @@
     </div>
   </div>
 
+  <!-- Выезжающий список секторов -->
   <aside class="sectors-sidebar" id="sectorsSidebar" aria-label="Список секторов">
-    <div class="sectors-sidebar-head">
-      <div class="eyebrow"><span class="eyebrow-line"></span> SECTORS</div>
-    </div>
+    <button class="sectors-toggle" id="sectorsToggle" type="button" aria-expanded="true" aria-controls="sectorsList">
+      <span class="sectors-toggle-icon">▾</span>
+      <span>СЕКТОРЫ</span>
+    </button>
     <ul class="sectors-list" id="sectorsList">
       <li>
         <button class="sector-list-item" type="button"
                 data-x="73.03" data-y="31.5" data-href="sector.html"
                 data-name="Сектор Копрулу">
-          <span class="sector-list-dot"></span>
+          <span class="sector-list-thumb">
+            <img src="assets/timeline-project-mark.webp" alt="" width="48" height="48">
+          </span>
           <span class="sector-list-name">Сектор Копрулу</span>
         </button>
       </li>
