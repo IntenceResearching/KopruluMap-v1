@@ -1,0 +1,4 @@
+id,name,type,system_id,x,y,faction,description,source_url
+aiur-system,Aiur,system,,5000,5000,protoss,Пример системы,https://example.com
+tarsonis,Tarsonis,planet,tarsonis-system,1200,3400,terran,Пример планеты,https://example.com
+tarsonis-station-1,Station Alpha,station,tarsonis-system,,,terran,Станция системы,https://example.com
