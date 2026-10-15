@@ -12,12 +12,12 @@
 .galaxy-stage.is-dragging { cursor: grabbing; }
 
 /* Слой карты: масштабируется и двигается из JS (translate + scale, origin 0 0) */
+/* Размер слоя задаётся из JS (base·s), сдвиг — translate. Без will-change и scale:
+   иначе Chrome растягивает один растр и картинка шакалится при зуме. */
 .map-layer {
   position: absolute;
   left: 0;
   top: 0;
-  transform-origin: 0 0;
-  will-change: transform;
 }
 
 .galaxy-map {

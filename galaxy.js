@@ -101,10 +101,14 @@
     return { l: x - w / 2, t: y - w / 2, r: x + w / 2, b: y + w / 2, cx: x, cy: y, w: w };
   }
 
+  // Слой имеет реальный размер base·s (без CSS scale): картинка рисуется заново
+  // в нужном разрешении и не растягивается растром, поэтому не «шакалится».
+  // Двигаем только translate, округляя до целых px, чтобы край не мылился.
   function applyView() {
-    layer.style.width = base + 'px';
-    layer.style.height = base + 'px';
-    layer.style.transform = 'translate(' + view.tx + 'px,' + view.ty + 'px) scale(' + view.s + ')';
+    var side = view.s * base;
+    layer.style.width = side + 'px';
+    layer.style.height = side + 'px';
+    layer.style.transform = 'translate(' + Math.round(view.tx) + 'px,' + Math.round(view.ty) + 'px)';
     layer.style.setProperty('--s', String(view.s));
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
   }
