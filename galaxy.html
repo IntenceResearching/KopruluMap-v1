@@ -22,13 +22,32 @@
   <main class="galaxy-stage" id="galaxyStage">
     <img class="galaxy-map" id="galaxyMap" src="assets/galaxy-map.jpg" alt="Карта галактики" draggable="false">
 
-    <!-- Интерактивная кнопка-переход на карту сектора -->
+    <!-- Квадратная кнопка-сектор -->
     <button class="sector-hotspot" id="sectorHotspot" type="button"
-            data-x="73.03" data-y="31.5" data-href="index.html" aria-label="Перейти к карте сектора">
-      <span class="hotspot-ring" aria-hidden="true"></span>
-      <span class="hotspot-core" aria-hidden="true"></span>
+            data-x="73.03" data-y="31.5" data-href="index.html"
+            aria-label="Выбрать сектор">
+      <span class="hotspot-square" aria-hidden="true"></span>
       <span class="hotspot-label">SECTOR</span>
     </button>
+
+    <!-- Боковая панель с краткой информацией -->
+    <aside class="sector-panel" id="sectorPanel" hidden aria-label="Информация о секторе">
+      <div class="sector-panel-head">
+        <div class="eyebrow"><span class="eyebrow-line"></span> SECTOR DOSSIER</div>
+        <button class="icon-button" id="closeSectorPanel" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <div class="sector-panel-body">
+        <h2 id="sectorPanelTitle">Сектор</h2>
+        <p id="sectorPanelInfo">Краткая информация о секторе появится здесь.</p>
+        <div class="sector-panel-icon">
+          <button class="sector-icon-button" id="sectorIconButton" type="button"
+                  aria-label="Открыть карту сектора">
+            <img src="assets/timeline-project-mark.webp" alt="Карта сектора" width="300" height="300">
+            <span class="sector-icon-caption">ОТКРЫТЬ КАРТУ</span>
+          </button>
+        </div>
+      </div>
+    </aside>
 
     <div class="galaxy-caption">
       <strong>TIMELINE PROJECT</strong>

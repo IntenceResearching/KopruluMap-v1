@@ -2,14 +2,17 @@
   'use strict';
 
   var stage = document.getElementById('galaxyStage');
+  var map = document.getElementById('galaxyMap');
   var hotspot = document.getElementById('sectorHotspot');
+  var panel = document.getElementById('sectorPanel');
+  var closeBtn = document.getElementById('closeSectorPanel');
+  var iconBtn = document.getElementById('sectorIconButton');
   var loader = document.getElementById('timelineLoader');
 
   function dismissLoader() {
     if (!loader) return;
     window.setTimeout(function () { loader.style.display = 'none'; }, 900);
   }
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', dismissLoader);
   } else {
@@ -18,30 +21,44 @@
 
   if (!hotspot || !stage) return;
 
-  // Позиция точки перехода настраивается атрибутами data-x/data-y (в процентах).
-  var px = hotspot.getAttribute('data-x');
-  var py = hotspot.getAttribute('data-y');
-  if (px !== null) hotspot.style.left = px + '%';
-  if (py !== null) hotspot.style.top = py + '%';
+  var px = parseFloat(hotspot.getAttribute('data-x'));
+  var py = parseFloat(hotspot.getAttribute('data-y'));
+  if (!isNaN(px)) hotspot.style.left = px + '%';
+  if (!isNaN(py)) hotspot.style.top = py + '%';
+  if (map && !isNaN(px) && !isNaN(py)) {
+    map.style.transformOrigin = px + '% ' + py + '%';
+  }
 
   var target = hotspot.getAttribute('data-href') || 'index.html';
   var zooming = false;
 
-  hotspot.addEventListener('mouseenter', function () {
-    hotspot.classList.add('is-hover');
-  });
-  hotspot.addEventListener('mouseleave', function () {
-    hotspot.classList.remove('is-hover');
-  });
+  function showPanel() {
+    if (panel) panel.hidden = false;
+    hotspot.classList.add('is-selected');
+  }
+  function hidePanel() {
+    if (panel) panel.hidden = true;
+    hotspot.classList.remove('is-selected');
+  }
 
   hotspot.addEventListener('click', function (e) {
     e.preventDefault();
     if (zooming) return;
-    zooming = true;
-    hotspot.disabled = true;
-    stage.classList.add('is-zooming');
-    window.setTimeout(function () {
-      window.location.href = target;
-    }, 900);
+    showPanel();
   });
+
+  if (closeBtn) closeBtn.addEventListener('click', hidePanel);
+
+  if (iconBtn) {
+    iconBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (zooming) return;
+      zooming = true;
+      hidePanel();
+      stage.classList.add('is-zooming');
+      window.setTimeout(function () {
+        window.location.href = target;
+      }, 900);
+    });
+  }
 })();

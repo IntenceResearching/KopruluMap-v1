@@ -17,100 +17,147 @@
   user-select: none;
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+  transform-origin: 50% 50%;
 }
 
 .galaxy-stage.is-zooming .galaxy-map {
   transform: scale(2.6);
 }
 
-/* Hotspot */
+/* Square hotspot */
 .sector-hotspot {
   position: absolute;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   width: 48px;
   height: 48px;
-  border: 0;
-  background: transparent;
+  border: 2px solid rgba(127, 255, 212, 0.7);
+  background: rgba(127, 255, 212, 0.08);
   cursor: pointer;
   padding: 0;
   z-index: 5;
   outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 14px rgba(127, 255, 212, 0.3);
 }
 
-.hotspot-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px solid rgba(127, 255, 212, 0.6);
-  box-shadow: 0 0 18px rgba(127, 255, 212, 0.35);
-  transition: all 0.25s ease;
+.sector-hotspot:hover,
+.sector-hotspot.is-selected {
+  border-color: #7fffd4;
+  background: rgba(127, 255, 212, 0.18);
+  box-shadow: 0 0 24px rgba(127, 255, 212, 0.6);
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
-.hotspot-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: #7fffd4;
-  box-shadow: 0 0 12px #7fffd4;
-  transition: all 0.25s ease;
+.hotspot-square {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(127,255,212,0.25), rgba(127,255,212,0.05));
 }
 
 .hotspot-label {
   position: absolute;
-  bottom: -26px;
+  bottom: -22px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 11px;
-  letter-spacing: 0.18em;
+  font-size: 10px;
+  letter-spacing: 0.16em;
   color: #7fffd4;
-  opacity: 0.7;
-  transition: opacity 0.25s ease;
+  opacity: 0.8;
+  white-space: nowrap;
 }
 
-/* Hover highlight */
-.sector-hotspot:hover .hotspot-ring,
-.sector-hotspot.is-hover .hotspot-ring {
+/* Zoom-in: narrowing square */
+.galaxy-stage.is-zooming .sector-hotspot {
+  animation: narrowSquare 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes narrowSquare {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+  60%  { transform: translate(-50%, -50%) scale(0.55); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(0.18); opacity: 0; }
+}
+
+/* Side panel */
+.sector-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 360px;
+  max-width: 90vw;
+  height: 100vh;
+  background: rgba(3, 17, 15, 0.92);
+  border-left: 1px solid rgba(127, 255, 212, 0.3);
+  backdrop-filter: blur(6px);
+  z-index: 10;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease;
+}
+
+.sector-panel[hidden] { display: none; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+.sector-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sector-panel-body h2 {
+  margin: 0 0 8px;
+  color: #7fffd4;
+  font-size: 20px;
+}
+
+.sector-panel-body p {
+  color: rgba(200, 230, 220, 0.8);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.sector-panel-icon {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.sector-icon-button {
+  border: 2px solid rgba(127, 255, 212, 0.5);
+  background: rgba(127, 255, 212, 0.05);
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.sector-icon-button:hover {
   border-color: #7fffd4;
-  box-shadow: 0 0 28px rgba(127, 255, 212, 0.7);
-  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(127, 255, 212, 0.5);
 }
 
-.sector-hotspot:hover .hotspot-core,
-.sector-hotspot.is-hover .hotspot-core {
-  width: 18px;
-  height: 18px;
-  box-shadow: 0 0 20px #7fffd4;
+.sector-icon-button img {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  max-width: 100%;
 }
 
-.sector-hotspot:hover .hotspot-label,
-.sector-hotspot.is-hover .hotspot-label {
-  opacity: 1;
-}
-
-/* Zoom-in: narrowing marker */
-.galaxy-stage.is-zooming .hotspot-ring {
-  animation: narrowRing 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes narrowRing {
-  0%   { transform: scale(1);   border-width: 2px; opacity: 1; }
-  60%  { transform: scale(0.55); border-width: 3px; opacity: 0.9; }
-  100% { transform: scale(0.18); border-width: 4px; opacity: 0; }
-}
-
-.galaxy-stage.is-zooming .hotspot-core {
-  animation: corePulse 0.9s ease forwards;
-}
-
-@keyframes corePulse {
-  0%   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+.sector-icon-caption {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: #7fffd4;
 }
 
 .galaxy-caption {
