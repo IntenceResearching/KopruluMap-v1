@@ -1,5 +1,5 @@
 /*!
- * Koprulu Sector Atlas — интерфейс атласа.
+ * Map Atlas — интерфейс атласа.
  * Статика без зависимостей: canvas-рендер тайлов с LOD, маркеры систем,
  * поиск, каталог, досье, слой подписей карты и режим администратора.
  *
@@ -17,11 +17,11 @@
   var CONFIG = {
     // Код администратора. Это только блокировка интерфейса: статическая страница
     // не может проверять подпись на сервере. Подробности — README.
-    adminCode: 'koprulu-2513',
+    adminCode: 'admin',
     storage: {
-      edits: 'koprulu.atlas.edits.v1',
-      session: 'koprulu.atlas.admin.v1',
-      labels: 'koprulu.atlas.labels.v1'
+      edits: 'map.atlas.edits.v1',
+      session: 'map.atlas.admin.v1',
+      labels: 'map.atlas.labels.v1'
     },
     data: {
       dir: 'data/',
@@ -236,7 +236,7 @@
   }
 
   function loadDataset() {
-    var inline = window.__KOPRULU_DATA__;
+    var inline = window.__MAP_DATA__;
     if (inline && inline.systems) {
       return Promise.resolve({
         meta: inline.meta || {},
@@ -757,7 +757,7 @@
 
   function stars() {
     if (starCache) return starCache;
-    var random = rng(25130000);
+    var random = rng(100000);
     var size = mapSize();
     starCache = [];
     for (var i = 0; i < 900; i++) {
