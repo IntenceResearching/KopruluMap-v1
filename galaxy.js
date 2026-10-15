@@ -48,15 +48,19 @@
 
   // 4-сегментная анимация: квадрат, разделённый на 4 угла,
   // сужается от границ страницы к точке сектора в 4 этапа.
-  function runSegmentAnimation() {
+  function runSegmentAnimation(txPct, tyPct, href) {
     if (animating) return;
     animating = true;
     hidePanel();
 
+    var txP = (txPct == null || isNaN(txPct)) ? px : txPct;
+    var tyP = (tyPct == null || isNaN(tyPct)) ? py : tyPct;
+    var targetHref = href || target;
+
     var w = window.innerWidth;
     var h = window.innerHeight;
-    var tx = (isNaN(px) ? 50 : px) / 100 * w;
-    var ty = (isNaN(py) ? 50 : py) / 100 * h;
+    var tx = (isNaN(txP) ? 50 : txP) / 100 * w;
+    var ty = (isNaN(tyP) ? 50 : tyP) / 100 * h;
 
     var segs = [
       { left: 0,   top: 0,   width: tx,     height: ty,     origin: '100% 100%' },
@@ -80,14 +84,29 @@
     // 4 этапа * 0.38 + длительность 0.42
     var total = 4 * 0.38 * 1000 + 420;
     window.setTimeout(function () {
-      window.location.href = target;
+      window.location.href = targetHref;
     }, total);
   }
 
   if (iconBtn) {
     iconBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      runSegmentAnimation();
+      runSegmentAnimation(px, py, target);
+    });
+  }
+
+  // Список секторов: клик запускает ту же анимацию
+  var list = document.getElementById('sectorsList');
+  if (list) {
+    list.addEventListener('click', function (e) {
+      var btn = e.target.closest('.sector-list-item');
+      if (!btn) return;
+      e.preventDefault();
+      if (animating) return;
+      var x = parseFloat(btn.getAttribute('data-x'));
+      var y = parseFloat(btn.getAttribute('data-y'));
+      var href = btn.getAttribute('data-href') || target;
+      runSegmentAnimation(x, y, href);
     });
   }
 })();

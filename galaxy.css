@@ -71,7 +71,9 @@
 /* 4-segment shrink animation */
 .sector-seg {
   position: absolute;
-  background: rgba(3, 17, 15, 0.96);
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px solid rgba(127, 255, 212, 0.6);
+  box-shadow: 0 0 18px rgba(127, 255, 212, 0.25);
   z-index: 20;
   animation: segShrink 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
@@ -80,6 +82,64 @@
 @keyframes segShrink {
   from { transform: scale(1); opacity: 1; }
   to   { transform: scale(0); opacity: 0; }
+}
+
+/* Sectors sidebar */
+.sectors-sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;
+  max-width: 40vw;
+  height: 100vh;
+  background: rgba(3, 17, 15, 0.88);
+  border-right: 1px solid rgba(127, 255, 212, 0.25);
+  backdrop-filter: blur(6px);
+  z-index: 12;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.sectors-sidebar-head {
+  margin-bottom: 16px;
+}
+
+.sectors-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sector-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: rgba(127, 255, 212, 0.04);
+  border: 1px solid rgba(127, 255, 212, 0.2);
+  color: #7fffd4;
+  cursor: pointer;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.sector-list-item:hover {
+  background: rgba(127, 255, 212, 0.12);
+  border-color: #7fffd4;
+  box-shadow: 0 0 14px rgba(127, 255, 212, 0.3);
+}
+
+.sector-list-dot {
+  width: 8px;
+  height: 8px;
+  background: #7fffd4;
+  box-shadow: 0 0 8px #7fffd4;
+  flex-shrink: 0;
 }
 
 /* Side panel */
