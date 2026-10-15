@@ -1,5 +1,8 @@
 # Changelog
 
+## Data model — sheet schema
+- `docs/stages/stage-data-model.md`, `data/systems-sheet-template.csv`.
+
 ## Stage A (upd) — url sources
 - Google Sheets published CSV support in sync.py + sources.json.
 
