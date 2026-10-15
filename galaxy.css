@@ -5,23 +5,23 @@
   height: 100vh;
   overflow: hidden;
   background: #03110f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  cursor: grab;
+  touch-action: none;
 }
 
+.galaxy-stage.is-dragging { cursor: grabbing; }
+
+/* Карта размещается и масштабируется из JS (translate + scale, origin 0 0) */
 .galaxy-map {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  max-height: none;
   user-select: none;
-  image-rendering: auto;
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-user-drag: none;
+  transform-origin: 0 0;
   will-change: transform;
-}
-
-.galaxy-stage.is-zooming .galaxy-map {
-  transform: scale(2.6);
 }
 
 /* Square hotspot */
@@ -38,17 +38,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  /* только цвет/тень: transition на left/top давал отставание хотспота от карты при зуме и драге */
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 0 16px rgba(127, 255, 212, 0.4);
   transform: translate(-50%, -50%);
 }
 
+/* Размер хотспота не меняется при наведении: рамка перехода совпадает с ним 1:1 */
 .sector-hotspot:hover,
 .sector-hotspot.is-selected {
   border-color: #7fffd4;
   background: rgba(127, 255, 212, 0.22);
   box-shadow: 0 0 28px rgba(127, 255, 212, 0.7);
-  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.sector-hotspot.is-locked {
+  border-color: #7fffd4;
+  background: rgba(127, 255, 212, 0.3);
+  box-shadow: 0 0 36px rgba(127, 255, 212, 0.95);
 }
 
 .hotspot-square {
@@ -69,23 +76,36 @@
   white-space: nowrap;
 }
 
-/* 4-segment shrink animation */
-.sector-seg {
+/* --- Переход: квадрат из 4 угловых сегментов, сужающийся к маркеру --- */
+.target-dim {
   position: absolute;
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(127, 255, 212, 0.7);
-  box-shadow: 0 0 20px rgba(127, 255, 212, 0.3);
-  z-index: 20;
-  animation: segShrink 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change: transform, opacity;
+  inset: 0;
+  z-index: 15;
+  background: rgba(2, 10, 9, 0.38);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-@keyframes segShrink {
-  from { transform: scale(1); opacity: 1; }
-  to   { transform: scale(0); opacity: 0; }
+.target-dim.is-on { opacity: 1; }
+
+.target-corner {
+  position: absolute;
+  z-index: 21;
+  width: 0;
+  height: 0;
+  border: 0 solid rgba(127, 255, 212, 0.95);
+  filter: drop-shadow(0 0 6px rgba(127, 255, 212, 0.8));
+  pointer-events: none;
+  box-sizing: border-box;
 }
 
-/* Sectors sidebar */
+.tc-tl { border-top-width: 2px; border-left-width: 2px; }
+.tc-tr { border-top-width: 2px; border-right-width: 2px; }
+.tc-bl { border-bottom-width: 2px; border-left-width: 2px; }
+.tc-br { border-bottom-width: 2px; border-right-width: 2px; }
+
+/* Sectors sidebar (выезжающий) */
 .sectors-sidebar {
   position: absolute;
   top: 16px;
@@ -97,42 +117,44 @@
   backdrop-filter: blur(6px);
   z-index: 12;
   box-sizing: border-box;
-  overflow: hidden;
-  transition: width 0.25s ease, opacity 0.25s ease;
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sectors-sidebar.is-collapsed {
-  width: 44px;
-  overflow: hidden;
-}
-
-.sectors-sidebar.is-collapsed .sectors-list,
-.sectors-sidebar.is-collapsed .sectors-sidebar-head span {
-  display: none;
+  transform: translateX(-100%);
+  border-right: 0;
 }
 
 .sectors-toggle {
+  position: absolute;
+  left: 100%;
+  top: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 12px;
-  background: rgba(127, 255, 212, 0.06);
-  border: 0;
-  border-bottom: 1px solid rgba(127, 255, 212, 0.2);
+  gap: 10px;
+  padding: 14px 0;
+  width: 34px;
+  background: rgba(3, 17, 15, 0.92);
+  border: 1px solid rgba(127, 255, 212, 0.3);
+  border-left: 0;
   color: #7fffd4;
   cursor: pointer;
-  font-size: 12px;
-  letter-spacing: 0.16em;
-  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+}
+
+.sectors-toggle-label {
+  writing-mode: vertical-rl;
 }
 
 .sectors-toggle-icon {
-  transition: transform 0.25s ease;
+  transition: transform 0.3s ease;
 }
 
 .sectors-sidebar.is-collapsed .sectors-toggle-icon {
-  transform: rotate(-90deg);
+  transform: rotate(180deg);
 }
 
 .sectors-list {
@@ -141,13 +163,21 @@
   padding: 8px;
 }
 
+.sectors-list-title {
+  padding: 10px 12px 8px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: #7fffd4;
+  border-bottom: 1px solid rgba(127, 255, 212, 0.2);
+}
+
 .sector-list-item {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
   padding: 8px;
-  margin-bottom: 6px;
+  margin-top: 8px;
   background: rgba(127, 255, 212, 0.04);
   border: 1px solid rgba(127, 255, 212, 0.2);
   color: #7fffd4;
@@ -201,6 +231,7 @@
   padding: 20px;
   box-sizing: border-box;
   overflow-y: auto;
+  cursor: default;
   animation: slideIn 0.3s ease;
 }
 

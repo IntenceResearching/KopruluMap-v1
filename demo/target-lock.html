@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Target Lock — демо</title>
+  <style>
+    /* Демо-компонент «захват цели». Чистый HTML/CSS/SVG, без библиотек.
+       Размер меняется переменной --size (80px для демо, 48px — под хотспот карты). */
+    :root {
+      --size: 80px;
+      --accent: #00d2ff;
+      --cycle: 2.5s;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0d1117;
+    }
+
+    .target-button {
+      position: relative;
+      width: var(--size);
+      height: var(--size);
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 0;
+    }
+
+    .target-button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .target-icon {
+      position: relative;
+      z-index: 2;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      font-weight: 900;
+      font-size: calc(var(--size) * 0.35);
+      line-height: 1;
+      user-select: none;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    }
+
+    .target-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+      filter: drop-shadow(0 0 3px #00a2ff);
+      transition: filter 0.2s ease;
+    }
+
+    .target-button:hover .target-svg,
+    .target-button:focus-visible .target-svg {
+      filter: drop-shadow(0 0 6px var(--accent));
+    }
+
+    .reticle-outer,
+    .reticle-inner {
+      transform-origin: 50px 50px; /* центр viewBox 0 0 100 100 */
+      transform-box: view-box;
+      animation-duration: var(--cycle);
+      animation-iteration-count: infinite;
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Внешний: начинает сжиматься сразу, сходится к монолиту к 35%,
+       держит его до 60%, затем расходится вместе с внутренним. */
+    .reticle-outer {
+      animation-name: outer-contract;
+    }
+
+    /* Внутренний: стартует с задержкой (держится до 15%), сходится к монолиту
+       к 50%, и так же расходится одновременно с внешним в 60%. */
+    .reticle-inner {
+      animation-name: inner-contract;
+    }
+
+    @keyframes outer-contract {
+      0%   { transform: scale(1);   opacity: 0.9; }
+      35%  { transform: scale(0.5); opacity: 1; }
+      60%  { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(1);   opacity: 0.9; }
+    }
+
+    @keyframes inner-contract {
+      0%   { transform: scale(0.8);  opacity: 0.75; }
+      15%  { transform: scale(0.8);  opacity: 0.75; }
+      50%  { transform: scale(0.64); opacity: 1; }
+      60%  { transform: scale(0.64); opacity: 1; }
+      100% { transform: scale(0.8);  opacity: 0.75; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reticle-outer,
+      .reticle-inner {
+        animation: none;
+      }
+      .reticle-outer { transform: scale(1); }
+      .reticle-inner { transform: scale(0.8); }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="target-button" type="button" aria-label="Активировать сектор" title="Активировать">
+    <span class="target-icon" aria-hidden="true">!</span>
+
+    <svg class="target-svg" viewBox="0 0 100 100" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <!-- Внешний контур -->
+      <g class="reticle-outer" stroke="#00a2ff" stroke-width="4" stroke-linecap="square">
+        <path d="M 15 30 V 15 H 30" />
+        <path d="M 70 15 H 85 V 30" />
+        <path d="M 85 70 V 85 H 70" />
+        <path d="M 30 85 H 15 V 70" />
+      </g>
+
+      <!-- Внутренний контур -->
+      <g class="reticle-inner" stroke="#00a2ff" stroke-width="4" stroke-linecap="square">
+        <path d="M 25 38 V 25 H 38" />
+        <path d="M 62 25 H 75 V 38" />
+        <path d="M 75 62 V 75 H 62" />
+        <path d="M 38 75 H 25 V 62" />
+      </g>
+    </svg>
+  </button>
+
+</body>
+</html>
