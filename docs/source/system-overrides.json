@@ -1,0 +1,361 @@
+{
+  "version": 1,
+  "mapSize": 10000,
+  "coordinateFormat": "X/Y: integer 0..10000; x_norm/y_norm: decimal 0..1",
+  "sourceImage": "KopruluSectorData2513.jpg",
+  "generated": "2026-10-13",
+  "method": "Центр иконки-кольца 31px; подпись ~25px ниже; tesseract rus+eng, порог 55; ручная ASCII-верификация ключевых точек (Айур, Чар и т.д.)",
+  "warning": "Координаты из koprulu-system-coordinates.json условные (delta 600-5000px). Здесь — реальные пиксели с карты.",
+  "systems": {
+    "aiur-system": {
+      "x": 6682,
+      "y": 5076,
+      "x_norm": 0.6682,
+      "y_norm": 0.5076,
+      "label": "Айур",
+      "confidence": "high",
+      "oldCoord": [
+        8910,
+        4300
+      ],
+      "delta": 2359,
+      "note": "Точное совпадение, визуально подтверждено"
+    },
+    "antiga-system": {
+      "x": 5586,
+      "y": 6659,
+      "x_norm": 0.5586,
+      "y_norm": 0.6659,
+      "label": "Антига",
+      "confidence": "high",
+      "oldCoord": [
+        6270,
+        5680
+      ],
+      "delta": 1194,
+      "note": "Подпись 'Антига' на карте, OCR 92"
+    },
+    "atrias-system": {
+      "x": 3668,
+      "y": 2990,
+      "x_norm": 0.3668,
+      "y_norm": 0.299,
+      "label": "Атриас",
+      "confidence": "high",
+      "oldCoord": [
+        8400,
+        4700
+      ],
+      "delta": 5031,
+      "note": "Центр карты, подпись четкая"
+    },
+    "bellum-system": {
+      "x": 5795,
+      "y": 4030,
+      "x_norm": 0.5795,
+      "y_norm": 0.403,
+      "label": "Беллум",
+      "confidence": "high",
+      "oldCoord": [
+        8350,
+        4080
+      ],
+      "delta": 2555,
+      "note": "Беллум IV -> Беллум, без конфликта"
+    },
+    "char-system": {
+      "x": 5085,
+      "y": 5895,
+      "x_norm": 0.5085,
+      "y_norm": 0.5895,
+      "label": "Чар",
+      "confidence": "high",
+      "oldCoord": [
+        5050,
+        6500
+      ],
+      "delta": 606,
+      "note": "Визуально подтверждено, на север от Ча́ра тонкая линия сектора"
+    },
+    "inferred-вотан": {
+      "x": 5983,
+      "y": 6562,
+      "x_norm": 0.5983,
+      "y_norm": 0.6562,
+      "label": "Вотан",
+      "confidence": "high",
+      "oldCoord": [
+        4997,
+        6760
+      ],
+      "delta": 1006,
+      "note": "5945-2022? визуально рядом с 5983"
+    },
+    "inferred-гелиок": {
+      "x": 6248,
+      "y": 6419,
+      "x_norm": 0.6248,
+      "y_norm": 0.6419,
+      "label": "Гелиок",
+      "confidence": "high",
+      "oldCoord": [
+        4965,
+        6184
+      ],
+      "delta": 1304,
+      "note": "Гелиок I/II/III коллапсированы в точку"
+    },
+    "inferred-гриссом": {
+      "x": 6455,
+      "y": 6170,
+      "x_norm": 0.6455,
+      "y_norm": 0.617,
+      "label": "Гриссом",
+      "confidence": "high",
+      "oldCoord": [
+        6785,
+        6988
+      ],
+      "delta": 882,
+      "note": "Гриссом I-IV коллапсированы"
+    },
+    "inferred-грнаки": {
+      "x": 5310,
+      "y": 6359,
+      "x_norm": 0.531,
+      "y_norm": 0.6359,
+      "label": "Грнаки",
+      "confidence": "medium",
+      "oldCoord": [
+        8711,
+        3365
+      ],
+      "delta": 4531,
+      "note": "Метка 'Грнаки' найдена, но delta 4531px — проверьте, не сдвинута ли система на старой карте искусственно"
+    },
+    "inferred-икар": {
+      "x": 5815,
+      "y": 5799,
+      "x_norm": 0.5815,
+      "y_norm": 0.5799,
+      "label": "Икар",
+      "confidence": "high",
+      "oldCoord": [
+        8467,
+        4363
+      ],
+      "delta": 3016,
+      "note": "Икар / Система Икара; исправлено после проверки исходного растра: раньше точка дублировала Умоджу"
+    },
+    "inferred-кегар": {
+      "x": 5570,
+      "y": 6117,
+      "x_norm": 0.557,
+      "y_norm": 0.6117,
+      "label": "Кегар",
+      "confidence": "low",
+      "oldCoord": [
+        7488,
+        4705
+      ],
+      "delta": 2382,
+      "note": "Метка слиплась 'Майнхофф Кегар' (5570,6117) — две системы рядом, координата спорная, требует ручной уточнения"
+    },
+    "inferred-лурия": {
+      "x": 5193,
+      "y": 6260,
+      "x_norm": 0.5193,
+      "y_norm": 0.626,
+      "label": "Лурия",
+      "confidence": "high",
+      "oldCoord": [
+        7948,
+        4451
+      ],
+      "delta": 3296,
+      "note": "Лурия I-IV коллапсированы"
+    },
+    "inferred-онуру": {
+      "x": 5969,
+      "y": 6099,
+      "x_norm": 0.5969,
+      "y_norm": 0.6099,
+      "label": "Онуру",
+      "confidence": "high",
+      "oldCoord": [
+        8234,
+        5563
+      ],
+      "delta": 2328,
+      "note": "Онуру; исправлено после проверки исходного растра: раньше точка дублировала Тирадор"
+    },
+    "inferred-ордер": {
+      "x": 4967,
+      "y": 6288,
+      "x_norm": 0.4967,
+      "y_norm": 0.6288,
+      "label": "Ордер",
+      "confidence": "high",
+      "oldCoord": [
+        5810,
+        5350
+      ],
+      "delta": 1261,
+      "note": "Ордер I-VI коллапсированы"
+    },
+    "meinhoff-system": {
+      "x": 5396,
+      "y": 6186,
+      "x_norm": 0.5396,
+      "y_norm": 0.6186,
+      "label": "Майнхофф",
+      "confidence": "high",
+      "oldCoord": [
+        8060,
+        5380
+      ],
+      "delta": 2783,
+      "note": "Майнхофа -> Мейнхоффа, OCR 'Майнхофф' 92, delta 2783"
+    },
+    "midr-system": {
+      "x": 5588,
+      "y": 5376,
+      "x_norm": 0.5588,
+      "y_norm": 0.5376,
+      "label": "Мидр",
+      "confidence": "high",
+      "oldCoord": [
+        7890,
+        5200
+      ],
+      "delta": 2309,
+      "note": "Мидр / Мидра IV"
+    },
+    "moria-system": {
+      "x": 5674,
+      "y": 6059,
+      "x_norm": 0.5674,
+      "y_norm": 0.6059,
+      "label": "Мория",
+      "confidence": "medium",
+      "oldCoord": [
+        7150,
+        6650
+      ],
+      "delta": 1590,
+      "note": "OCR прочитал как 'Мори' (транкат), derived дает 5674,6059 — вероятно Мориа"
+    },
+    "paralta-system": {
+      "x": 5755,
+      "y": 6503,
+      "x_norm": 0.5755,
+      "y_norm": 0.6503,
+      "label": "Паралта",
+      "confidence": "high",
+      "oldCoord": [
+        6550,
+        5450
+      ],
+      "delta": 1319,
+      "note": ""
+    },
+    "sara-system": {
+      "x": 5417,
+      "y": 5872,
+      "x_norm": 0.5417,
+      "y_norm": 0.5872,
+      "label": "Сара",
+      "confidence": "high",
+      "oldCoord": [
+        6250,
+        6050
+      ],
+      "delta": 852,
+      "note": "Сара + 3 сателлита в системе"
+    },
+    "shakuras-system": {
+      "x": 8394,
+      "y": 3060,
+      "x_norm": 0.8394,
+      "y_norm": 0.306,
+      "label": "Шакурас",
+      "confidence": "high",
+      "oldCoord": [
+        8650,
+        4840
+      ],
+      "delta": 1798,
+      "note": "Далеко на северо-восток, изолирован"
+    },
+    "tarsonis-system": {
+      "x": 5749,
+      "y": 5984,
+      "x_norm": 0.5749,
+      "y_norm": 0.5984,
+      "label": "Тарсонис",
+      "confidence": "high",
+      "oldCoord": [
+        6860,
+        6260
+      ],
+      "delta": 1145,
+      "note": "Визуально подтверждено"
+    },
+    "tyrador-system": {
+      "x": 5885,
+      "y": 6030,
+      "x_norm": 0.5885,
+      "y_norm": 0.603,
+      "label": "Тирадор",
+      "confidence": "high",
+      "oldCoord": [
+        7000,
+        5680
+      ],
+      "delta": 1169,
+      "note": ""
+    },
+    "umoja-system": {
+      "x": 5682,
+      "y": 5854,
+      "x_norm": 0.5682,
+      "y_norm": 0.5854,
+      "label": "Умоджа",
+      "confidence": "high",
+      "oldCoord": [
+        7600,
+        6530
+      ],
+      "delta": 2034,
+      "note": ""
+    },
+    "redstone-system": {
+      "x": 5220,
+      "y": 6133,
+      "x_norm": 0.522,
+      "y_norm": 0.6133,
+      "label": "Редстоун",
+      "confidence": "high",
+      "oldCoord": [
+        7750,
+        5650
+      ],
+      "delta": 2576,
+      "note": "Центр белого кольца у подписи «Редстоун»; визуально подтверждено по увеличенному фрагменту карты"
+    },
+    "uilel-system": {
+      "x": 5135,
+      "y": 6351,
+      "x_norm": 0.5135,
+      "y_norm": 0.6351,
+      "label": "Уилела",
+      "confidence": "high",
+      "oldCoord": [
+        5236,
+        6570
+      ],
+      "delta": 241,
+      "note": "Подпись «Уилела» относится к Уилел IV; не смешивать с отдельным семейством Уилила I–IV."
+    }
+  }
+}

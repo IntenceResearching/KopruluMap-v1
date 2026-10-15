@@ -1,0 +1,1319 @@
+[
+  {
+    "id": "g-2275-system",
+    "name": "Система G-2275",
+    "confidence": "pdf-linked",
+    "note": "В исходнике есть G-2275 и его луна.",
+    "refs": [],
+    "planetIds": [
+      "g-2275",
+      "g-2275-спутник"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      7300,
+      5400
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "aiur-system",
+    "name": "Система Айура",
+    "confidence": "pdf-linked",
+    "note": "Саалок помечен в PDF как спутник Айура.",
+    "refs": [],
+    "planetIds": [
+      "айур",
+      "саалок"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      6682,
+      5076
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Дикие зерги",
+      "Дэлаамы",
+      "Гибриды",
+      "Зерги"
+    ],
+    "primaryFaction": "Дикие зерги",
+    "coordSource": "map",
+    "mapLabel": "Айур",
+    "mapConfidence": "high",
+    "oldCoord": [
+      8910,
+      4300
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "antiga-system",
+    "name": "Система Антиги",
+    "confidence": "lore",
+    "note": "В каталоге есть Антига Прайм; остальные миры системы в PDF не перечислены.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Category:Star_Systems"
+    ],
+    "planetIds": [
+      "антига-прайм"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5586,
+      6659
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "map",
+    "mapLabel": "Антига",
+    "mapConfidence": "high",
+    "oldCoord": [
+      6270,
+      5680
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "atrias-system",
+    "name": "Система Атриаса",
+    "confidence": "lore",
+    "note": "Один мир в исходном списке.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Category:Star_Systems"
+    ],
+    "planetIds": [
+      "атриас"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      3668,
+      2990
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Тал-дарим",
+      "Зел-нага"
+    ],
+    "primaryFaction": "Тал-дарим",
+    "coordSource": "map",
+    "mapLabel": "Атриас",
+    "mapConfidence": "high",
+    "oldCoord": [
+      8400,
+      4700
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "bachus-system",
+    "name": "Система Бахуса",
+    "confidence": "pdf-linked",
+    "note": "В каталоге указана только луна; планета-родитель не представлена.",
+    "refs": [],
+    "planetIds": [
+      "луна-бахуса"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      7955,
+      3933
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "bellum-system",
+    "name": "Система Беллума IV",
+    "confidence": "pdf-linked",
+    "note": "Эндион помечен в PDF как спутник Беллума IV.",
+    "refs": [],
+    "planetIds": [
+      "беллум-iv",
+      "эндион"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      5795,
+      4030
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Дэлаамы",
+      "Чистильщики",
+      "Зерги Амуна",
+      "Зерги"
+    ],
+    "primaryFaction": "Дэлаамы",
+    "coordSource": "map",
+    "mapLabel": "Беллум",
+    "mapConfidence": "high",
+    "oldCoord": [
+      8350,
+      4080
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "braxis-system",
+    "name": "Система Браксиса",
+    "confidence": "pdf-linked",
+    "note": "Эдис помечен в PDF как спутник Браксиса.",
+    "refs": [],
+    "planetIds": [
+      "браксис",
+      "эдис"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      8730,
+      3570
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "van-oosten-system",
+    "name": "Система Ван Остена",
+    "confidence": "pdf-linked",
+    "note": "В каталоге указана только луна; планета-родитель не представлена.",
+    "refs": [],
+    "planetIds": [
+      "луна-ван-остена"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      8102,
+      4075
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "primaryFaction": "Умоджанский Протекторат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-веридия",
+    "name": "Система Веридия",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "веридия-андер",
+      "веридия-прайм",
+      "веридия-тэлф"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      6441,
+      3246
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-вотан",
+    "name": "Система Вотан",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "вотан-i",
+      "вотан-ii"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5983,
+      6562
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Вотан",
+    "mapConfidence": "high",
+    "oldCoord": [
+      4997,
+      6760
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "gantuansystem",
+    "name": "Система Гантуана",
+    "confidence": "pdf-linked",
+    "note": "Планеты I–VI и спутник Ханук сведены по обозначениям в исходном PDF.",
+    "refs": [],
+    "planetIds": [
+      "гантуан-i",
+      "гантуан-ii",
+      "гантуан-iii",
+      "гантуан-iv",
+      "гантуан-v",
+      "гантуан-vi",
+      "ханук"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      6900,
+      6700
+    ],
+    "planetCount": 7,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-гелиок",
+    "name": "Система Гелиок",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "гелиок-i",
+      "гелиок-ii",
+      "гелиок-iii"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      6248,
+      6419
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Гелиок",
+    "mapConfidence": "high",
+    "oldCoord": [
+      4965,
+      6184
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-гойт",
+    "name": "Система Гойт",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "гойт-i",
+      "гойт-ii",
+      "гойт-iii",
+      "гойт-iv",
+      "гойт-v",
+      "гойт-vi",
+      "гойт-vii"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5368,
+      6246
+    ],
+    "planetCount": 7,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "gohbus-system",
+    "name": "Система Гохбуса",
+    "confidence": "pdf-linked",
+    "note": "Луна Гохбуса указана в PDF.",
+    "refs": [],
+    "planetIds": [
+      "гохбус",
+      "луна-гохбуса"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      7450,
+      5800
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-гриссом",
+    "name": "Система Гриссом",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "гриссом-i",
+      "гриссом-ii",
+      "гриссом-iii",
+      "гриссом-iv"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      6455,
+      6170
+    ],
+    "planetCount": 4,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Гриссом",
+    "mapConfidence": "high",
+    "oldCoord": [
+      6785,
+      6988
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-грнаки",
+    "name": "Система Грнаки",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "грнаки-апер",
+      "грнаки-прайм",
+      "грнаки-рон"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5310,
+      6359
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Грнаки",
+    "mapConfidence": "medium",
+    "oldCoord": [
+      8711,
+      3365
+    ]
+  },
+  {
+    "id": "inferred-дориан",
+    "name": "Система Дориан",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "альфа-дориан",
+      "бета-дориан",
+      "гамма-дориан"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      6085,
+      5703
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-икар",
+    "name": "Система Икар",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "икар-iv",
+      "икар-vii"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5681,
+      5854
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "primaryFaction": "Умоджанский Протекторат",
+    "coordSource": "map",
+    "mapLabel": "Икар",
+    "mapConfidence": "high",
+    "oldCoord": [
+      8467,
+      4363
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-кегар",
+    "name": "Система Кегар",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "кегар-i",
+      "кегар-ii"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5570,
+      6117
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Кегар",
+    "mapConfidence": "low",
+    "oldCoord": [
+      7488,
+      4705
+    ],
+    "needsReview": true
+  },
+  {
+    "id": "koprulu-system",
+    "name": "Система Копрулу",
+    "confidence": "lore",
+    "note": "В PDF: «Виктор V»; вероятное соответствие Vyctor 5. Позиция/название в каталоге оставлены как в источнике.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Koprulu_system"
+    ],
+    "planetIds": [
+      "виктор-v"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      7150,
+      6000
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "korhal-system",
+    "name": "Система Корхала",
+    "confidence": "lore",
+    "note": "Корхал IV и его спутники Канис и Урса.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Korhal"
+    ],
+    "planetIds": [
+      "корхал-iv",
+      "канис",
+      "урса"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      7300,
+      6350
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-лурия",
+    "name": "Система Лурия",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "лурия-i",
+      "лурия-ii",
+      "лурия-iii",
+      "лурия-iv"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5193,
+      6260
+    ],
+    "planetCount": 4,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Лурия",
+    "mapConfidence": "high",
+    "oldCoord": [
+      7948,
+      4451
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "meinhoff-system",
+    "name": "Система Майнхофа",
+    "confidence": "lore",
+    "note": "Один мир в исходном списке.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Category:Star_Systems"
+    ],
+    "planetIds": [
+      "майнхоф"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5396,
+      6186
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Майнхофф",
+    "mapConfidence": "high",
+    "oldCoord": [
+      8060,
+      5380
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "midr-system",
+    "name": "Система Мидра IV",
+    "confidence": "pdf-linked",
+    "note": "Калдир помечен в PDF как спутник Мидра IV.",
+    "refs": [],
+    "planetIds": [
+      "мидр-iv",
+      "калдир"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      5588,
+      5376
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Дэлаамы",
+      "Рой зергов"
+    ],
+    "primaryFaction": "Дэлаамы",
+    "coordSource": "map",
+    "mapLabel": "Мидр",
+    "mapConfidence": "high",
+    "oldCoord": [
+      7890,
+      5200
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "moria-system",
+    "name": "Система Мории",
+    "confidence": "pdf-linked",
+    "note": "Связь спутников с планетой явно дана в PDF.",
+    "refs": [],
+    "planetIds": [
+      "мория",
+      "брут",
+      "вито"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      5674,
+      6059
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Мория",
+    "mapConfidence": "medium",
+    "oldCoord": [
+      7150,
+      6650
+    ]
+  },
+  {
+    "id": "new-sydney-system",
+    "name": "Система Нового Сиднея",
+    "confidence": "pdf-linked",
+    "note": "Гермес помечен в PDF как спутник Нового Сиднея.",
+    "refs": [],
+    "planetIds": [
+      "новый-сидней",
+      "гермес"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      7600,
+      6100
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "new-folsom-system",
+    "name": "Система Нового Фолсома",
+    "confidence": "pdf-linked",
+    "note": "Сью помечена в PDF как спутник Нового Фолсома.",
+    "refs": [],
+    "planetIds": [
+      "новый-фолсом",
+      "сью"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      6950,
+      5350
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "inferred-онуру",
+    "name": "Система Онуру",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "онуру-альфа",
+      "онуру-бета",
+      "онуру-сигма"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      5885,
+      6029
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Онуру",
+    "mapConfidence": "medium",
+    "oldCoord": [
+      8234,
+      5563
+    ]
+  },
+  {
+    "id": "inferred-ордер",
+    "name": "Система Ордер",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "ордер-i",
+      "ордер-ii",
+      "ордер-iii",
+      "ордер-iv",
+      "ордер-v",
+      "ордер-vi"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      4967,
+      6288
+    ],
+    "planetCount": 6,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "map",
+    "mapLabel": "Ордер",
+    "mapConfidence": "high",
+    "oldCoord": [
+      5810,
+      5350
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "paralta-system",
+    "name": "Система Паралты",
+    "confidence": "pdf-linked",
+    "note": "Луна Паралты указана в PDF.",
+    "refs": [],
+    "planetIds": [
+      "паралта",
+      "луна-паралты"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      5755,
+      6503
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Терраны"
+    ],
+    "primaryFaction": "Терраны",
+    "coordSource": "map",
+    "mapLabel": "Паралта",
+    "mapConfidence": "high",
+    "oldCoord": [
+      6550,
+      5450
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "redstone-system",
+    "name": "Система Редстоуна",
+    "confidence": "lore",
+    "note": "Нумерованные миры сгруппированы в систему Редстоуна.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Category:Star_Systems"
+    ],
+    "planetIds": [
+      "редстоун-i",
+      "редстоун-ii",
+      "редстоун-iii",
+      "редстоун-iv",
+      "редстоун-v",
+      "редстоун-vi"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      7750,
+      5650
+    ],
+    "planetCount": 6,
+    "factions": [
+      "Кел-морийский Синдикат",
+      "Дикие зерги",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "roxara-system",
+    "name": "Система Роксары",
+    "confidence": "pdf-linked",
+    "note": "Луна Роксары указана в PDF.",
+    "refs": [],
+    "planetIds": [
+      "роксара",
+      "луна-роксары"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      5850,
+      6230
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион",
+      "Протоссы",
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "sara-system",
+    "name": "Система Сары",
+    "confidence": "lore",
+    "note": "Мар-Сара и Чау-Сара относятся к системе Сары; спутники сохранены под именами из PDF.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Sara_system",
+      "https://starcraft.fandom.com/wiki/Mar_Sara"
+    ],
+    "planetIds": [
+      "мар-сара",
+      "чау-сара",
+      "пирамус",
+      "фисби"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5417,
+      5872
+    ],
+    "planetCount": 4,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "primaryFaction": "Дикие зерги",
+    "coordSource": "map",
+    "mapLabel": "Сара",
+    "mapConfidence": "high",
+    "oldCoord": [
+      6250,
+      6050
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-сигма",
+    "name": "Система Сигма",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "сигма-i",
+      "сигма-iv"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      6250,
+      4903
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "primaryFaction": "Умоджанский Протекторат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "tarsonis-system",
+    "name": "Система Тарсониса",
+    "confidence": "lore",
+    "note": "Планета и четыре спутника; орфография спутников взята из PDF.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Tarsonis_system",
+      "https://starcraft.fandom.com/wiki/Tarsonis"
+    ],
+    "planetIds": [
+      "тарсонис",
+      "ворфинг",
+      "орсон",
+      "тресон",
+      "эндер"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5749,
+      5984
+    ],
+    "planetCount": 5,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Зерги"
+    ],
+    "primaryFaction": "Дикие зерги",
+    "coordSource": "map",
+    "mapLabel": "Тарсонис",
+    "mapConfidence": "high",
+    "oldCoord": [
+      6860,
+      6260
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "tyrador-system",
+    "name": "Система Тирадора",
+    "confidence": "lore",
+    "note": "Планеты сгруппированы по известному названию системы.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Category:Star_Systems"
+    ],
+    "planetIds": [
+      "тирадор-iii",
+      "тирадор-ix-аракир",
+      "тирадор-viii"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5885,
+      6030
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Доминион",
+      "Ихан-рии",
+      "Дикие зерги",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "map",
+    "mapLabel": "Тирадор",
+    "mapConfidence": "high",
+    "oldCoord": [
+      7000,
+      5680
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-тирн",
+    "name": "Система Тирн",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "тирн-iii",
+      "тирн-iv"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      7536,
+      3097
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "primaryFaction": "Умоджанский Протекторат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "torus-system",
+    "name": "Система Торуса",
+    "confidence": "lore",
+    "note": "Один мир в исходном списке.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Category:Star_Systems"
+    ],
+    "planetIds": [
+      "торус"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      8250,
+      6020
+    ],
+    "planetCount": 1,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "uilel-system",
+    "name": "Система Уилел",
+    "confidence": "pdf-linked",
+    "note": "Уилел IV и подпись «Уилела» на карте. Это отдельная система, не семейство Уилила I–IV.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Uilel_IV"
+    ],
+    "planetIds": [
+      "уилел-iv"
+    ],
+    "map": true,
+    "source": "map+source-document",
+    "coord": [
+      5135,
+      6351
+    ],
+    "planetCount": 1,
+    "factions": [],
+    "primaryFaction": null,
+    "coordSource": "map",
+    "mapLabel": "Уилела",
+    "mapConfidence": "high",
+    "oldCoord": [
+      5236,
+      6570
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-уилила",
+    "name": "Система Уилила",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "уилила-i",
+      "уилила-ii",
+      "уилила-iii",
+      "уилила-iv"
+    ],
+    "map": false,
+    "source": "pdf-inferred",
+    "coord": null,
+    "planetCount": 4,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "primaryFaction": "Кел-морийский Синдикат",
+    "coordSource": "none",
+    "mapNote": "Отдельной подписи системы Уилила на карте не подтверждено; не смешивать с системой Уилел."
+  },
+  {
+    "id": "umoja-system",
+    "name": "Система Умоджи",
+    "confidence": "lore",
+    "note": "Умоджа и её спутник Тунис.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Umoja"
+    ],
+    "planetIds": [
+      "умоджа",
+      "тунис"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5682,
+      5854
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "primaryFaction": "Умоджанский Протекторат",
+    "coordSource": "map",
+    "mapLabel": "Умоджа",
+    "mapConfidence": "high",
+    "oldCoord": [
+      7600,
+      6530
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "inferred-урбан",
+    "name": "Система Урбан",
+    "confidence": "inferred",
+    "note": "Сгруппировано по повторяющимся обозначениям планет в PDF; звёздная принадлежность не подтверждена отдельно.",
+    "refs": [],
+    "planetIds": [
+      "урбан-ii",
+      "урбан-x"
+    ],
+    "map": true,
+    "source": "pdf-inferred",
+    "coord": [
+      8828,
+      4804
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "primaryFaction": "Умоджанский Протекторат",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "char-system",
+    "name": "Система Чара",
+    "confidence": "lore",
+    "note": "Связь спутников с Чаром указана в исходном PDF.",
+    "refs": [
+      "https://starcraft.fandom.com/wiki/Char_system"
+    ],
+    "planetIds": [
+      "чар",
+      "эйт",
+      "эрис"
+    ],
+    "map": true,
+    "source": "lore",
+    "coord": [
+      5085,
+      5895
+    ],
+    "planetCount": 3,
+    "factions": [
+      "Рой зергов"
+    ],
+    "primaryFaction": "Рой зергов",
+    "coordSource": "map",
+    "mapLabel": "Чар",
+    "mapConfidence": "high",
+    "oldCoord": [
+      5050,
+      6500
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "shiloh-system",
+    "name": "Система Шайло",
+    "confidence": "pdf-linked",
+    "note": "Бивак помечен в PDF как спутник Шайло.",
+    "refs": [],
+    "planetIds": [
+      "шайло",
+      "бивак"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      6650,
+      5740
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Доминион"
+    ],
+    "primaryFaction": "Доминион",
+    "coordSource": "original-conditional",
+    "mapNote": "Метка не найдена среди 195 подписей"
+  },
+  {
+    "id": "shakuras-system",
+    "name": "Система Шакураса",
+    "confidence": "pdf-linked",
+    "note": "Раджал помечен в PDF как спутник Шакураса.",
+    "refs": [],
+    "planetIds": [
+      "шакурас",
+      "раджал"
+    ],
+    "map": true,
+    "source": "pdf",
+    "coord": [
+      8394,
+      3060
+    ],
+    "planetCount": 2,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "primaryFaction": "Дэлаамы",
+    "coordSource": "map",
+    "mapLabel": "Шакурас",
+    "mapConfidence": "high",
+    "oldCoord": [
+      8650,
+      4840
+    ],
+    "mapVerified": true
+  },
+  {
+    "id": "earth-system",
+    "name": "Солнечная система",
+    "confidence": "lore",
+    "note": "Земля и Луна; система находится вне карты сектора Копрулу.",
+    "refs": [],
+    "planetIds": [
+      "земля",
+      "луна"
+    ],
+    "map": false,
+    "source": "lore",
+    "coord": null,
+    "planetCount": 2,
+    "factions": [
+      "ОЗД"
+    ],
+    "primaryFaction": "ОЗД",
+    "coordSource": "none",
+    "mapNote": "Вне сектора — на карте нет"
+  }
+]

@@ -1,0 +1,18 @@
+# Карта приходит из публичного Google Drive только на временный GitHub runner.
+# Ни исходник, ни производные пиксели не должны попадать в Git.
+assets/_source/
+assets/tiles/
+assets/tiles.json
+assets/map-preview.webp
+assets/map-source.jpg
+assets/map-source.sha256
+
+# Сборки
+koprulu-atlas.html
+dist/
+
+# Служебное
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store

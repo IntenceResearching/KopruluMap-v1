@@ -1,0 +1,55 @@
+/* Читаемость при стандартном масштабе браузера: увеличенные подписи поиска,
+   досье, админ-панели и управления картой. Выделено из minimal-skin.css,
+   где правки шли отдельным блоком и потому не действовали в других скинах. */
+/* Readability pass for a standard browser zoom level (100%). */
+.search-wrap input { font-size: 14px; }
+.search-wrap kbd { min-width: 22px; height: 22px; font-size: 12px; }
+.suggestion-label { font-size: 11px; }
+.suggestion-title { font-size: 13px; }
+.suggestion-sub { font: 11px var(--mono); }
+.suggestion-kind { font: 10px var(--mono); }
+.suggestions-empty { font-size: 13px; }
+.brand-copy strong { font-size: 13px; letter-spacing: .08em; }
+.brand-copy span { font-size: 9px; }
+.map-faction-filter select { font: 11px var(--mono); }
+.admin-access-button { font-size: 11px; }
+
+.admin-dock .eyebrow,
+.detail-topline .eyebrow,
+.detail-kicker { font-size: 10px; line-height: 1.45; letter-spacing: .09em; }
+.admin-dock h2 { font-size: 18px; line-height: 1.2; }
+.admin-instruction { font-size: 13px; line-height: 1.6; }
+.admin-selected { padding: 9px 10px; font-size: 13px; line-height: 1.4; }
+.coordinate-fields label { font: 11px/1.35 var(--mono); letter-spacing: .05em; }
+.coordinate-fields input,
+.admin-form input { height: 38px; font-size: 14px; }
+.admin-primary { min-height: 40px; font-size: 11px; }
+.admin-tools button { min-height: 36px; font-size: 10px; line-height: 1.35; }
+.admin-save-status { font: 10px/1.5 var(--mono); }
+
+.detail-title { font-size: 24px; line-height: 1.16; }
+.detail-subtitle { font-size: 13px; line-height: 1.55; }
+.badge { padding: 5px 7px; font: 10px/1.2 var(--mono); }
+.detail-section-title { font: 10px/1.4 var(--mono); letter-spacing: .1em; }
+.world-card { padding: 10px 10px 9px; }
+.world-name { font-size: 13px; line-height: 1.4; }
+.world-kind { font: 9px/1.35 var(--mono); letter-spacing: .07em; }
+.world-chip { padding: 4px 6px; font: 10px/1.2 var(--mono); }
+.world-pop { font: 10px/1.4 var(--mono); }
+.detail-note { font-size: 12px; line-height: 1.6; }
+.detail-empty-worlds { font-size: 13px; line-height: 1.55; }
+.detail-footer { font: 10px/1.35 var(--mono); letter-spacing: .04em; }
+.detail-footer button { padding: 8px 10px; font: 10px var(--mono); }
+.zoom-readout { font-size: 11px; }
+.toast { font-size: 12px; }
+
+.admin-modal .eyebrow { font-size: 10px; }
+.admin-modal-head h2 { font-size: 21px; line-height: 1.2; }
+.admin-form label { font-size: 13px; }
+.admin-error { font-size: 12px; }
+.admin-modal-note,
+.admin-security-note { font-size: 12px; line-height: 1.6; }
+
+@media (max-width: 900px) {
+  .admin-access-button { font-size: 0; }
+}

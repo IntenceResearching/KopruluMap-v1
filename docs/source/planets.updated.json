@@ -1,0 +1,5617 @@
+[
+  {
+    "id": "аббадон",
+    "name": "Аббадон",
+    "sourceName": "Аббадон",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аббадон - неизвестно (Доминион) (вулканическая планета)"
+  },
+  {
+    "id": "аверам",
+    "name": "Аверам",
+    "sourceName": "Аверам",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аверам - неизвестно (Рой зергов)"
+  },
+  {
+    "id": "аверн",
+    "name": "Аверн",
+    "sourceName": "Аверн",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аверн - неизвестно (Кел-морийский Синдикат)(горная)"
+  },
+  {
+    "id": "агамемнон",
+    "name": "Агамемнон",
+    "sourceName": "Агамемнон (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "4 760",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Агамемнон (кастомная) - 4 760 (Кел-морийский Синдикат)(горная)"
+  },
+  {
+    "id": "агарис",
+    "name": "Агарис",
+    "sourceName": "Агарис (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Агарис (кастомная) - неизвестно (Кел-Морийский Синдикат) (лесная)"
+  },
+  {
+    "id": "агрия",
+    "name": "Агрия",
+    "sourceName": "Агрия",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "15 тыс.",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Агрия - 15 тыс. 0 (Доминион) (земная группа)"
+  },
+  {
+    "id": "адена",
+    "name": "Адена",
+    "sourceName": "Адена",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Стая Ниадры"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Адена - неизвестно 0 (Доминион) (пустынная)"
+  },
+  {
+    "id": "айур",
+    "name": "Айур",
+    "sourceName": "Айур",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Дэлаамы",
+      "Гибриды",
+      "Зерги"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "aiur-system",
+    "sourceLine": "Айур - несколько миллиардов неизвестно (Дэлаамы) (земная группа)"
+  },
+  {
+    "id": "аламар",
+    "name": "Аламар",
+    "sourceName": "Аламар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Зел-нага"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Лесная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аламар - неизвестно 0 (Зел-нага) (лесная) (пустынная)"
+  },
+  {
+    "id": "алеун",
+    "name": "Алеун",
+    "sourceName": "Алеун",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Алеун - неизвестно (Дэлаамы)"
+  },
+  {
+    "id": "алтара",
+    "name": "Алтара",
+    "sourceName": "Алтара",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Алтара - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "алтеон",
+    "name": "Алтеон",
+    "sourceName": "Алтеон",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Алтеон - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "альбион",
+    "name": "Альбион",
+    "sourceName": "Альбион",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Доминион"
+    ],
+    "terrain": [
+      "Скалистая",
+      "Лесная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Альбион - неизвестно 0 (Доминион) (лесная)(скалистая)"
+  },
+  {
+    "id": "альфа-дориан",
+    "name": "Альфа Дориан",
+    "sourceName": "Альфа Дориан (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "40 тыс",
+    "status": null,
+    "systemId": "inferred-дориан",
+    "sourceLine": "Альфа Дориан (кастомная) - 40 тысяч (Кел-морийский Синдикат) (лесная)"
+  },
+  {
+    "id": "альфа-драконис",
+    "name": "Альфа Драконис",
+    "sourceName": "Альфа Драконис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "ОЗД"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Альфа Драконис - неизвестно (ОЗД)(вулканическая)"
+  },
+  {
+    "id": "андейн",
+    "name": "Андейн",
+    "sourceName": "Андейн (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Андейн (кастомная) - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "ангдра",
+    "name": "Ангдра",
+    "sourceName": "Ангдра",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ангдра - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "ансельм",
+    "name": "Ансельм",
+    "sourceName": "Ансельм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Ледяная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ансельм - неизвестно (Доминион) (ледяная)"
+  },
+  {
+    "id": "антига-прайм",
+    "name": "Антига Прайм",
+    "sourceName": "Антига Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "15 миллионов",
+    "status": null,
+    "systemId": "antiga-system",
+    "sourceLine": "Антига Прайм - 15 миллионов неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "аридас",
+    "name": "Аридас",
+    "sourceName": "Аридас",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аридас - неизвестно (Доминион) (лесная)"
+  },
+  {
+    "id": "артика",
+    "name": "Артика",
+    "sourceName": "Артика",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Артика - неизвестно (Дэлаамы)(Снежная)"
+  },
+  {
+    "id": "артезия-прайм",
+    "name": "Артезия Прайм",
+    "sourceName": "Артезия Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Артезия Прайм - неизвестно (Доминион)"
+  },
+  {
+    "id": "аспар",
+    "name": "Аспар",
+    "sourceName": "Аспар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аспар - неизвестно (Доминион) (лесная)"
+  },
+  {
+    "id": "астерия",
+    "name": "Астерия",
+    "sourceName": "Астерия",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Астерия - неизвестно (Доминион)(горная)"
+  },
+  {
+    "id": "астрид-iii",
+    "name": "Астрид III",
+    "sourceName": "Астрид III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Астрид III - неизвестно 0 (Доминион) (пустынная)"
+  },
+  {
+    "id": "атриас",
+    "name": "Атриас",
+    "sourceName": "Атриас",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Тал-дарим",
+      "Зел-нага"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "atrias-system",
+    "sourceLine": "Атриас - неизвестно 0 (Зел-нага) (горная)"
+  },
+  {
+    "id": "аш-арак",
+    "name": "Аш’Арак",
+    "sourceName": "Аш’Арак",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Аш’Арак - неизвестно (Дэлаамы) (джунгли)"
+  },
+  {
+    "id": "ашриго",
+    "name": "Ашриго",
+    "sourceName": "Ашриго",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ашриго - 0 (вулканическая)"
+  },
+  {
+    "id": "барлоу",
+    "name": "Барлоу",
+    "sourceName": "Барлоу (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "150 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Барлоу (кастомная) - 150 тысяч (Кел-Морийский Синдикат)(лесная)"
+  },
+  {
+    "id": "баунтифул",
+    "name": "Баунтифул",
+    "sourceName": "Баунтифул",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Баунтифул - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "бивак",
+    "name": "Бивак",
+    "sourceName": "Бивак (Луна Шайло)",
+    "custom": false,
+    "parent": "Шайло",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "shiloh-system",
+    "sourceLine": "Бивак (Луна Шайло) - неизвестно (Доминион)(зеленая)"
+  },
+  {
+    "id": "бекар-ро",
+    "name": "Бекар Ро",
+    "sourceName": "Бекар Ро",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "10 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Бекар Ро - 10 тысяч (Доминион) (пустынная)"
+  },
+  {
+    "id": "беллум-iv",
+    "name": "Беллум IV",
+    "sourceName": "Беллум IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "bellum-system",
+    "sourceLine": "Беллум IV - 0 (Дэлаамы) (газовая)"
+  },
+  {
+    "id": "бел-шир",
+    "name": "Бел-шир",
+    "sourceName": "Бел-шир",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Меха-рой",
+      "Тал-дарим"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Бел-шир - неизвестно 0 (Тал-дарим) (лесная)"
+  },
+  {
+    "id": "бета-дориан",
+    "name": "Бета Дориан",
+    "sourceName": "Бета Дориан (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "15 тыс",
+    "status": null,
+    "systemId": "inferred-дориан",
+    "sourceLine": "Бета Дориан (кастомная) - 15 тысяч (Кел-морийский Синдикат)(горная)"
+  },
+  {
+    "id": "бета-саул",
+    "name": "Бета Саул",
+    "sourceName": "Бета Саул",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Корпус Мебиуса"
+    ],
+    "terrain": [
+      "Токсичная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Бета Саул - неизвестно (Корпус Мебиуса)(токсичная)"
+  },
+  {
+    "id": "борея",
+    "name": "Борея",
+    "sourceName": "Борея",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Горная",
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Борея - неизвестно  (Доминион) (горная)(снежная)"
+  },
+  {
+    "id": "бракен",
+    "name": "Бракен",
+    "sourceName": "Бракен",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Бракен - неизвестно0 (Дэлаамы) (джунгли)"
+  },
+  {
+    "id": "браксис",
+    "name": "Браксис",
+    "sourceName": "Браксис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "24 тыс",
+    "status": null,
+    "systemId": "braxis-system",
+    "sourceLine": "Браксис - 24 тысяч (Доминион) (снежная)"
+  },
+  {
+    "id": "браксис-альфа",
+    "name": "Браксис Альфа",
+    "sourceName": "Браксис Альфа",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Браксис Альфа - неизвестно (Доминион) (горная)(пустынная)"
+  },
+  {
+    "id": "брокас-хур",
+    "name": "Брокас Хур",
+    "sourceName": "Брокас Хур",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Брокас Хур - неизвестно (Доминион) (лесная)"
+  },
+  {
+    "id": "бронтес-iv",
+    "name": "Бронтес IV",
+    "sourceName": "Бронтес IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Лесная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Бронтес IV - неизвестно 0 (Доминион) (пустынная)(лесная)"
+  },
+  {
+    "id": "брут",
+    "name": "Брут",
+    "sourceName": "Брут (Луна Мории)",
+    "custom": false,
+    "parent": "Мории",
+    "relation": "moon",
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "moria-system",
+    "sourceLine": "Брут (Луна Мории) - неизвестно (Кел-морийский синдикат)(серая)"
+  },
+  {
+    "id": "букари-v",
+    "name": "Букари V",
+    "sourceName": "Букари V",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Букари V - неизвестно (Терраны)(скалистая)"
+  },
+  {
+    "id": "бун",
+    "name": "Бун",
+    "sourceName": "Бун",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Бун - неизвестно (Кел-морийский Синдикат)(земная группа)"
+  },
+  {
+    "id": "вальгалла",
+    "name": "Вальгалла",
+    "sourceName": "Вальгалла",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "50 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Вальгалла - 50 тысяч (Доминион) (горная)"
+  },
+  {
+    "id": "ванасс",
+    "name": "Ванасс",
+    "sourceName": "Ванасс",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Океаническая",
+      "Лесная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ванасс - неизвестно 0 (Дэлаамы) (океаническая)(лесная)"
+  },
+  {
+    "id": "вардона",
+    "name": "Вардона",
+    "sourceName": "Вардона",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "100 миллионов",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Вардона - 100 миллионов (Доминион) (земная группа)"
+  },
+  {
+    "id": "веридия-андер",
+    "name": "Веридия Андер",
+    "sourceName": "Веридия Андер (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Ледяная"
+    ],
+    "population": "760",
+    "status": null,
+    "systemId": "inferred-веридия",
+    "sourceLine": "Веридия Андер (кастомная) - 760 (Кел-Морийский Синдикат) (ледяная)"
+  },
+  {
+    "id": "веридия-прайм",
+    "name": "Веридия Прайм",
+    "sourceName": "Веридия Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-веридия",
+    "sourceLine": "Веридия Прайм - неизвестно  (Кел-морийский Синдикат) (вулканическая)"
+  },
+  {
+    "id": "веридия-тэлф",
+    "name": "Веридия Тэлф",
+    "sourceName": "Веридия Тэлф (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа",
+      "Пустошь"
+    ],
+    "population": "120 тыс",
+    "status": null,
+    "systemId": "inferred-веридия",
+    "sourceLine": "Веридия Тэлф (кастомная) - 120 тысяч (Кел-морийский Синдикат)(пустоши)(земная группа)"
+  },
+  {
+    "id": "вигуар",
+    "name": "Вигуар",
+    "sourceName": "Вигуар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Вигуар - неизвестно 0 (Доминион) (джунгли)"
+  },
+  {
+    "id": "виктор-v",
+    "name": "Виктор V",
+    "sourceName": "Виктор V",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "koprulu-system",
+    "sourceLine": "Виктор V - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "вито",
+    "name": "Вито",
+    "sourceName": "Вито (Луна Мории)",
+    "custom": false,
+    "parent": "Мории",
+    "relation": "moon",
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "moria-system",
+    "sourceLine": "Вито (Луна Мории) - неизвестно (Кел-морийский Синдикат)(зеленая)"
+  },
+  {
+    "id": "вотан-i",
+    "name": "Вотан I",
+    "sourceName": "Вотан I(кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "50",
+    "status": null,
+    "systemId": "inferred-вотан",
+    "sourceLine": "Вотан I(кастомная) - 50 (Кел-морийский Синдикат) (пустошь)"
+  },
+  {
+    "id": "вотан-ii",
+    "name": "Вотан II",
+    "sourceName": "Вотан II",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-вотан",
+    "sourceLine": "Вотан II - неизвестно (Кел-морийский Синдикат) (вулканическая)"
+  },
+  {
+    "id": "ворфинг",
+    "name": "Ворфинг",
+    "sourceName": "Ворфинг (Луна Тарсониса)",
+    "custom": false,
+    "parent": "Тарсониса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "tarsonis-system",
+    "sourceLine": "Ворфинг (Луна Тарсониса) - 0 (Доминион)(пустошь)"
+  },
+  {
+    "id": "гавань",
+    "name": "Гавань",
+    "sourceName": "Гавань",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Колонисты Агрии",
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гавань - неизвестно (Колонисты Агрии) (Доминион)(лесная)"
+  },
+  {
+    "id": "гамма-дориан",
+    "name": "Гамма Дориан",
+    "sourceName": "Гамма Дориан",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-дориан",
+    "sourceLine": "Гамма Дориан - неизвестно (Кел-морийский Синдикат)(пустынная)"
+  },
+  {
+    "id": "гантрис-vi",
+    "name": "Гантрис VI",
+    "sourceName": "Гантрис VI",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "ОЗД"
+    ],
+    "terrain": [],
+    "population": null,
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гантрис VI - неизестно (ОЗД)"
+  },
+  {
+    "id": "гантуан-i",
+    "name": "Гантуан I",
+    "sourceName": "Гантуан I (Кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Гантуан I (Кастомная) - 0 (Кел-морийский Синдикат)(пустошь)"
+  },
+  {
+    "id": "гантуан-ii",
+    "name": "Гантуан II",
+    "sourceName": "Гантуан II (Кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "6 350",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Гантуан II (Кастомная) - 6 350 (Кел-морийский Синдикат) (Вулканическая)"
+  },
+  {
+    "id": "гантуан-iii",
+    "name": "Гантуан III",
+    "sourceName": "Гантуан III (Кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "8500",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Гантуан III (Кастомная) - 8500 (Кел-морийский Синдикат) (Лесная)"
+  },
+  {
+    "id": "гантуан-iv",
+    "name": "Гантуан IV",
+    "sourceName": "Гантуан IV (Кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "23 470",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Гантуан IV (Кастомная) - 23 470 (Кел-морийский Синдикат) (Горная)"
+  },
+  {
+    "id": "гантуан-v",
+    "name": "Гантуан V",
+    "sourceName": "Гантуан V (Кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "2500",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Гантуан V (Кастомная) - 2500 (Кел-морийский Синдикат) (Пустошь)"
+  },
+  {
+    "id": "гантуан-vi",
+    "name": "Гантуан VI",
+    "sourceName": "Гантуан VI",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Гантуан VI - 0 (Кел-Морийский Синдикат) (газовая)"
+  },
+  {
+    "id": "гаррахакс",
+    "name": "Гаррахакс",
+    "sourceName": "Гаррахакс",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Лесная",
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гаррахакс - неизвестно (Доминион)"
+  },
+  {
+    "id": "гарэша",
+    "name": "Гарэша",
+    "sourceName": "Гарэша (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Ледяная"
+    ],
+    "population": "1460",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гарэша (кастомная) - 1460 (Кел-морийский Синдикат)(Ледяная)"
+  },
+  {
+    "id": "гелгарис",
+    "name": "Гелгарис",
+    "sourceName": "Гелгарис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гелгарис - неизвестно (Кел-морийский Синдикат) (вулканическая)"
+  },
+  {
+    "id": "гелиок-i",
+    "name": "Гелиок I",
+    "sourceName": "Гелиок I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-гелиок",
+    "sourceLine": "Гелиок I (кастомная) - 0 (Кел-морийский Синдикат)(пустошь)"
+  },
+  {
+    "id": "гелиок-ii",
+    "name": "Гелиок II",
+    "sourceName": "Гелиок II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "35 тыс",
+    "status": null,
+    "systemId": "inferred-гелиок",
+    "sourceLine": "Гелиок II (кастомная) - 35 тысяч (Кел-морийский Синдикат)(океаническая)"
+  },
+  {
+    "id": "гелиок-iii",
+    "name": "Гелиок III",
+    "sourceName": "Гелиок III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-гелиок",
+    "sourceLine": "Гелиок III - неизвестно (Кел-морийский Синдикат) (земная группа)"
+  },
+  {
+    "id": "гелиос",
+    "name": "Гелиос",
+    "sourceName": "Гелиос",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гелиос - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "герб-лерилака",
+    "name": "Герб Лерилака",
+    "sourceName": "Герб Лерилака",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Неразимы",
+      "Зел-нага"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Герб Лерилака - неизвестно 0 (Зел-нага)"
+  },
+  {
+    "id": "гермес",
+    "name": "Гермес",
+    "sourceName": "Гермес (Луна Нового Сиднея)",
+    "custom": false,
+    "parent": "Нового Сиднея",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "new-sydney-system",
+    "sourceLine": "Гермес (Луна Нового Сиднея) - неизвестно (Доминион)"
+  },
+  {
+    "id": "гидракс",
+    "name": "Гидракс",
+    "sourceName": "Гидракс",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гидракс - 0 (океаническая)"
+  },
+  {
+    "id": "гирис",
+    "name": "Гирис",
+    "sourceName": "Гирис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гирис - неизвестно (Дэлаамы)(джунгли)"
+  },
+  {
+    "id": "гистт",
+    "name": "Гистт",
+    "sourceName": "Гистт",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Пустошь",
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гистт - неизвестно (Рой зергов) (пустошь) (джунгли)"
+  },
+  {
+    "id": "гласиус",
+    "name": "Гласиус",
+    "sourceName": "Гласиус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "5000",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гласиус - 5000 неизвестно (Дэлаамы) (горный)"
+  },
+  {
+    "id": "гойт-i",
+    "name": "Гойт I",
+    "sourceName": "Гойт I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "4200",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт I (кастомная) - 4200 (Кел-морийский Синдикат)(Вулканическая)"
+  },
+  {
+    "id": "гойт-ii",
+    "name": "Гойт II",
+    "sourceName": "Гойт II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "3760",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт II (кастомная) - 3760 (Кел-морийский Синдикат)(Вулканическая)"
+  },
+  {
+    "id": "гойт-iii",
+    "name": "Гойт III",
+    "sourceName": "Гойт III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "48 900",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт III (кастомная) - 48 900 (Кел-морийский Синдикат) (лесная)"
+  },
+  {
+    "id": "гойт-iv",
+    "name": "Гойт IV",
+    "sourceName": "Гойт IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа",
+      "Пустошь"
+    ],
+    "population": "32 890",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт IV (кастомная) - 32 890 (Кел-морийский Синдикат)(Пустошь)(земная группа)"
+  },
+  {
+    "id": "гойт-v",
+    "name": "Гойт V",
+    "sourceName": "Гойт V (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "3 350",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт V (кастомная) - 3 350 (Кел-морийский Синдикат) Снежная"
+  },
+  {
+    "id": "гойт-vi",
+    "name": "Гойт VI",
+    "sourceName": "Гойт VI (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт VI (кастомная) - 0 (Кел-морийский Синдикат) (газовая)"
+  },
+  {
+    "id": "гойт-vii",
+    "name": "Гойт VII",
+    "sourceName": "Гойт VII",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "1500",
+    "status": null,
+    "systemId": "inferred-гойт",
+    "sourceLine": "Гойт VII - 1500 (Кел-Морийский Синдикат) (скалистая)"
+  },
+  {
+    "id": "гохбус",
+    "name": "Гохбус",
+    "sourceName": "Гохбус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": "Уничтожена",
+    "systemId": "gohbus-system",
+    "sourceLine": "Гохбус - неизвестно 0 (Доминион) (Уничтожена)"
+  },
+  {
+    "id": "грейт-бенд",
+    "name": "Грейт-Бенд",
+    "sourceName": "Грейт-Бенд",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Скалистая",
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Грейт-Бенд - неизвестно (Доминион) (скалистая)(лесная)"
+  },
+  {
+    "id": "гриссом-i",
+    "name": "Гриссом I",
+    "sourceName": "Гриссом I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-гриссом",
+    "sourceLine": "Гриссом I (кастомная) - 0 (Кел-морийский Синдикат) (пустошь)"
+  },
+  {
+    "id": "гриссом-ii",
+    "name": "Гриссом II",
+    "sourceName": "Гриссом II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-гриссом",
+    "sourceLine": "Гриссом II (кастомная) - 0 (Кел-морийский Синдикат) (океаническая)"
+  },
+  {
+    "id": "гриссом-iii",
+    "name": "Гриссом III",
+    "sourceName": "Гриссом III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "5600",
+    "status": null,
+    "systemId": "inferred-гриссом",
+    "sourceLine": "Гриссом III (кастомная) - 5600 (Кел-морийский Синдикат) (Земная группа)"
+  },
+  {
+    "id": "гриссом-iv",
+    "name": "Гриссом IV",
+    "sourceName": "Гриссом IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-гриссом",
+    "sourceLine": "Гриссом IV - неизвестно (Кел-морийский Синдикат) (пустошь)"
+  },
+  {
+    "id": "грнаки-прайм",
+    "name": "Грнаки Прайм",
+    "sourceName": "Грнаки Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-грнаки",
+    "sourceLine": "Грнаки Прайм - неизвестно (Кел-Морийский Синдикат) (снежная)"
+  },
+  {
+    "id": "грнаки-апер",
+    "name": "Грнаки Апер",
+    "sourceName": "Грнаки Апер (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "16 тыс",
+    "status": null,
+    "systemId": "inferred-грнаки",
+    "sourceLine": "Грнаки Апер (кастомная) - 16 тысяч (Кел-морийский Синдикат) (Вулканическая)"
+  },
+  {
+    "id": "грнаки-рон",
+    "name": "Грнаки Рон",
+    "sourceName": "Грнаки Рон (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Газовый гигант"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-грнаки",
+    "sourceLine": "Грнаки Рон (кастомная) - 0 (Кел-морийский Синдикат) (газовый гигант)"
+  },
+  {
+    "id": "гурдлак",
+    "name": "Гурдлак",
+    "sourceName": "Гурдлак",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Гурдлак - неизвестно (Дикие зерги) (скалистая)(пустынная)"
+  },
+  {
+    "id": "g-2275",
+    "name": "G-2275",
+    "sourceName": "G-2275",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "g-2275-system",
+    "sourceLine": "G-2275 - 0 (Доминион)(газовая)"
+  },
+  {
+    "id": "g-2275-спутник",
+    "name": "G-2275 — спутник",
+    "sourceName": "G-2275(луна)",
+    "custom": false,
+    "parent": "G-2275",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "g-2275-system",
+    "sourceLine": "G-2275(луна) - неизвестно (Доминион) (скалистая)"
+  },
+  {
+    "id": "даннут-vii",
+    "name": "Даннут VII",
+    "sourceName": "Даннут VII",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Тагал"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Даннут VII - неизвестно (Тагал)"
+  },
+  {
+    "id": "демодика",
+    "name": "Демодика",
+    "sourceName": "Демодика (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Лесная"
+    ],
+    "population": "150",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Демодика (кастомная) - 150 (Кел-морийский Синдикат)(пустынная)(лесная)"
+  },
+  {
+    "id": "дж-ларре",
+    "name": "Дж’Ларре",
+    "sourceName": "Дж’Ларре",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Дж’Ларре - неизвестно (джунгли)"
+  },
+  {
+    "id": "джотан",
+    "name": "Джотан",
+    "sourceName": "Джотан",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Джотан - неизвестно (Умоджанский Протекторат) (горная)"
+  },
+  {
+    "id": "дилар-iv",
+    "name": "Дилар IV",
+    "sourceName": "Дилар IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Дилар IV - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "малый-джарбан",
+    "name": "Малый Джарбан",
+    "sourceName": "Малый Джарбан",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат",
+      "Дикие зерги",
+      "Зерги"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Малый Джарбан - неизвестно 0 (Умоджанский Протекторат) (скалистая)"
+  },
+  {
+    "id": "высший-джарбан",
+    "name": "Высший Джарбан",
+    "sourceName": "Высший Джарбан",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Высший Джарбан - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "жэн",
+    "name": "Жэн",
+    "sourceName": "Жэн (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "6450",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Жэн (кастомная) - 6450 (Кел-морийский Синдикат)(океаническая)"
+  },
+  {
+    "id": "закул",
+    "name": "Закул",
+    "sourceName": "Закул",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Гибриды"
+    ],
+    "terrain": [
+      "Вулканическая",
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Закул - неизвестно (Дэлаамы) (джунгли)(вулканическая)"
+  },
+  {
+    "id": "занадар-прайм",
+    "name": "Занадар Прайм",
+    "sourceName": "Занадар Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Занадар Прайм - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "земля",
+    "name": "Земля",
+    "sourceName": "Земля",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "ОЗД"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "27.6 миллиарда",
+    "status": null,
+    "systemId": "earth-system",
+    "sourceLine": "Земля - 27.6 миллиарда (ОЗД) (земная группа)"
+  },
+  {
+    "id": "зенн",
+    "name": "Зенн",
+    "sourceName": "Зенн",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная",
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Зенн - неизвестно  (Доминион) (лесная) (снежная)"
+  },
+  {
+    "id": "зерус",
+    "name": "Зерус",
+    "sourceName": "Зерус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Изначальные зерги",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Вулканическая",
+      "Горная",
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Зерус - неизвестно (Изначальные зерги) (Рой зергов) (джунгли)(горная)(вулканическая)"
+  },
+  {
+    "id": "зеф-iii",
+    "name": "Зеф III",
+    "sourceName": "Зеф III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Зеф III - неизвестно (Доминион) (горная)"
+  },
+  {
+    "id": "зз-гаш",
+    "name": "Зз’гаш",
+    "sourceName": "Зз’гаш",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Зз’гаш - неизвестно (Рой зергов)(пустынная)"
+  },
+  {
+    "id": "златовласка",
+    "name": "Златовласка",
+    "sourceName": "Златовласка",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Зерги"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Златовласка - неизвестно (Мутировавшие зерги) (земная группа)"
+  },
+  {
+    "id": "зукоссия",
+    "name": "ЗуКоссия",
+    "sourceName": "ЗуКоссия (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "2 560",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "ЗуКоссия (кастомная) - 2 560 (Кел-морийский Синдикат) (пустынная)"
+  },
+  {
+    "id": "игнус",
+    "name": "Игнус",
+    "sourceName": "Игнус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Игнус - неизвестно (Доминион) (вулканическая)"
+  },
+  {
+    "id": "икар-iv",
+    "name": "Икар IV",
+    "sourceName": "Икар IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-икар",
+    "sourceLine": "Икар IV - неизвестно (Умоджанский Протекторат)(земная группа)"
+  },
+  {
+    "id": "икар-vii",
+    "name": "Икар VII",
+    "sourceName": "Икар VII",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-икар",
+    "sourceLine": "Икар VII - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "имит",
+    "name": "Имит",
+    "sourceName": "Имит (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "1.4 миллиона",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Имит (кастомная) - 1.4 миллиона (Кел-морийский Синдикат)(земная группа)"
+  },
+  {
+    "id": "йнот",
+    "name": "Йнот",
+    "sourceName": "Йнот",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Протоссы"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Йнот - неизвестно (Протоссы) (Джунгли)"
+  },
+  {
+    "id": "йонтур-ii",
+    "name": "Йонтур II",
+    "sourceName": "Йонтур II",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Йонтур II - неизвестно 0 (Доминион)"
+  },
+  {
+    "id": "кавир",
+    "name": "Кавир",
+    "sourceName": "Кавир",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Кавир - неизвестно (Дикие зерги) (пустынная)"
+  },
+  {
+    "id": "калдир",
+    "name": "Калдир",
+    "sourceName": "Калдир (Луна Мидра IV)",
+    "custom": false,
+    "parent": "Мидра IV",
+    "relation": "moon",
+    "factions": [
+      "Дэлаамы",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Горная",
+      "Ледяная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "midr-system",
+    "sourceLine": "Калдир (Луна Мидра IV) - неизвестно 0 (Дэлаамы) (горная)(ледяная)"
+  },
+  {
+    "id": "калис",
+    "name": "Калис",
+    "sourceName": "Калис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Калис - неизвестно 0 (Доминион) (горный)"
+  },
+  {
+    "id": "кандора",
+    "name": "Кандора",
+    "sourceName": "Кандора",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Кандора - неизвестно  (Доминион) (лесная)"
+  },
+  {
+    "id": "каска",
+    "name": "Каска",
+    "sourceName": "Каска(кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "50 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Каска(кастомная) - 50 тысяч (Кел-морийский Синдикат)(земная группа)"
+  },
+  {
+    "id": "кастанар",
+    "name": "Кастанар",
+    "sourceName": "Кастанар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Кастанар - неизвестно (Доминион)"
+  },
+  {
+    "id": "канис",
+    "name": "Канис",
+    "sourceName": "Канис (Луна Корхала IV)",
+    "custom": false,
+    "parent": "Корхала IV",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "korhal-system",
+    "sourceLine": "Канис (Луна Корхала IV) - неизвестно (Доминион)"
+  },
+  {
+    "id": "кантар",
+    "name": "Кантар",
+    "sourceName": "Кантар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Кантар - неизвестно (Дэлаамы) (снежная)"
+  },
+  {
+    "id": "кегар-i",
+    "name": "Кегар I",
+    "sourceName": "Кегар I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "78 тыс",
+    "status": null,
+    "systemId": "inferred-кегар",
+    "sourceLine": "Кегар I (кастомная) - 78 тысяч (Кел-морийский Синдикат) (лесная)"
+  },
+  {
+    "id": "кегар-ii",
+    "name": "Кегар II",
+    "sourceName": "Кегар II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Лесная"
+    ],
+    "population": "56 тыс",
+    "status": null,
+    "systemId": "inferred-кегар",
+    "sourceLine": "Кегар II (кастомная) - 56 тысяч (Кел-морийский Синдикат) (пустынная)(лесная)"
+  },
+  {
+    "id": "кетилл-iv",
+    "name": "Кетилл IV",
+    "sourceName": "Кетилл IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Тал-дарим",
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Кетилл IV - неизвестно 0 (Доминион)"
+  },
+  {
+    "id": "корхал-iv",
+    "name": "Корхал IV",
+    "sourceName": "Корхал IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "6.3 миллиарда",
+    "status": null,
+    "systemId": "korhal-system",
+    "sourceLine": "Корхал IV -  6.3 миллиарда (Доминион) (пустошь)"
+  },
+  {
+    "id": "крайдон",
+    "name": "Крайдон",
+    "sourceName": "Крайдон",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Крайдон - неизвестно (Доминион)"
+  },
+  {
+    "id": "кракулв",
+    "name": "Кракулв",
+    "sourceName": "Кракулв",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": "Уничтожена",
+    "systemId": null,
+    "sourceLine": "Кракулв - неизвестно 0 (Доминион) (уничтожена)"
+  },
+  {
+    "id": "круксас-iii",
+    "name": "Круксас III",
+    "sourceName": "Круксас III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Круксас III - неизвестно (Домиониин) (земная группа)"
+  },
+  {
+    "id": "ксил",
+    "name": "Ксил",
+    "sourceName": "Ксил",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Тал-дарим"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ксил - неизвестно (Тал-дарим) (пустынная)"
+  },
+  {
+    "id": "куригэ",
+    "name": "Куригэ",
+    "sourceName": "Куригэ(кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Скалистая"
+    ],
+    "population": "45 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Куригэ(кастомная) - 45 тысяч (Кел-морийский Синдикат)(Пустынная)(Скалистая)"
+  },
+  {
+    "id": "лакиус",
+    "name": "Лакиус",
+    "sourceName": "Лакиус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Лакиус - неизвестно (Доминион)"
+  },
+  {
+    "id": "лв-555",
+    "name": "ЛВ-555",
+    "sourceName": "ЛВ-555",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Скалистая",
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "ЛВ-555 - неизвестно (Доминион) (скалистая)(пустошь)"
+  },
+  {
+    "id": "лирия-iv",
+    "name": "Лирия IV",
+    "sourceName": "Лирия IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Лирия IV (кастомная) - неизвестно (Доминион)"
+  },
+  {
+    "id": "локкен",
+    "name": "Локкен",
+    "sourceName": "Локкен (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Локкен (кастомная) - неизвестно (Доминион)"
+  },
+  {
+    "id": "лоркадия",
+    "name": "Лоркадия",
+    "sourceName": "Лоркадия",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Лоркадия - неизвестно (Дэлаамы) (океаническая)"
+  },
+  {
+    "id": "луна",
+    "name": "Луна",
+    "sourceName": "Луна (спутник Земли)",
+    "custom": false,
+    "parent": "Земли",
+    "relation": "moon",
+    "factions": [
+      "ОЗД"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "earth-system",
+    "sourceLine": "Луна (спутник Земли) - неизвестно (ОЗД)(пустошь)"
+  },
+  {
+    "id": "луна-бахуса",
+    "name": "Луна Бахуса",
+    "sourceName": "Луна Бахуса",
+    "custom": false,
+    "parent": "Бахуса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "bachus-system",
+    "sourceLine": "Луна Бахуса - неизвестно (Доминион) (пустошь)"
+  },
+  {
+    "id": "луна-ван-остена",
+    "name": "Луна Ван Остена",
+    "sourceName": "Луна Ван Остена",
+    "custom": false,
+    "parent": "Ван Остена",
+    "relation": "moon",
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Горная",
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "van-oosten-system",
+    "sourceLine": "Луна Ван Остена - неизвестно (Умоджанский Протекторат) (горная)(снежная)"
+  },
+  {
+    "id": "луна-гохбуса",
+    "name": "Луна Гохбуса",
+    "sourceName": "Луна Гохбуса",
+    "custom": false,
+    "parent": "Гохбуса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "gohbus-system",
+    "sourceLine": "Луна Гохбуса - неизвестно (Доминион)(снежная)"
+  },
+  {
+    "id": "луна-паралты",
+    "name": "Луна Паралты",
+    "sourceName": "Луна Паралты",
+    "custom": false,
+    "parent": "Паралты",
+    "relation": "moon",
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "paralta-system",
+    "sourceLine": "Луна Паралты - неизвестно (Терраны)"
+  },
+  {
+    "id": "луна-роксары",
+    "name": "Луна Роксары",
+    "sourceName": "Луна Роксары",
+    "custom": false,
+    "parent": "Роксары",
+    "relation": "moon",
+    "factions": [
+      "Кел-морийский Синдикат",
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "roxara-system",
+    "sourceLine": "Луна Роксары - неизвестно (Доминион) (Пустошь)"
+  },
+  {
+    "id": "лурия-i",
+    "name": "Лурия I",
+    "sourceName": "Лурия I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-лурия",
+    "sourceLine": "Лурия I (кастомная) - 0 (Кел-морийский Синдикат)(газовая)"
+  },
+  {
+    "id": "лурия-ii",
+    "name": "Лурия II",
+    "sourceName": "Лурия II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "14 тыс",
+    "status": null,
+    "systemId": "inferred-лурия",
+    "sourceLine": "Лурия II (кастомная) - 14 тысяч (Кел-морийский Синдикат)(вулканическая)"
+  },
+  {
+    "id": "лурия-iii",
+    "name": "Лурия III",
+    "sourceName": "Лурия III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "2 940",
+    "status": null,
+    "systemId": "inferred-лурия",
+    "sourceLine": "Лурия III (кастомная) - 2 940 (Кел-морийский Синдикат) (снежная)"
+  },
+  {
+    "id": "лурия-iv",
+    "name": "Лурия IV",
+    "sourceName": "Лурия IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-лурия",
+    "sourceLine": "Лурия IV - неизвестно (Кел-Морийский Синдикат) (горная)"
+  },
+  {
+    "id": "мар-сал",
+    "name": "Мар-Сал",
+    "sourceName": "Мар-Сал (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мар-Сал (кастомная) - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "мар-сара",
+    "name": "Мар-Сара",
+    "sourceName": "Мар-Сара",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "80 тыс",
+    "status": null,
+    "systemId": "sara-system",
+    "sourceLine": "Мар-Сара - 80 тысяч неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "марек-v",
+    "name": "Марек V",
+    "sourceName": "Марек V",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": null,
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Марек V - незивестно (Рой зергов) (лесная)"
+  },
+  {
+    "id": "марлоу",
+    "name": "Марлоу",
+    "sourceName": "Марлоу",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Марлоу - неизвестно  (Доминион)"
+  },
+  {
+    "id": "мальтаир-iv",
+    "name": "Мальтаир IV",
+    "sourceName": "Мальтаир IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мальтаир IV - неизвестно (Доминион)"
+  },
+  {
+    "id": "майнхоф",
+    "name": "Майнхоф",
+    "sourceName": "Майнхоф",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "meinhoff-system",
+    "sourceLine": "Майнхоф - неизвестно (Кел-Морийский Синдикат) (горная)"
+  },
+  {
+    "id": "мелкора",
+    "name": "Мелкора",
+    "sourceName": "Мелкора",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мелкора - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "мертвая-зона",
+    "name": "Мертвая зона",
+    "sourceName": "Мертвая зона (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мертвая зона (кастомная) - неизвестно (Доминион) (Изгои) (пустынный)(скалистая)"
+  },
+  {
+    "id": "мертвецкий-валун-мертвецкий-порт-сион-d-3974",
+    "name": "Мертвецкий валун / Мертвецкий порт / Сион (D-3974)",
+    "sourceName": "Мертвецкий валун / Мертвецкий порт / Сион (D-3974)",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "10 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мертвецкий валун / Мертвецкий порт / Сион (D-3974) - 10 тысяч (Кел-Морийский Синдикат)(горная)"
+  },
+  {
+    "id": "мехлус-iv",
+    "name": "Мехлус IV",
+    "sourceName": "Мехлус IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мехлус IV - неизвестно (Дэлаамы) (снежная)"
+  },
+  {
+    "id": "мидр-iv",
+    "name": "Мидр IV",
+    "sourceName": "Мидр IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "midr-system",
+    "sourceLine": "Мидр IV - 0 (Дэлаамы) (газовая)"
+  },
+  {
+    "id": "миранар",
+    "name": "Миранар",
+    "sourceName": "Миранар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Миранар - неизвестно (Доминион) (Океаническая)"
+  },
+  {
+    "id": "мистфф-iv",
+    "name": "Мистфф IV",
+    "sourceName": "Мистфф IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Мистфф IV - неизвестно 0 (Доминион)"
+  },
+  {
+    "id": "младший-аттикус",
+    "name": "Младший Аттикус",
+    "sourceName": "Младший Аттикус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Младший Аттикус - неизвестно (Доминион)(скалистая)"
+  },
+  {
+    "id": "мокоссия",
+    "name": "МоКоссия",
+    "sourceName": "МоКоссия (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "22 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "МоКоссия (кастомная) - 22 тысячи (Кел-морийский Синдикат)(земная группа)"
+  },
+  {
+    "id": "монлит",
+    "name": "Монлит",
+    "sourceName": "Монлит",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Тал-дарим",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Монлит - неизвестно 0 (Тал-дарим) (горные)"
+  },
+  {
+    "id": "морбен",
+    "name": "Морбен",
+    "sourceName": "Морбен (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Скалистая"
+    ],
+    "population": "35 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Морбен (кастомная) - 35 тысяч (Кел-морийский синдикат)(скалистая)(пустынная)"
+  },
+  {
+    "id": "мория",
+    "name": "Мория",
+    "sourceName": "Мория",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "4.1 миллиарда",
+    "status": null,
+    "systemId": "moria-system",
+    "sourceLine": "Мория - 4.1 миллиарда (Кел-Морийский Синдикат)(пустынная)"
+  },
+  {
+    "id": "нелит",
+    "name": "Нелит",
+    "sourceName": "Нелит",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Нелит - неизвестно 0 (Дэлаамы) (горная)"
+  },
+  {
+    "id": "немака",
+    "name": "Немака",
+    "sourceName": "Немака",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Немака - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "нефор-ii",
+    "name": "Нефор II",
+    "sourceName": "Нефор II",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Нефор II - неизвестно (Доминион)"
+  },
+  {
+    "id": "нидхогг",
+    "name": "Нидхогг",
+    "sourceName": "Нидхогг",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Нидхогг - неизвестно 0 (терраны)"
+  },
+  {
+    "id": "нидхогг-iii",
+    "name": "Нидхогг III",
+    "sourceName": "Нидхогг III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Нидхогг III - неизвестно (терраны)"
+  },
+  {
+    "id": "нифельхельм",
+    "name": "Нифельхельм",
+    "sourceName": "Нифельхельм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Ледяная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Нифельхельм - неизвестно (Дэлаамы) (ледяная)"
+  },
+  {
+    "id": "новый-верн",
+    "name": "Новый Верн",
+    "sourceName": "Новый Верн (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "45 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Новый Верн (кастомная) - 45 тысяч (Кел-морийский Синдикат)(вулканическая)"
+  },
+  {
+    "id": "новый-сидней",
+    "name": "Новый Сидней",
+    "sourceName": "Новый Сидней",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "new-sydney-system",
+    "sourceLine": "Новый Сидней - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "новый-тринидад",
+    "name": "Новый Тринидад",
+    "sourceName": "Новый Тринидад",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Пираты Нового Тринидада"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Новый Тринидад - неизвестно 0 (Пираты Нового Тринидада) (пустошь)"
+  },
+  {
+    "id": "новый-фолсом",
+    "name": "Новый Фолсом",
+    "sourceName": "Новый Фолсом",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "3500",
+    "status": null,
+    "systemId": "new-folsom-system",
+    "sourceLine": "Новый Фолсом - 3500 (Доминион) (вулканическая)"
+  },
+  {
+    "id": "норрис-vi",
+    "name": "Норрис VI",
+    "sourceName": "Норрис VI",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Норрис VI - неизвестно (Доминион)"
+  },
+  {
+    "id": "онарский-пояс",
+    "name": "Онарский пояс",
+    "sourceName": "Онарский пояс (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Астероидный пояс"
+    ],
+    "population": "500",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Онарский пояс (кастомная) - 500 (Кел-морийский Синдикат) (астероидный пояс)"
+  },
+  {
+    "id": "онуру-альфа",
+    "name": "Онуру Альфа",
+    "sourceName": "Онуру Альфа (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа",
+      "Пустошь"
+    ],
+    "population": "2.3 миллиона",
+    "status": null,
+    "systemId": "inferred-онуру",
+    "sourceLine": "Онуру Альфа (кастомная) - 2.3 миллиона (Кел-морийский Синдикат)(земная группа)(Пустошь)"
+  },
+  {
+    "id": "онуру-бета",
+    "name": "Онуру Бета",
+    "sourceName": "Онуру Бета (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "56 тыс",
+    "status": null,
+    "systemId": "inferred-онуру",
+    "sourceLine": "Онуру Бета (кастомная) - 56 тысяч (Кел-Морийский Синдикат)(лесная)"
+  },
+  {
+    "id": "онуру-сигма",
+    "name": "Онуру Сигма",
+    "sourceName": "Онуру Сигма",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Ледяная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-онуру",
+    "sourceLine": "Онуру Сигма - неизвестно (Кел-Морийский Синдикат)(ледяная)"
+  },
+  {
+    "id": "ордер-i",
+    "name": "Ордер I",
+    "sourceName": "Ордер I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "33 тыс",
+    "status": null,
+    "systemId": "inferred-ордер",
+    "sourceLine": "Ордер I (кастомная) - 33 тысячи (Кел-Морийский Синдикат)(вулканическая)"
+  },
+  {
+    "id": "ордер-ii",
+    "name": "Ордер II",
+    "sourceName": "Ордер II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "15 тыс",
+    "status": null,
+    "systemId": "inferred-ордер",
+    "sourceLine": "Ордер II (кастомная) - 15 тысяч (Кел-Морийский Синдикат)(пустынная)"
+  },
+  {
+    "id": "ордер-iii",
+    "name": "Ордер III",
+    "sourceName": "Ордер III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "25 тыс",
+    "status": null,
+    "systemId": "inferred-ордер",
+    "sourceLine": "Ордер III (кастомная) - 25 тысяч (Кел-Морийский Синдикат)(пустошь))"
+  },
+  {
+    "id": "ордер-iv",
+    "name": "Ордер IV",
+    "sourceName": "Ордер IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-ордер",
+    "sourceLine": "Ордер IV (кастомная) - 0 (Кел-Морийский Синдикат)(газовая)"
+  },
+  {
+    "id": "ордер-v",
+    "name": "Ордер V",
+    "sourceName": "Ордер V (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "inferred-ордер",
+    "sourceLine": "Ордер V (кастомная) - 0 (Кел-Морийский Синдикат)(газовая)"
+  },
+  {
+    "id": "ордер-vi",
+    "name": "Ордер VI",
+    "sourceName": "Ордер VI",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-ордер",
+    "sourceLine": "Ордер VI - неизвестно (Кел-Морийский Синдикат)(пустынная)"
+  },
+  {
+    "id": "орна-iii",
+    "name": "Орна III",
+    "sourceName": "Орна III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Орна III - неизвестно (Доминион)"
+  },
+  {
+    "id": "орсон",
+    "name": "Орсон",
+    "sourceName": "Орсон (Луна Тарсониса)",
+    "custom": false,
+    "parent": "Тарсониса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "tarsonis-system",
+    "sourceLine": "Орсон (Луна Тарсониса) - 0 (Доминион)(пустошь)"
+  },
+  {
+    "id": "пайкс-пик",
+    "name": "Пайкс Пик",
+    "sourceName": "Пайкс Пик",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Пайкс Пик - неизвестно (Доминион) (скалистый)"
+  },
+  {
+    "id": "паралта",
+    "name": "Паралта",
+    "sourceName": "Паралта",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "paralta-system",
+    "sourceLine": "Паралта - неизвестно"
+  },
+  {
+    "id": "паррагос",
+    "name": "Паррагос",
+    "sourceName": "Паррагос",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Паррагос - неизвестно (Доминион)"
+  },
+  {
+    "id": "пегас",
+    "name": "Пегас",
+    "sourceName": "Пегас",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Зел-нага"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Пегас - неизвестно 0 (Зел-нага) (Горная)"
+  },
+  {
+    "id": "пирамус",
+    "name": "Пирамус",
+    "sourceName": "Пирамус (Луна Мар-Сары)",
+    "custom": false,
+    "parent": "Мар-Сары",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "sara-system",
+    "sourceLine": "Пирамус (Луна Мар-Сары) - 0 (Доминион)(серая)"
+  },
+  {
+    "id": "планета-рождества",
+    "name": "Планета Рождества",
+    "sourceName": "Планета Рождества",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Планета Рождества - неизвестно (Терраны)"
+  },
+  {
+    "id": "плато-цицерона",
+    "name": "Плато Цицерона",
+    "sourceName": "Плато Цицерона (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Астероидный пояс"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Плато Цицерона (кастомная) - 0 (Кел-морийский Синдикат)(астероидный пояс)"
+  },
+  {
+    "id": "пояс-ревана",
+    "name": "Пояс Ревана",
+    "sourceName": "Пояс Ревана",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Корпус Мебиуса"
+    ],
+    "terrain": [
+      "Астероидный пояс"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Пояс Ревана - неизвестно (Корпус Мебиуса)(астероидный пояс)"
+  },
+  {
+    "id": "прайдуотер",
+    "name": "Прайдуотер",
+    "sourceName": "Прайдуотер",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Прайдуотер - неизвестно (Доминион) (океаническая)"
+  },
+  {
+    "id": "раджал",
+    "name": "Раджал",
+    "sourceName": "Раджал (Луна Шакураса)(фиолетовая)",
+    "custom": false,
+    "parent": "Шакураса",
+    "relation": "moon",
+    "factions": [],
+    "terrain": [],
+    "population": null,
+    "status": null,
+    "systemId": "shakuras-system",
+    "sourceLine": "Раджал (Луна Шакураса)(фиолетовая)"
+  },
+  {
+    "id": "райдин-iii",
+    "name": "Райдин III",
+    "sourceName": "Райдин III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Райдин III - неизвестно (Кел-Морийский Синдикат) (пустынная)"
+  },
+  {
+    "id": "ребан",
+    "name": "Ребан",
+    "sourceName": "Ребан (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "4.1 миллион",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ребан (кастомная) - 4.1 миллион(Умоджанский Протекторат)"
+  },
+  {
+    "id": "ревера",
+    "name": "Ревера",
+    "sourceName": "Ревера",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ревера - неизвестно (Доминион)"
+  },
+  {
+    "id": "редстоун-i",
+    "name": "Редстоун I",
+    "sourceName": "Редстоун I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "redstone-system",
+    "sourceLine": "Редстоун I (кастомная) - 0 (Кел-морийский Синдикат)(лавовая)"
+  },
+  {
+    "id": "редстоун-ii",
+    "name": "Редстоун II",
+    "sourceName": "Редстоун II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "redstone-system",
+    "sourceLine": "Редстоун II (кастомная) - неизвестно (Кел-морийский Синдикат) (пустынная)"
+  },
+  {
+    "id": "редстоун-iii",
+    "name": "Редстоун III",
+    "sourceName": "Редстоун III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат",
+      "Дикие зерги",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "redstone-system",
+    "sourceLine": "Редстоун III - неизвестно (Кел-морийский Синдикат) (вулканическая)"
+  },
+  {
+    "id": "редстоун-iv",
+    "name": "Редстоун IV",
+    "sourceName": "Редстоун IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "33 тыс",
+    "status": null,
+    "systemId": "redstone-system",
+    "sourceLine": "Редстоун IV (кастомная) - 33 тысячи (Кел-морийский Синдикат)(горная)"
+  },
+  {
+    "id": "редстоун-v",
+    "name": "Редстоун V",
+    "sourceName": "Редстоун V (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "12 тыс",
+    "status": null,
+    "systemId": "redstone-system",
+    "sourceLine": "Редстоун V (кастомная) - 12 тысяч (Кел-морийский Синдикат)(Скалистая)"
+  },
+  {
+    "id": "редстоун-vi",
+    "name": "Редстоун VI",
+    "sourceName": "Редстоун VI (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "redstone-system",
+    "sourceLine": "Редстоун VI (кастомная) - неизвестно (Кел-морийский Синдикат) (вулканическая)"
+  },
+  {
+    "id": "рейниф-ii",
+    "name": "Рейниф II",
+    "sourceName": "Рейниф II",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Рейниф II - неизвестно (Доминион) (вулканическая)"
+  },
+  {
+    "id": "ритил",
+    "name": "Ритил",
+    "sourceName": "Ритил (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ритил (кастомная) - неизвестно (Доминион)"
+  },
+  {
+    "id": "ричия",
+    "name": "Ричия",
+    "sourceName": "Ричия",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Скалистая",
+      "Джунгли"
+    ],
+    "population": "3240",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ричия - 3240 (Кел-Морийский Синдикат) (джунгли)(скалистая)"
+  },
+  {
+    "id": "рогэф",
+    "name": "Рогэф",
+    "sourceName": "Рогэф (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Скалистая",
+      "Лесная"
+    ],
+    "population": "2350",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Рогэф (кастомная) - 2350 (Кел-Морийский Синдикат) (Скалистая)(лесная)"
+  },
+  {
+    "id": "роксара",
+    "name": "Роксара",
+    "sourceName": "Роксара",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Протоссы"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "roxara-system",
+    "sourceLine": "Роксара - неизвестно 0 (Протоссы) (горная)"
+  },
+  {
+    "id": "саалок",
+    "name": "Саалок",
+    "sourceName": "Саалок (Луна Айура)",
+    "custom": false,
+    "parent": "Айура",
+    "relation": "moon",
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "aiur-system",
+    "sourceLine": "Саалок (Луна Айура)- 0 (Дэлаамы) (пустошь)"
+  },
+  {
+    "id": "салусет",
+    "name": "Салусет",
+    "sourceName": "Салусет",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Салусет - неизвестно (Кел-Морийский Синдикат) (снежная)"
+  },
+  {
+    "id": "самику",
+    "name": "Самику",
+    "sourceName": "Самику",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Дэлаамы",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Самику - неизвестно (Дэлаамы)"
+  },
+  {
+    "id": "свампус",
+    "name": "Свампус",
+    "sourceName": "Свампус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Болотная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Свампус - неизвестно (Дэлаамы) (болотная)"
+  },
+  {
+    "id": "сигма-i",
+    "name": "Сигма I",
+    "sourceName": "Сигма I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-сигма",
+    "sourceLine": "Сигма I (кастомная) - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "сигма-iv",
+    "name": "Сигма IV",
+    "sourceName": "Сигма IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-сигма",
+    "sourceLine": "Сигма IV (кастомная) - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "сигмарис-прайм",
+    "name": "Сигмарис-Прайм",
+    "sourceName": "Сигмарис-Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сигмарис-Прайм - 0 (Доминион) (газовая)"
+  },
+  {
+    "id": "сирион",
+    "name": "Сирион",
+    "sourceName": "Сирион",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сирион - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "сирокко",
+    "name": "Сирокко",
+    "sourceName": "Сирокко",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сирокко - неизвестно (пустынная)"
+  },
+  {
+    "id": "скория",
+    "name": "Скория",
+    "sourceName": "Скория",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Скория - неизвестно 0 (Доминион) (вулканическая)"
+  },
+  {
+    "id": "слейн",
+    "name": "Слейн",
+    "sourceName": "Слейн",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Тал-дарим"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "12 миллионов",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Слейн - 12 миллионов 0 (Тал-дарим) (горная)"
+  },
+  {
+    "id": "сонян",
+    "name": "Сонян",
+    "sourceName": "Сонян",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сонян - неизвестно (Кел-морийский Синдикат) (пустынная)(горная)"
+  },
+  {
+    "id": "сорона",
+    "name": "Сорона",
+    "sourceName": "Сорона",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сорона - неизвестно 0 (Доминион) (пустынная)"
+  },
+  {
+    "id": "старый-верн",
+    "name": "Старый Верн",
+    "sourceName": "Старый Верн",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Старый Верн - неизвестно (Кел-Морийский Синдикат) (вулканическая)"
+  },
+  {
+    "id": "сутур-v",
+    "name": "Сутур V",
+    "sourceName": "Сутур V",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Северные платформеры",
+      "Южные друиды",
+      "Наемники Хейла"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сутур V - неизвестно (Северные платформеры) (Пустошь)"
+  },
+  {
+    "id": "сэмми",
+    "name": "Сэмми",
+    "sourceName": "Сэмми",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы",
+      "Терраны",
+      "Зерги"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сэмми - неизвестно (Дэлаамы)"
+  },
+  {
+    "id": "сэт",
+    "name": "Сэт",
+    "sourceName": "Сэт",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Сэт - неизвестно (Доминион)"
+  },
+  {
+    "id": "сью",
+    "name": "Сью",
+    "sourceName": "Сью (Луна Нового Фолсома)",
+    "custom": false,
+    "parent": "Нового Фолсома",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "new-folsom-system",
+    "sourceLine": "Сью (Луна Нового Фолсома) - 0 (Доминион)(синяя)"
+  },
+  {
+    "id": "тал-кират",
+    "name": "Тал Кират",
+    "sourceName": "Тал Кират",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тал Кират - неизвестно (Доминион)"
+  },
+  {
+    "id": "талвария",
+    "name": "Талвария",
+    "sourceName": "Талвария",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Талвария - неизвестно"
+  },
+  {
+    "id": "талон-vii",
+    "name": "Талон VII",
+    "sourceName": "Талон VII",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Токсичная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Талон VII - неизвестно (Доминион)(токсичная)"
+  },
+  {
+    "id": "таникс-iii",
+    "name": "Таникс III",
+    "sourceName": "Таникс III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Таникс III - неизвестно (Терраны) (пустынная)"
+  },
+  {
+    "id": "таркоссия",
+    "name": "ТарКоссия",
+    "sourceName": "ТарКоссия",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "ТарКоссия - неизвестно (Кел-морийсский Синдикат) (земная группа)"
+  },
+  {
+    "id": "тарсонис",
+    "name": "Тарсонис",
+    "sourceName": "Тарсонис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "7000",
+    "status": null,
+    "systemId": "tarsonis-system",
+    "sourceLine": "Тарсонис - неизвестно 7000 (Доминион) (пустынная)"
+  },
+  {
+    "id": "тартар",
+    "name": "Тартар",
+    "sourceName": "Тартар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тартар - неизвестно 0 (Доминион) (пустошь)"
+  },
+  {
+    "id": "ташай",
+    "name": "Ташай",
+    "sourceName": "Ташай",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ташай - неизвестно (терраны)(скалистая)"
+  },
+  {
+    "id": "телец-iv",
+    "name": "Телец IV",
+    "sourceName": "Телец IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Телец IV - неизвестно (Рой зергов)"
+  },
+  {
+    "id": "темная-планета",
+    "name": "Темная планета",
+    "sourceName": "Темная планета",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Темная планета - неизвестно (Кимерийский пираты)"
+  },
+  {
+    "id": "темная-луна",
+    "name": "Темная луна",
+    "sourceName": "Темная луна",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Тайные наемники"
+    ],
+    "terrain": [
+      "Ледяная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Темная луна - неизвестно 0 (Тайные наемники)(ледяная)"
+  },
+  {
+    "id": "тепперус",
+    "name": "Тепперус",
+    "sourceName": "Тепперус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Протоссы",
+      "Зерги"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тепперус - неизвестно (Зерги)"
+  },
+  {
+    "id": "тессера",
+    "name": "Тессера",
+    "sourceName": "Тессера (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "4 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тессера (кастомная) - 4 тысячи (Кел-морийский Синдикат)(Скалистая)"
+  },
+  {
+    "id": "тимул-iv",
+    "name": "Тимул IV",
+    "sourceName": "Тимул IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тимул IV - неизвестно (Рой зергов)"
+  },
+  {
+    "id": "тирадор-iii",
+    "name": "Тирадор III",
+    "sourceName": "Тирадор III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "tyrador-system",
+    "sourceLine": "Тирадор III - неизвестно (Доминион)"
+  },
+  {
+    "id": "тирадор-viii",
+    "name": "Тирадор VIII",
+    "sourceName": "Тирадор VIII",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Доминион",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [],
+    "population": "10 миллионов",
+    "status": null,
+    "systemId": "tyrador-system",
+    "sourceLine": "Тирадор VIII - 10 миллионов 0 (Доминион)"
+  },
+  {
+    "id": "тирадор-ix-аракир",
+    "name": "Тирадор IX (Аракир)",
+    "sourceName": "Тирадор IX(Аракир)",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Ихан-рии"
+    ],
+    "terrain": [
+      "Океаническая"
+    ],
+    "population": "200 тыс",
+    "status": null,
+    "systemId": "tyrador-system",
+    "sourceLine": "Тирадор IX(Аракир) - 200 тысяч (Доминион) (океаническая)"
+  },
+  {
+    "id": "тирия",
+    "name": "Тирия",
+    "sourceName": "Тирия",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тирия - неизвестно 0 (Доминион)"
+  },
+  {
+    "id": "тирн-iii",
+    "name": "Тирн III",
+    "sourceName": "Тирн III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-тирн",
+    "sourceLine": "Тирн III (кастомная) - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "тирн-iv",
+    "name": "Тирн IV",
+    "sourceName": "Тирн IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-тирн",
+    "sourceLine": "Тирн IV (кастомная) - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "тис",
+    "name": "Тис",
+    "sourceName": "Тис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тис - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "торенис-прайм",
+    "name": "Торенис Прайм",
+    "sourceName": "Торенис Прайм",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Торенис Прайм - неизвестно (Дэлаамы)"
+  },
+  {
+    "id": "торус",
+    "name": "Торус",
+    "sourceName": "Торус",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "torus-system",
+    "sourceLine": "Торус - неизвестно (Доминион)"
+  },
+  {
+    "id": "трагел",
+    "name": "Трагел",
+    "sourceName": "Трагел (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "23 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Трагел (кастомная) - 23 тысячи (Кел-морийский Синдикат)(Горная)"
+  },
+  {
+    "id": "тресон",
+    "name": "Тресон",
+    "sourceName": "Тресон (Луна Тарсониса)",
+    "custom": false,
+    "parent": "Тарсониса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": "tarsonis-system",
+    "sourceLine": "Тресон (Луна Тарсониса) - 0 (Доминион)(пустошь)"
+  },
+  {
+    "id": "тунис",
+    "name": "Тунис",
+    "sourceName": "Тунис (Луна Умоджи)",
+    "custom": false,
+    "parent": "Умоджи",
+    "relation": "moon",
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "umoja-system",
+    "sourceLine": "Тунис (Луна Умоджи) - неизвестно (Умоджанский Протекторат)(синяя)"
+  },
+  {
+    "id": "тураксис-ii",
+    "name": "Тураксис II",
+    "sourceName": "Тураксис II",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Тураксис II - неизвестно (Доминион) (земная группа)"
+  },
+  {
+    "id": "уилел-iv",
+    "name": "Уилел IV",
+    "sourceName": "Уилел IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "uilel-system",
+    "sourceLine": "Уилел IV - неизвестно (горная)"
+  },
+  {
+    "id": "уилила-i",
+    "name": "Уилила I",
+    "sourceName": "Уилила I (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "34 тыс",
+    "status": null,
+    "systemId": "inferred-уилила",
+    "sourceLine": "Уилила I (кастомная) - 34 тысяч (Кел-морийский Синдикат) (лесная)"
+  },
+  {
+    "id": "уилила-ii",
+    "name": "Уилила II",
+    "sourceName": "Уилила II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "250",
+    "status": null,
+    "systemId": "inferred-уилила",
+    "sourceLine": "Уилила II (кастомная) - 250 (Кел-морийский Синдикат) (пустошь)"
+  },
+  {
+    "id": "уилила-iii",
+    "name": "Уилила III",
+    "sourceName": "Уилила III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "3780",
+    "status": null,
+    "systemId": "inferred-уилила",
+    "sourceLine": "Уилила III (кастомная) - 3780 (Кел-морийский Синдикат) (пустынная)"
+  },
+  {
+    "id": "уилила-iv",
+    "name": "Уилила IV",
+    "sourceName": "Уилила IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-уилила",
+    "sourceLine": "Уилила IV - неизвестно (Кел-морийский Синдикат) (пустынная)"
+  },
+  {
+    "id": "улаан",
+    "name": "Улаан",
+    "sourceName": "Улаан",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов",
+      "Зел-нага"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Улаан - неизвестно 0 (Зел-нага) (горная)"
+  },
+  {
+    "id": "уллалах-ii",
+    "name": "Уллалах II",
+    "sourceName": "Уллалах II",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Уллалах II - неизвестно (Терраны)(пустошь)"
+  },
+  {
+    "id": "умоджа",
+    "name": "Умоджа",
+    "sourceName": "Умоджа",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "2.1 миллиарда",
+    "status": null,
+    "systemId": "umoja-system",
+    "sourceLine": "Умоджа - 2.1 миллиарда (Умоджанский Протекторат)(земная группа)"
+  },
+  {
+    "id": "урбан-ii",
+    "name": "Урбан II",
+    "sourceName": "Урбан II (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-урбан",
+    "sourceLine": "Урбан II (кастомная) - неизвестно (Умоджанский Протекторат) (пустошь)"
+  },
+  {
+    "id": "урбан-x",
+    "name": "Урбан X",
+    "sourceName": "Урбан X (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "inferred-урбан",
+    "sourceLine": "Урбан X (кастомная) - неизвестно (Умоджанский Протекторат)"
+  },
+  {
+    "id": "урона-сигма",
+    "name": "Урона Сигма",
+    "sourceName": "Урона Сигма",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Урона Сигма - неизвестно (Доминион)"
+  },
+  {
+    "id": "урса",
+    "name": "Урса",
+    "sourceName": "Урса (Луна Корхала IV)",
+    "custom": false,
+    "parent": "Корхала IV",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "korhal-system",
+    "sourceLine": "Урса (Луна Корхала IV) - неизвестно (Доминион)(пустынная)"
+  },
+  {
+    "id": "урфос-iii",
+    "name": "Урфос III",
+    "sourceName": "Урфос III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат",
+      "Умоджанский Протекторат",
+      "Доминион"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Урфос III - неизвестно (Доминион) (Джунгли)"
+  },
+  {
+    "id": "уступ-смертника",
+    "name": "Уступ смертника",
+    "sourceName": "Уступ смертника (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "14 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Уступ смертника (кастомная) - 14 тысяч (Кел-морийский Синдикат) (горная)"
+  },
+  {
+    "id": "фаэтон",
+    "name": "Фаэтон",
+    "sourceName": "Фаэтон",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Стая Нактул"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Фаэтон - неизвестно (Доминион) (пустынная)"
+  },
+  {
+    "id": "фелона",
+    "name": "Фелона",
+    "sourceName": "Фелона (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "12 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Фелона (кастомная) - 12 тысяч (Кел-морийский Синдикат)(снежная)"
+  },
+  {
+    "id": "феронис",
+    "name": "Феронис",
+    "sourceName": "Феронис",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Феронис - неизвестно (Кел-морийский Синдикат)"
+  },
+  {
+    "id": "фисби",
+    "name": "Фисби",
+    "sourceName": "Фисби (Луна Мар-Сары)",
+    "custom": false,
+    "parent": "Мар-Сары",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "sara-system",
+    "sourceLine": "Фисби (Луна Мар-Сары) - 0 (Доминион)(серая)"
+  },
+  {
+    "id": "формиция",
+    "name": "Формиция",
+    "sourceName": "Формиция",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Формиция - неизвестно (Доминион) (лесная)"
+  },
+  {
+    "id": "фо-рекх",
+    "name": "Фо-Рекх",
+    "sourceName": "Фо-Рекх",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Фо-Рекх - неизвестно (Доминион)"
+  },
+  {
+    "id": "фэнкоссия",
+    "name": "ФэнКоссия",
+    "sourceName": "ФэнКоссия (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Скалистая"
+    ],
+    "population": "43 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "ФэнКоссия (кастомная) - 43 тысячи (Кел-морийский Синдикат) (скалистая)(пустынная)"
+  },
+  {
+    "id": "хага",
+    "name": "Хага",
+    "sourceName": "Хага (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "22 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Хага (кастомная) - 22 тысячи (Кел-морийский Синдикат)(лесная)"
+  },
+  {
+    "id": "хадж-спутник",
+    "name": "Хадж — спутник",
+    "sourceName": "Хадж (луна)",
+    "custom": false,
+    "parent": null,
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Хадж (луна) - неизвестно (Доминион)(пустошь)"
+  },
+  {
+    "id": "халкион",
+    "name": "Халкион",
+    "sourceName": "Халкион",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Халкион - неизвестно (Доминион)(земная группа)"
+  },
+  {
+    "id": "ханук",
+    "name": "Ханук",
+    "sourceName": "Ханук (Луна Гантуана VI)",
+    "custom": false,
+    "parent": "Гантуана VI",
+    "relation": "moon",
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "gantuansystem",
+    "sourceLine": "Ханук (Луна Гантуана VI) - неизвестно (Кел-морийский Синдикат)(скалистая)"
+  },
+  {
+    "id": "хвирам-iv",
+    "name": "Хвирам IV",
+    "sourceName": "Хвирам IV (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Снежная"
+    ],
+    "population": "5 600",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Хвирам IV (кастомная) - 5 600 (Кел-морийский Синдикат) (снежная)"
+  },
+  {
+    "id": "хеймдаль-iv",
+    "name": "Хеймдаль IV",
+    "sourceName": "Хеймдаль IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Терраны"
+    ],
+    "terrain": [
+      "Тропическая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Хеймдаль IV - неизвестно (терраны) (тропическая)"
+  },
+  {
+    "id": "химеерен",
+    "name": "Химеерен",
+    "sourceName": "Химеерен",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Зел-нага"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Химеерен - неизвестно 0 (Зел-нага) (скалистая)"
+  },
+  {
+    "id": "хирон",
+    "name": "Хирон",
+    "sourceName": "Хирон",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "1.2 миллиона",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Хирон - 1.2 миллиона  (Доминион)"
+  },
+  {
+    "id": "xt-39323",
+    "name": "XT-39323",
+    "sourceName": "XT-39323",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Планетоид"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "XT-39323 - неизвестно (Умоджанский Протекторат) (планетоид)"
+  },
+  {
+    "id": "центавра-iv",
+    "name": "Центавра IV",
+    "sourceName": "Центавра IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "ОЗД"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Центавра IV - неизвестно (ОЗД)"
+  },
+  {
+    "id": "чанук",
+    "name": "Чанук",
+    "sourceName": "Чанук",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Чанук - неизвестно (Кел-морийский Синдикат) (астероид)"
+  },
+  {
+    "id": "чар",
+    "name": "Чар",
+    "sourceName": "Чар",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [
+      "Вулканическая"
+    ],
+    "population": "10 миллиардов",
+    "status": null,
+    "systemId": "char-system",
+    "sourceLine": "Чар - 10 миллиардов (Рой зергов)(вулканическая)"
+  },
+  {
+    "id": "чау-сара",
+    "name": "Чау-Сара",
+    "sourceName": "Чау-Сара",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "400 тыс",
+    "status": null,
+    "systemId": "sara-system",
+    "sourceLine": "Чау-Сара - 400 тысяч неизвестно (Доминион)(пустынная)"
+  },
+  {
+    "id": "чосс",
+    "name": "Чосс",
+    "sourceName": "Чосс",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Чосс - неизвестно (Доминион)(пустынная)"
+  },
+  {
+    "id": "шайло",
+    "name": "Шайло",
+    "sourceName": "Шайло",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "255 миллионов",
+    "status": null,
+    "systemId": "shiloh-system",
+    "sourceLine": "Шайло - 255 миллионов (Доминион) (земная группа)"
+  },
+  {
+    "id": "шакурас",
+    "name": "Шакурас",
+    "sourceName": "Шакурас",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дэлаамы"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "1 миллиард",
+    "status": "Уничтожена",
+    "systemId": "shakuras-system",
+    "sourceLine": "Шакурас - 1 миллиард 0 (Дэлаамы) (пустынная) `(Уничтожен)`"
+  },
+  {
+    "id": "шалаш",
+    "name": "Шалаш",
+    "sourceName": "Шалаш (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "13 670",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Шалаш (кастомная) - 13 670 (Кел-морийский Синдикат)(джунгли)"
+  },
+  {
+    "id": "ши",
+    "name": "Ши",
+    "sourceName": "Ши",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Рой зергов",
+      "Конфедерация"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "4",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ши - 4 0 (Конфедерация) (горная)"
+  },
+  {
+    "id": "шэмон-iii",
+    "name": "Шэмон III",
+    "sourceName": "Шэмон III",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Пустошь"
+    ],
+    "population": "756",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Шэмон III - 756 (Кел-Морийский Синдикат) (пустошь)"
+  },
+  {
+    "id": "щугер",
+    "name": "Щугер",
+    "sourceName": "Щугер (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Кел-морийский Синдикат"
+    ],
+    "terrain": [
+      "Земная группа"
+    ],
+    "population": "60 тыс",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Щугер (кастомная) - 60 тысяч (Кел-морийский Синдикат)(земная группа)"
+  },
+  {
+    "id": "эдис",
+    "name": "Эдис",
+    "sourceName": "Эдис (Луна Браксиса)",
+    "custom": false,
+    "parent": "Браксиса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "braxis-system",
+    "sourceLine": "Эдис (Луна Браксиса) - неизвестно (Доминион) (темно-серая)"
+  },
+  {
+    "id": "эйт",
+    "name": "Эйт",
+    "sourceName": "Эйт (Луна Чара)",
+    "custom": false,
+    "parent": "Чара",
+    "relation": "moon",
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "char-system",
+    "sourceLine": "Эйт (Луна Чара) - неизвестно (Рой зергов)(фиолетовая)"
+  },
+  {
+    "id": "экзон",
+    "name": "Экзон",
+    "sourceName": "Экзон (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Зел-нага"
+    ],
+    "terrain": [
+      "Горная"
+    ],
+    "population": "0",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Экзон (кастомная) - неизвестно 0 (Зел-нага)(горная)"
+  },
+  {
+    "id": "эксгелия-iv",
+    "name": "Эксгелия IV",
+    "sourceName": "Эксгелия IV",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [
+      "Джунгли"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Эксгелия IV - неизвестно (Доминион) (джунгли)"
+  },
+  {
+    "id": "элна",
+    "name": "Элна",
+    "sourceName": "Элна",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Неразимы",
+      "Алисар"
+    ],
+    "terrain": [
+      "Пустынная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Элна - неизвестно (Неразимы) (пустынная)"
+  },
+  {
+    "id": "эльдерстайн",
+    "name": "Эльдерстайн",
+    "sourceName": "Эльдерстайн",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Дикие зерги",
+      "Рой зергов",
+      "Зерги"
+    ],
+    "terrain": [
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Эльдерстайн - неизвестно (Рой зергов)(Дикие зерги) (лесная)"
+  },
+  {
+    "id": "эндер",
+    "name": "Эндер",
+    "sourceName": "Эндер (Луна Тарсониса)",
+    "custom": false,
+    "parent": "Тарсониса",
+    "relation": "moon",
+    "factions": [
+      "Доминион"
+    ],
+    "terrain": [],
+    "population": "0",
+    "status": null,
+    "systemId": "tarsonis-system",
+    "sourceLine": "Эндер (Луна Тарсониса) - 0 (Доминион)"
+  },
+  {
+    "id": "эндион",
+    "name": "Эндион",
+    "sourceName": "Эндион (Луна Беллум IV)",
+    "custom": false,
+    "parent": "Беллум IV",
+    "relation": "moon",
+    "factions": [
+      "Чистильщики",
+      "Зерги Амуна",
+      "Зерги"
+    ],
+    "terrain": [
+      "Пустынная",
+      "Лесная"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": "bellum-system",
+    "sourceLine": "Эндион (Луна Беллум IV)- неизвестно (Чистильщики) (лесная) (пустынная)"
+  },
+  {
+    "id": "эней",
+    "name": "Эней",
+    "sourceName": "Эней",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [
+      "Скалистая"
+    ],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Эней - неизвестно (Умоджанский Протекторат) (скалистая)"
+  },
+  {
+    "id": "эрис",
+    "name": "Эрис",
+    "sourceName": "Эрис (Луна Чара)",
+    "custom": false,
+    "parent": "Чара",
+    "relation": "moon",
+    "factions": [
+      "Рой зергов"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": "char-system",
+    "sourceLine": "Эрис (Луна Чара) - неизвестно (Рой зергов)(фиолетовая)"
+  },
+  {
+    "id": "эрис-iii",
+    "name": "Эрис III",
+    "sourceName": "Эрис III (кастомная)",
+    "custom": true,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Умоджанский Протекторат"
+    ],
+    "terrain": [],
+    "population": "5.4 миллиона",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Эрис III (кастомная) - 5.4 миллиона(Умоджанский Протекторат)"
+  },
+  {
+    "id": "ярмарка-демонов-d-4358",
+    "name": "Ярмарка демонов (D-4358)",
+    "sourceName": "Ярмарка демонов (D-4358)",
+    "custom": false,
+    "parent": null,
+    "relation": null,
+    "factions": [
+      "Доминион",
+      "Тал-дарим"
+    ],
+    "terrain": [],
+    "population": "не указано",
+    "status": null,
+    "systemId": null,
+    "sourceLine": "Ярмарка демонов (D-4358) - неизвестно (Доминион)"
+  }
+]
