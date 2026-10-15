@@ -51,6 +51,17 @@
       <span class="hotspot-label">СЕКТОР КОПРУЛУ</span>
     </button>
 
+    <!-- Управление картой: как на странице сектора -->
+    <div class="map-controls" aria-label="Управление картой">
+      <button class="map-control" id="zoomIn" type="button" title="Приблизить (+)" aria-label="Приблизить"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <div class="zoom-readout"><span id="zoomPercent">100%</span><span class="zoom-tick"></span></div>
+      <button class="map-control" id="zoomOut" type="button" title="Отдалить (−)" aria-label="Отдалить"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path></svg></button>
+      <div class="control-divider"></div>
+      <button class="map-control" id="resetMap" type="button" title="Показать всю карту (0)" aria-label="Показать всю карту"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path><path d="M9 4a8 8 0 0 1 10 5M15 20a8 8 0 0 1-10-5"></path></svg></button>
+    </div>
+
+    <div class="map-hint"><span class="mouse-icon"><i></i></span><span>ПЕРЕТАСКИВАЙ · КОЛЁСО МЫШИ — МАСШТАБ</span></div>
+
     <!-- Боковая панель с краткой информацией -->
     <aside class="sector-panel" id="sectorPanel" hidden aria-label="Информация о секторе">
       <div class="sector-panel-head">
