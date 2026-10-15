@@ -11,69 +11,64 @@
 
 .galaxy-stage.is-dragging { cursor: grabbing; }
 
-/* Карта размещается и масштабируется из JS (translate + scale, origin 0 0) */
-.galaxy-map {
+/* Слой карты: масштабируется и двигается из JS (translate + scale, origin 0 0) */
+.map-layer {
   position: absolute;
   left: 0;
   top: 0;
-  max-width: none;
-  max-height: none;
-  user-select: none;
-  -webkit-user-drag: none;
   transform-origin: 0 0;
   will-change: transform;
 }
 
-/* Square hotspot */
-.sector-hotspot {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  border: 2px solid rgba(127, 255, 212, 0.85);
-  background: rgba(127, 255, 212, 0.12);
-  cursor: pointer;
-  padding: 0;
-  z-index: 5;
-  outline: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* только цвет/тень: transition на left/top давал отставание хотспота от карты при зуме и драге */
-  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 16px rgba(127, 255, 212, 0.4);
-  transform: translate(-50%, -50%);
+.galaxy-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-/* Размер хотспота не меняется при наведении: рамка перехода совпадает с ним 1:1 */
+/* Квадрат сектора: положение и размер — в % карты, поэтому совпадает с квадратом
+   на карте при любом зуме. Рамка и зона нажатия держат экранный размер (через --s). */
+.sector-hotspot {
+  position: absolute;
+  left: 73.8167%;
+  top: 32.3167%;
+  width: 1.8667%;
+  height: 1.8667%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  border: calc(1.5px / var(--s, 1)) solid rgba(127, 255, 212, 0.85);
+  background: rgba(127, 255, 212, 0.08);
+  box-shadow: 0 0 calc(10px / var(--s, 1)) rgba(127, 255, 212, 0.35);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  z-index: 5;
+  /* только цвет/тень: переходы left/top давали бы отставание от карты */
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Невидимая зона нажатия не меньше ~36 экранных px */
+.sector-hotspot::before {
+  content: "";
+  position: absolute;
+  inset: calc(-8px / var(--s, 1));
+}
+
 .sector-hotspot:hover,
+.sector-hotspot:focus-visible,
 .sector-hotspot.is-selected {
   border-color: #7fffd4;
-  background: rgba(127, 255, 212, 0.22);
-  box-shadow: 0 0 28px rgba(127, 255, 212, 0.7);
+  background: rgba(127, 255, 212, 0.18);
+  box-shadow: 0 0 calc(18px / var(--s, 1)) rgba(127, 255, 212, 0.7);
 }
 
 .sector-hotspot.is-locked {
   border-color: #7fffd4;
-  background: rgba(127, 255, 212, 0.3);
-  box-shadow: 0 0 36px rgba(127, 255, 212, 0.95);
-}
-
-.hotspot-square {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(127,255,212,0.3), rgba(127,255,212,0.05));
-}
-
-.hotspot-label {
-  position: absolute;
-  bottom: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  color: #7fffd4;
-  opacity: 0.85;
-  white-space: nowrap;
+  background: rgba(127, 255, 212, 0.28);
+  box-shadow: 0 0 calc(26px / var(--s, 1)) rgba(127, 255, 212, 0.95);
 }
 
 /* --- Переход: квадрат из 4 угловых сегментов, сужающийся к маркеру --- */
