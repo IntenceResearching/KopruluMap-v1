@@ -16,7 +16,8 @@ python3 -m http.server 8080 --bind 0.0.0.0
 
 | Файл | Назначение |
 |---|---|
-| `index.html` | Полный атлас |
+| `index.html` | Карта галактики (стартовая) |
+| `sector.html` | Полный атлас сектора |
 | `minimal.html` | Минимальный скин |
 | `app.js` | Логика: canvas-рендер, поиск, каталог, досье, админ-режим |
 | `styles.css`, `wiki-skin.css`, `timeline-skin.css`, `admin-ui.css`, `readability.css`, `minimal-skin.css` | Стили и скины |

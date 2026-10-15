@@ -26,7 +26,7 @@
   if (!isNaN(px)) hotspot.style.left = px + '%';
   if (!isNaN(py)) hotspot.style.top = py + '%';
 
-  var target = hotspot.getAttribute('data-href') || 'index.html';
+  var target = hotspot.getAttribute('data-href') || 'sector.html';
   var animating = false;
 
   function showPanel() {
