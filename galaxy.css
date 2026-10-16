@@ -31,14 +31,25 @@ body {
 }
 
 /* Правый блок шапки без обрезки: иначе clip-path скина режет раскрытый список секторов */
-.galaxy-topbar .topbar-right {
-  clip-path: none;
-  grid-column: 3;
+/* Раскладка шапки без сетки: справа — список и логотип, плашка по центру шапки.
+   Не зависит от брейкпоинтов скина (там сетка перестраивается). */
+.galaxy-topbar {
+  display: flex;
+  align-items: center;
 }
 
-/* Левой колонки (поиска) больше нет: плашка остаётся по центру шапки */
+.galaxy-topbar .topbar-right {
+  clip-path: none;
+  margin-left: auto;
+  grid-column: auto;
+}
+
 .galaxy-topbar .brand-lockup {
-  grid-column: 2;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  grid-column: auto;
 }
 
 /* Фон как у карты сектора: радиальный градиент .app-shell + сетка .app-shell::before
@@ -199,21 +210,47 @@ body {
   border-color: rgba(46, 245, 230, 0.6);
 }
 
+/* Кнопка-иконка ростом с логотип: её низ совпадает с низом логотипа в шапке */
+.galaxy-topbar .sectors-toggle {
+  width: 46px;
+  height: 46px;
+}
+
+/* Панель выезжает влево из иконки. Сверху — отдельная строка-заголовок, по высоте как логотип */
 .sectors-list {
   position: absolute;
   top: 0;
   right: calc(100% + 8px);
-  width: 260px;
+  width: 280px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
-  list-style: none;
   margin: 0;
-  padding: 8px;
+  padding: 0;
   background: rgba(1, 8, 7, 0.94);
   border: 1px solid rgba(46, 245, 230, 0.24);
   box-sizing: border-box;
   transform-origin: right center;
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sectors-list-title {
+  height: 46px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(46, 245, 230, 0.24);
+  color: #6ee0d6;
+  font: 10px/1 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sectors-items {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
 }
 
 .sectors-sidebar.is-collapsed .sectors-list {
