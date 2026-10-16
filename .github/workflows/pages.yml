@@ -23,7 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v4
-      # Публикуется содержимое site/ — это корень сайта. data/ и assets/ лежат в корне
+      # Публикуется содержимое site/ — это корень сайта.
+      # В Settings → Pages → Source должен стоять «GitHub Actions», иначе воркфлоу
+      # не публикует: Pages будет отдавать корень репозитория через Jekyll. data/ и assets/ лежат в корне
       # репозитория (их пишет sync.py), поэтому перед загрузкой копируются в артефакт.
       - name: Собрать публикацию
         run: |
