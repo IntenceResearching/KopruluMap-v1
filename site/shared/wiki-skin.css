@@ -176,9 +176,8 @@ html, body, .app-shell { background: #030303; }
 .badge.custom { color: #ffc64d; border-color: #9f6b00; }
 .detail-section-title { color: #b2a78f; }
 .detail-section-title span:last-child { color: #e3a633; }
-.world-card, .world-card.primary-world { border-color: #4a3710; background: #0a0906; }
+.world-card { border-color: #4a3710; background: #0a0906; }
 .world-card:hover { border-color: #b77c0a; background: #130e04; }
-.world-card.focused-world { border-color: #e7a000; box-shadow: inset 2px 0 #ec9a00; }
 .world-name { color: #e4e4e4; }
 .world-kind { color: #a78a4d; }
 .world-chip.faction { color: #d2b771; background: rgba(208,153,34,.06); }

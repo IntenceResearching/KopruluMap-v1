@@ -359,10 +359,8 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .world-chip { border-color: rgba(45,238,224,.18); background: rgba(46,245,230,.035); color: #8fbdb9; }
 .badge.custom { color: #9ffff7; border-color: rgba(46,245,230,.48); }
 .detail-section-title span:last-child { color: #38d8cd; }
-.world-card,
-.world-card.primary-world { border-color: rgba(45,238,224,.16); background: rgba(1,11,10,.75); }
+.world-card { border-color: rgba(45,238,224,.16); background: rgba(1,11,10,.75); }
 .world-card:hover { border-color: rgba(46,245,230,.48); background: rgba(22,114,107,.18); }
-.world-card.focused-world { border-color: #2ef5e6; box-shadow: inset 2px 0 #2ef5e6; }
 .world-name { color: #d5f1ee; }
 .world-kind { color: #4fb0a9; }
 .world-chip.faction { color: #9fe2dc; background: rgba(46,245,230,.055); }
