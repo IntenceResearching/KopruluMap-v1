@@ -340,10 +340,12 @@
       if (panelTitle) panelTitle.textContent = sectorName;
       panel.hidden = false;
     }
+    document.body.classList.add('has-panel');
     hotspot.classList.add('is-selected');
   }
   function hidePanel() {
     if (panel) panel.hidden = true;
+    document.body.classList.remove('has-panel');
     hotspot.classList.remove('is-selected', 'is-locked');
   }
 
