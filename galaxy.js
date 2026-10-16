@@ -10,7 +10,6 @@
   var closeBtn = document.getElementById('closeSectorPanel');
   var iconBtn = document.getElementById('sectorIconButton');
   var loader = document.getElementById('timelineLoader');
-  var sidebar = document.getElementById('sectorsSidebar');
   var toggle = document.getElementById('sectorsToggle');
   var sectorsList = document.getElementById('sectorsList');
   var zoomInBtn = document.getElementById('zoomIn');
@@ -195,7 +194,7 @@
   var pinchDist = 0;
 
   function isUi(target) {
-    return !!(target.closest && target.closest('.sector-panel, .map-controls, .sectors-sidebar, .map-hint'));
+    return !!(target.closest && target.closest('.sector-panel, .map-controls, .sectors-sidebar, .sectors-curtain, .sectors-backdrop, .map-hint'));
   }
 
   stage.addEventListener('pointerdown', function (e) {
@@ -451,13 +450,6 @@
   });
   if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
-  /* ---------- выезжающий список секторов ---------- */
-  if (toggle && sidebar) {
-    toggle.addEventListener('click', function () {
-      sidebar.classList.toggle('is-collapsed');
-      toggle.setAttribute('aria-expanded', String(!sidebar.classList.contains('is-collapsed')));
-    });
-  }
 
   /* ---------- переход: квадрат из 4 сегментов ----------
      Старт — границы изображения (квадрат карты на экране) → 4 равных этапа
@@ -610,11 +602,38 @@
     });
   }
 
+  /* ---------- шторка списка областей ---------- */
+  var backdrop = document.getElementById('sectorsBackdrop');
+  var closeList = document.getElementById('sectorsClose');
+
+  function setCurtain(open) {
+    if (!sectorsList) return;
+    sectorsList.classList.toggle('is-open', open);
+    if (backdrop) backdrop.classList.toggle('is-open', open);
+    if (toggle) toggle.setAttribute('aria-expanded', String(open));
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      setCurtain(!sectorsList.classList.contains('is-open'));
+    });
+  }
+  if (closeList) closeList.addEventListener('click', function () { setCurtain(false); });
+  if (backdrop) backdrop.addEventListener('click', function () { setCurtain(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sectorsList && sectorsList.classList.contains('is-open')) setCurtain(false);
+  });
+
   if (sectorsList) {
     sectorsList.addEventListener('click', function (e) {
       var btn = e.target.closest('.sector-list-item');
       if (!btn) return;
       e.preventDefault();
+      if (btn.hasAttribute('data-zerus')) {
+        setCurtain(false);
+        activateZerus();
+        return;
+      }
       runTransition(btn, btn.getAttribute('data-href') || defaultHref);
     });
   }
@@ -734,16 +753,21 @@
     window.requestAnimationFrame(frame);
   }
 
+  // Клик по области Зеруса (на карте или в списке): первый — приближение, второй — переход
+  function activateZerus() {
+    if (!zerus || busy) return;
+    if (zerus.classList.contains('is-selected')) {
+      runZerusTransition(zerus);
+      return;
+    }
+    zerus.classList.add('is-selected');
+    focusArea(zerus);
+  }
+
   if (zerus) {
     zerus.addEventListener('click', function (e) {
       e.preventDefault();
-      if (busy) return;
-      if (zerus.classList.contains('is-selected')) {
-        runZerusTransition(zerus);
-        return;
-      }
-      zerus.classList.add('is-selected');
-      focusArea(zerus);
+      activateZerus();
     });
   }
 
