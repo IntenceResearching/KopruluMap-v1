@@ -905,3 +905,27 @@ select:focus-visible { outline-color: #2ef5e6; }
   .coordinates-label { width: 340px; box-sizing: border-box; }
   .map-scale { left: 374px; }
 }
+
+/* Кнопка «к галактике» на странице сектора (зелёная, в топ-панели) */
+.galaxy-return {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  margin-right: 8px;
+  border: 1px solid #4ef08a;
+  background: rgba(78, 240, 138, 0.14);
+  color: #4ef08a;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.galaxy-return:hover,
+.galaxy-return:focus-visible {
+  background: rgba(78, 240, 138, 0.26);
+  box-shadow: 0 0 14px rgba(78, 240, 138, 0.35);
+  outline: none;
+}

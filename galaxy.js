@@ -18,11 +18,22 @@
   var zoomPercent = document.getElementById('zoomPercent');
   var preview = document.getElementById('sectorPreview');
 
+  /* ---------- возврат со страницы сектора ----------
+     Кнопка «к галактике» ставит флаг в sessionStorage. При возврате консоль не
+     проигрывается, а доступ к ОЗД (его блокировка) восстанавливается. Обычная
+     загрузка галактики, как раньше, сбрасывает всё. */
+  var returnedFromSector = false;
+  try {
+    returnedFromSector = sessionStorage.getItem('galaxyReturn') === '1';
+    sessionStorage.removeItem('galaxyReturn');
+    if (!returnedFromSector) sessionStorage.removeItem('odzLocked');
+  } catch (e) {}
+
   /* ---------- loader: полный логотип не меньше 1.6 с ---------- */
   function dismissLoader() {
     window.setTimeout(function () {
       if (loader) loader.style.display = 'none';
-      startBootConsole();
+      if (!returnedFromSector) startBootConsole();
     }, 1600);
   }
   if (document.readyState === 'loading') {
@@ -1167,6 +1178,14 @@
   function setOdzLocked() {
     if (odz) odz.classList.add('is-odz-locked');
     if (odzListItem) odzListItem.classList.add('is-odz-locked');
+    try { sessionStorage.setItem('odzLocked', '1'); } catch (e) {}
+  }
+
+  // Возврат со страницы сектора: если ОЗД уже заблокирован, блокировка сохраняется
+  if (returnedFromSector) {
+    try {
+      if (sessionStorage.getItem('odzLocked') === '1') { odzDone = true; setOdzLocked(); }
+    } catch (e) {}
   }
 
   function clearOdzTimers() {
