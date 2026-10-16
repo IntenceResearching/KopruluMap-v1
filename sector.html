@@ -25,6 +25,10 @@
   <div class="app-shell">
     <header class="topbar">
       <div class="topbar-left">
+        <!-- Бургер: скрыть/показать каталог — слева в шапке -->
+        <button class="icon-button collapse-button" id="toggleSidePanel" type="button" aria-label="Скрыть каталог" title="Скрыть каталог">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h10M4 19h16"></path><path d="m17 9 3 3-3 3"></path></svg>
+        </button>
       <div class="search-wrap" id="searchWrap">
         <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.4 15.4 5 5"></path></svg>
         <input id="searchInput" type="search" autocomplete="off" placeholder="Место или система…" aria-label="Поиск места или системы">
@@ -48,9 +52,6 @@
         <div class="legacy-controls" hidden>
           <div class="feed-status"><span class="status-dot"></span><span>АРХИВ СИНХРОНИЗИРОВАН</span></div>
           <button class="top-action" id="helpButton" type="button"><span class="help-mark">i</span> О ДАННЫХ</button>
-          <button class="icon-button collapse-button" id="toggleSidePanel" type="button" aria-label="Скрыть каталог" title="Скрыть каталог">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h10M4 19h16"></path><path d="m17 9 3 3-3 3"></path></svg>
-          </button>
         </div>
         <div class="brand-emblem corner-mark" role="img" aria-label="Timeline Project"></div>
       </div>

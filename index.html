@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Карта галактики: переход к карте сектора.">
   <title>Timeline Project — Galaxy Map</title>
-  <link rel="stylesheet" href="styles.css?v=galaxy-hs12">
-  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs12">
-  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs12">
+  <link rel="stylesheet" href="styles.css?v=galaxy-hs13">
+  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs13">
+  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs13">
 </head>
 <body>
   <div class="timeline-loader" id="timelineLoader" role="status" aria-live="polite">
@@ -21,12 +21,7 @@
 
   <!-- Шапка как у сектора Копрулу: плашка по центру, список секторов и логотип справа -->
   <header class="topbar galaxy-topbar">
-    <div class="brand-lockup" aria-label="Timeline Project — Galaxy Map">
-      <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>GALAXY MAP</span></div>
-    </div>
-
-    <div class="topbar-right">
-      <!-- Список секторов: кнопка-иконка справа в шапке, список выезжает влево -->
+      <!-- Список секторов: кнопка-иконка слева в шапке, список выезжает вправо -->
       <div class="sectors-sidebar is-collapsed" id="sectorsSidebar">
         <div class="sectors-list" id="sectorsList">
           <div class="sectors-list-title">Области сканирования:</div>
@@ -49,6 +44,11 @@
         </button>
       </div>
 
+    <div class="brand-lockup" aria-label="Timeline Project — Galaxy Map">
+      <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>GALAXY MAP</span></div>
+    </div>
+
+    <div class="topbar-right">
       <div class="brand-emblem corner-mark" role="img" aria-label="Timeline Project"></div>
     </div>
   </header>
@@ -105,6 +105,6 @@
 
   </main>
 
-  <script src="galaxy.js?v=galaxy-hs12" defer></script>
+  <script src="galaxy.js?v=galaxy-hs13" defer></script>
 </body>
 </html>

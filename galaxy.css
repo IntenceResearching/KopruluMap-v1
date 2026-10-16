@@ -220,7 +220,7 @@ body {
 .sectors-list {
   position: absolute;
   top: 0;
-  right: calc(100% + 8px);
+  left: calc(100% + 8px);
   width: 280px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
@@ -229,7 +229,7 @@ body {
   background: rgba(1, 8, 7, 0.94);
   border: 1px solid rgba(46, 245, 230, 0.24);
   box-sizing: border-box;
-  transform-origin: right center;
+  transform-origin: left center;
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -254,7 +254,7 @@ body {
 }
 
 .sectors-sidebar.is-collapsed .sectors-list {
-  transform: translateX(24px) scaleX(0.6);
+  transform: translateX(-24px) scaleX(0.6);
   opacity: 0;
   visibility: hidden;
 }
