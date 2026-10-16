@@ -852,3 +852,41 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .boot-console-cursor { animation: none; }
 }
+
+/* --- Тач-экраны: зоны касания не меньше ~44 px ---------------------------------
+   Только для pointer: coarse. На десктопе и в вёрстке ничего не меняется. */
+@media (pointer: coarse) {
+  /* Квадраты областей: невидимая зона нажатия вокруг квадрата */
+  .sector-hotspot::before {
+    inset: calc(-22px / var(--s, 1));
+  }
+
+  /* Кнопки зума */
+  .map-control {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Крестик консоли после загрузки */
+  .boot-console-close {
+    width: 40px;
+    height: 40px;
+    top: 2px;
+    right: 2px;
+    font-size: 20px;
+  }
+}
+
+/* Телефон: панель зума — под картой, а не поверх квадратов областей
+   (общее правило styles.css ставит её на уровень карты) */
+@media (pointer: coarse) and (max-width: 700px) {
+  .map-controls {
+    right: 8px;
+    bottom: 24px;
+  }
+}
+
+/* На телефоне подсказка «колесо мыши — масштаб» не нужна и закрывает карту */
+@media (pointer: coarse) {
+  .map-hint { display: none; }
+}
