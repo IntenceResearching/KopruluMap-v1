@@ -63,6 +63,12 @@ docs/, tools/, .github/  служебное, вне site/
 | `site/shared/*.css` | Стили и скины |
 | `assets/` | Дизайн-ассеты |
 
+## Публикация
+
+Сайт публикуется воркфлоу [`.github/workflows/pages.yml`](.github/workflows/pages.yml): пуш в `main` или запуск вручную из вкладки Actions. В настройках репозитория (**Settings → Pages → Build and deployment → Source**) должен быть выбран **GitHub Actions**.
+
+Если там стоит «Deploy from a branch», Pages публикует корень репозитория через Jekyll, воркфлоу в публикации не участвует, и сайт оказывается под префиксом `/site/` — ссылки вида `/shared/…` и `/sector/sector.html` перестают находиться.
+
 ## Правила внесения данных
 
 Как заполнять таблицу-источник, из которой сайт забирает данные: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
