@@ -983,3 +983,29 @@ select:focus-visible { outline-color: #2ef5e6; }
   }
   .brand-emblem { flex: 0 0 40px; }
 }
+
+/* Mobile catalogue: clearer typography and a taller bottom sheet. */
+@media (max-width: 700px) {
+  .left-panel {
+    height: min(88dvh, 760px);
+    max-height: calc(100dvh - 16px - env(safe-area-inset-top));
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  .left-panel.collapsed { transform: translateY(calc(100% + 18px)); }
+
+  /* Keep more of the catalogue reachable, with comfortable touch targets. */
+  .catalog-section { flex-basis: 174px; min-height: 48px; }
+  .catalog-section-copy small { display: block; }
+  .panel-head { padding: 12px 15px 10px; }
+  .catalog-stats { padding: 9px 14px; }
+  .filter-chip { min-height: 30px; padding-inline: 10px; }
+  .filters { gap: 7px; padding: 0 13px 10px; }
+  .list-caption { min-height: 36px; }
+  .catalog-row { min-height: 54px; gap: 11px; padding: 8px 9px; }
+  .row-glyph { width: 29px; height: 29px; }
+  .row-meta { margin-top: 5px; }
+  .panel-foot { display: flex; min-height: 50px; padding: 9px 13px; }
+
+  .map-controls { bottom: calc(min(88dvh, 760px) + 20px + env(safe-area-inset-bottom)); }
+  .map-hint { bottom: calc(min(88dvh, 760px) + 22px + env(safe-area-inset-bottom)); }
+}
