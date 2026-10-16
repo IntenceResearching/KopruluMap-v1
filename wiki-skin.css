@@ -81,19 +81,23 @@ html, body, .app-shell { background: #030303; }
 .icon-button:hover { color: #ffb31b; border-color: #714d0c; background: #130f06; }
 .collapse-button { display: inline-grid; }
 
-/* The wiki column occupies the left side; the map is the article canvas. */
-.map-stage { inset: 64px 0 0 300px; overflow: visible; background: #030303; transition: left .23s ease; }
-.map-stage.wide { left: 0; }
+/* The wiki column floats above the map: the stage keeps its full width, so
+   opening/closing the panel never resizes the canvas (no reflow, no flicker).
+   --panel-inset — занятая панелью полоса; на неё опираются чипы и заголовок. */
+.map-stage { inset: 64px 0 0 0; --panel-inset: 300px; overflow: visible; background: #030303; }
+.map-stage.wide { --panel-inset: 0px; }
 .map-vignette { background: radial-gradient(ellipse at 54% 47%, transparent 48%, rgba(0,0,0,.10) 82%, rgba(0,0,0,.47) 100%); }
 .map-grid-overlay { opacity: .09; background-image: linear-gradient(rgba(215,159,45,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(215,159,45,.12) 1px, transparent 1px); }
-.coordinates-label { top: auto; left: 18px; right: auto; bottom: 35px; transform: none; color: rgba(226,210,177,.48); font-size: 8px; }
+.coordinates-label { top: auto; left: calc(var(--panel-inset, 0px) + 18px); right: auto; bottom: 35px; transform: none; color: rgba(226,210,177,.48); font-size: 8px; transition: left .23s ease; }
+.map-scale { left: calc(var(--panel-inset, 0px) + 350px); transition: left .23s ease; }
 .coordinates-label span + span { color: #d39518; }
 .map-page-intro {
   position: absolute;
   z-index: 3;
   top: 17px;
-  left: 20px;
-  width: min(520px, calc(100% - 350px));
+  left: calc(var(--panel-inset, 0px) + 20px);
+  width: min(520px, calc(100% - var(--panel-inset, 0px) - 350px));
+  transition: left .23s ease, width .23s ease;
   padding: 0 0 12px;
   border-bottom: 1px solid rgba(197,132,0,.68);
   background: linear-gradient(90deg, rgba(3,3,3,.9), rgba(3,3,3,.48) 75%, transparent);
@@ -108,7 +112,7 @@ html, body, .app-shell { background: #030303; }
 /* Sidebar / archive tree */
 .left-panel {
   top: 0;
-  left: -300px;
+  left: 0;
   bottom: 0;
   width: 300px;
   border: 0;
@@ -254,9 +258,9 @@ html, body, .app-shell { background: #030303; }
   .brand-lockup { min-width: 158px; }
   .brand-copy strong { font-size: 10px; }
   .site-nav-link { padding: 0 7px; font-size: 10px; }
-  .map-stage { left: 286px; }
-  .left-panel { left: -286px; width: 286px; }
-  .map-stage.wide { left: 0; }
+  .map-stage { --panel-inset: 286px; }
+  .left-panel { width: 286px; }
+  .map-stage.wide { --panel-inset: 0px; }
 }
 @media (max-width: 700px) {
   .topbar { top: 0; left: 0; right: 0; height: 58px; gap: 6px; padding: 0 7px; }
@@ -269,7 +273,7 @@ html, body, .app-shell { background: #030303; }
   .topbar-right .feed-status { display: none; }
   .top-action { display: none; }
   .collapse-button { display: inline-grid; }
-  .map-stage, .map-stage.wide { inset: 58px 0 0 0; }
+  .map-stage, .map-stage.wide { inset: 58px 0 0 0; --panel-inset: 0px; }
   .left-panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: min(49vh,390px); border: 0; border-top: 2px solid #aa7100; }
   .left-panel::after { display: none; }
   .left-panel.collapsed { transform: translateY(calc(100% + 12px)); }

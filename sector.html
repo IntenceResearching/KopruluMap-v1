@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Интерактивный атлас: каркас.">
   <title>Timeline Project — Map Atlas</title>
-  <link rel="stylesheet" href="styles.css?v=b735c8065b0413b4">
-  <link rel="stylesheet" href="wiki-skin.css?v=b735c8065b0413b4">
-  <link rel="stylesheet" href="admin-ui.css?v=b735c8065b0413b4">
-  <link rel="stylesheet" href="readability.css?v=b735c8065b0413b4">
-  <link rel="stylesheet" href="timeline-skin.css?v=mobile-catalog-1">
-  <link rel="stylesheet" href="catalog-typography.css?v=desktop-mobile-1">
+  <link rel="stylesheet" href="styles.css?v=symmetry-1">
+  <link rel="stylesheet" href="wiki-skin.css?v=symmetry-1">
+  <link rel="stylesheet" href="admin-ui.css?v=symmetry-1">
+  <link rel="stylesheet" href="readability.css?v=symmetry-1">
+  <link rel="stylesheet" href="timeline-skin.css?v=symmetry-1">
+  <link rel="stylesheet" href="catalog-typography.css?v=symmetry-1">
   <!-- минимальный скин вынесен в minimal.html: он скрывает каталог, вики-навигацию и «О данных» -->
 </head>
 <body>
@@ -150,7 +150,11 @@
       </div>
 
       <div class="map-hint"><span class="mouse-icon"><i></i></span><span>ПЕРЕТАСКИВАЙ · КОЛЁСО МЫШИ — МАСШТАБ</span></div>
-      <div class="map-scale" id="mapScale"><span class="scale-line"></span><span>1 GRID / 150 LY</span></div>
+      <div class="map-scale" id="mapScale">
+        <span class="scale-line" aria-hidden="true"></span>
+        <span class="scale-value">— ед. = — px</span>
+        <span class="scale-note">1 px = — ед.</span>
+      </div>
 
       <div class="toast" id="toast" aria-live="polite"></div>
     </main>
@@ -200,6 +204,6 @@
       });
     })();
   </script>
-  <script src="app.js?v=sector-camera-1" defer></script>
+  <script src="app.js?v=symmetry-1" defer></script>
 </body>
 </html>

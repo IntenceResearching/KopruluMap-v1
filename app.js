@@ -220,7 +220,7 @@
   };
 
   var el = {};
-  var skin = { panelOffCanvas: false, panelOpen: false };
+  var skin = { panelOffCanvas: false, panelBottomSheet: false, panelSidebar: false, panelOpen: false };
   var canvas = null;
   var ctx = null;
   var renderQueued = false;
@@ -601,6 +601,18 @@
     return Math.min(state.viewport.w, state.viewport.h) / size * pad;
   }
 
+  // Каталог лежит поверх карты и не меняет размер сцены. Ширина «занятой» полосы
+  // берётся из CSS (--panel-inset): ею же пользуются чипы внизу и заголовок раздела,
+  // поэтому вся обвеска двигается синхронно с панелью, а сама карта — ни на пиксель.
+  function panelInset() {
+    if (!el.mapStage) return 0;
+    var raw = '';
+    try { raw = getComputedStyle(el.mapStage).getPropertyValue('--panel-inset'); } catch (err) { raw = ''; }
+    var value = parseFloat(raw);
+    if (!isFinite(value) || value < 0) return 0;
+    return Math.min(value, state.viewport.w * 0.5);
+  }
+
   function minScale() { return fitScale() * CONFIG.view.minFactor; }
   function maxScale() { return fitScale() * CONFIG.view.maxFactor; }
 
@@ -608,8 +620,11 @@
     var size = mapSize();
     var scale = fitScale();
     state.view.scale = scale;
-    state.view.tx = (state.viewport.w - size * scale) / 2;
-    state.view.ty = (state.viewport.h - size * scale) / 2;
+    var inset = panelInset();
+    var span = size * scale;
+    // центр «свободной» зоны справа от каталога: карта не уезжает под панель
+    state.view.tx = inset + (state.viewport.w - inset - span) / 2;
+    state.view.ty = (state.viewport.h - span) / 2;
     clampView();
   }
 
@@ -2297,17 +2312,67 @@
     toastsTimer = window.setTimeout(function () { el.toast.classList.remove('visible'); }, 2600);
   }
 
-  function updateZoomReadout() {
-    var factor = state.view.scale / fitScale();
-    el.zoomPercent.textContent = Math.round(factor * 100) + '%';
-    var span = el.mapScale.querySelector('span:last-child');
-    if (span) {
-      var unit = 1000;
-      var pixels = Math.round(unit * state.view.scale);
-      span.textContent = pixels >= 40
-        ? (formatNumber(unit) + ' ед. ↔ ' + pixels + ' px')
-        : ('1 ' + (state.rasterMode === 'none' ? 'клетка' : 'px') + ' ↔ ' + state.view.scale.toFixed(2) + ' px');
+  var SCALE_STEPS = [1, 2, 5, 10];
+
+  function formatDecimal(value, digits) {
+    var parts = Math.abs(value).toFixed(digits).split('.');
+    parts[0] = formatNumber(Number(parts[0]));
+    return (value < 0 ? '−' : '') + parts.join(',');
+  }
+
+  // Округление до «круглого» расстояния: 1, 2, 5, 10, 20, 50 … единиц карты.
+  // Берём ближайшее в логарифмической шкале — так длина штриха не «скачет»
+  // в два раза на каждом пороге зума.
+  function niceDistance(raw) {
+    var power = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10));
+    var best = power;
+    var bestDiff = Infinity;
+    for (var i = 0; i < SCALE_STEPS.length; i++) {
+      var candidate = power * SCALE_STEPS[i];
+      var diff = Math.abs(Math.log(candidate / raw));
+      if (diff < bestDiff) { bestDiff = diff; best = candidate; }
     }
+    return best;
+  }
+
+  /* Масштабная линейка. Длина отрезка на экране — это реальное расстояние в
+     единицах карты, умноженное на масштаб: ровно по тому же преобразованию,
+     по которому рисуется карта (toScreen). Линейка сама подбирает «круглое»
+     расстояние, поэтому отрезок остаётся читаемым, а подпись всегда равна
+     фактической длине штриха в пикселях. */
+  function updateScaleBar() {
+    var holder = el.mapScale;
+    if (!holder) return;
+    var bar = holder.querySelector('.scale-line');
+    if (!bar) return;
+    var value = holder.querySelector('.scale-value') || holder.querySelector('span:last-child');
+    var note = holder.querySelector('.scale-note');
+    var scale = state.view.scale;
+    if (!scale || !isFinite(scale) || scale <= 0) return;
+
+    // целевая длина штриха — ~6 % ширины сцены, в разумных пределах
+    var target = clamp(Math.round((state.viewport.w || 1200) * 0.06), 52, 92);
+    var units = niceDistance(target / scale);
+    var px = units * scale;
+    if (px < 16) {
+      units = niceDistance(16 / scale);
+      px = units * scale;
+    }
+
+    var width = px.toFixed(1) + 'px';
+    if (bar.style.width !== width) bar.style.width = width;
+    if (value) value.textContent = formatNumber(units) + ' ед. = ' + Math.round(px) + ' px';
+
+    var perPixel = 1 / scale;
+    var digits = perPixel >= 100 ? 0 : (perPixel >= 10 ? 1 : (perPixel >= 1 ? 2 : 3));
+    if (note) note.textContent = '1 px = ' + formatDecimal(perPixel, digits) + ' ед.';
+  }
+
+  function updateZoomReadout() {
+    var fit = fitScale();
+    var factor = fit > 0 ? state.view.scale / fit : 1;
+    el.zoomPercent.textContent = Math.round(factor * 100) + '%';
+    updateScaleBar();
   }
 
   function applyLabelsToggle() {
@@ -2320,7 +2385,17 @@
     // В вики-скине панель стоит за левым краем (left: -300px), и открывать её
     // должен скрипт: в CSS остаётся только «закрытое» положение.
     skin.panelOffCanvas = parseFloat(getComputedStyle(el.leftPanel).left) < 0;
-    if (skin.panelOffCanvas) {
+    // Панель, которая лежит поверх карты — десктопная колонка каталога во всю
+    // высоту или нижняя шторка телефона — стартует свёрнутой: карта открывается
+    // на весь экран. Так было и раньше, когда колонка стояла за левым краем.
+    var panelRect = el.leftPanel.getBoundingClientRect();
+    var stageRect = el.mapStage.getBoundingClientRect();
+    skin.panelBottomSheet = stageRect.width > 0 && panelRect.width > stageRect.width * 0.8;
+    skin.panelSidebar = stageRect.height > 0 && stageRect.width > 0 &&
+      panelRect.left <= stageRect.left + 2 &&
+      panelRect.height >= stageRect.height * 0.8 &&
+      panelRect.width <= stageRect.width * 0.6;
+    if (skin.panelOffCanvas || skin.panelBottomSheet || skin.panelSidebar) {
       el.leftPanel.classList.add('collapsed');
       el.mapStage.classList.add('wide');
       skin.panelOpen = false;
@@ -2366,15 +2441,32 @@
 
   function resize() {
     var rect = el.mapStage.getBoundingClientRect();
-    state.viewport.w = Math.max(1, Math.round(rect.width));
-    state.viewport.h = Math.max(1, Math.round(rect.height));
-    state.dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(state.viewport.w * state.dpr);
-    canvas.height = Math.round(state.viewport.h * state.dpr);
-    canvas.style.width = state.viewport.w + 'px';
-    canvas.style.height = state.viewport.h + 'px';
-    clampView();
+    var w = Math.max(1, Math.round(rect.width));
+    var h = Math.max(1, Math.round(rect.height));
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
     layoutMapControls();
+    if (w === state.viewport.w && h === state.viewport.h && dpr === state.dpr) return;
+
+    // Точка мира, которая была в центре экрана, остаётся в центре: при любом
+    // изменении размера (окно, панель, клавиатура телефона) карта не «уезжает».
+    var keep = null;
+    if (state.viewport.w > 1 && state.viewport.h > 1 && state.view.scale > 0) {
+      keep = toWorld(state.viewport.w / 2, state.viewport.h / 2);
+    }
+
+    state.viewport.w = w;
+    state.viewport.h = h;
+    state.dpr = dpr;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+
+    if (keep) {
+      state.view.tx = w / 2 - keep.x * state.view.scale;
+      state.view.ty = h / 2 - keep.y * state.view.scale;
+    }
+    clampView();
     requestRender();
   }
 

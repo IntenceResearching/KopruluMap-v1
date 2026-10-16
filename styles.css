@@ -37,7 +37,15 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 1px solid 
 .coordinates-label span + span { color: rgba(219,230,244,.67); }
 
 /* Command bar */
-.topbar { position: absolute; z-index: 20; top: 14px; left: 14px; right: 14px; height: 58px; display: flex; align-items: center; gap: 22px; padding: 0 13px 0 10px; background: rgba(5,10,17,.92); border: 1px solid var(--line-strong); box-shadow: 0 8px 32px rgba(0,0,0,.28); backdrop-filter: blur(12px); }
+.topbar { position: absolute; z-index: 20; top: 14px; left: 14px; right: 14px; height: 58px; display: flex; align-items: center; gap: 18px; padding: 0 12px; background: rgba(5,10,17,.92); border: 1px solid var(--line-strong); box-shadow: 0 8px 32px rgba(0,0,0,.28); backdrop-filter: blur(12px); }
+.topbar-left { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.topbar-right { min-width: 0; margin-left: auto; display: flex; align-items: center; gap: 10px; }
+/* Десктоп: симметричная шапка — равные боковые колонки, плашка строго по центру */
+@media (min-width: 701px) {
+  .topbar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .topbar-left { justify-self: start; }
+  .topbar-right { margin-left: 0; justify-self: end; }
+}
 .search-wrap { height: 40px; width: min(34vw, 392px); min-width: 230px; flex: 0 1 392px; position: relative; display: flex; align-items: center; gap: 11px; padding: 0 11px; border: 1px solid rgba(173,197,226,.2); background: rgba(15,24,37,.86); transition: border-color .16s ease, background .16s ease; }
 .search-wrap:focus-within { border-color: rgba(181,211,250,.62); background: rgba(12,21,33,.98); }
 .search-icon { width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: #91a2b7; stroke-width: 1.6; stroke-linecap: round; }
@@ -177,8 +185,12 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 1px solid 
 .map-hint { position: absolute; z-index: 4; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; color: rgba(197,211,230,.53); font: 8px var(--mono); letter-spacing: .13em; white-space: nowrap; pointer-events: none; }
 .mouse-icon { width: 13px; height: 18px; display: inline-flex; justify-content: center; padding-top: 3px; border: 1px solid rgba(183,205,233,.42); border-radius: 7px; }
 .mouse-icon i { width: 1px; height: 4px; background: #bdcee3; opacity: .78; }
-.map-scale { position: absolute; z-index: 4; left: 350px; bottom: 18px; display: flex; align-items: center; gap: 7px; color: rgba(197,211,230,.43); font: 7px var(--mono); letter-spacing: .09em; pointer-events: none; }
-.scale-line { width: 40px; height: 5px; border: 1px solid rgba(187,207,231,.45); border-top: 0; }
+.map-scale { position: absolute; z-index: 4; left: 350px; bottom: 18px; display: flex; align-items: center; gap: 7px; color: rgba(197,211,230,.43); font: 7px var(--mono); letter-spacing: .09em; white-space: nowrap; pointer-events: none; }
+/* Длина штриха задаётся из JS: она равна расстоянию в единицах карты × масштаб */
+.scale-line { width: 60px; height: 5px; flex: 0 0 auto; border: 1px solid rgba(187,207,231,.45); border-top: 0; }
+.scale-value { color: rgba(226,236,248,.72); }
+.scale-note { color: rgba(197,211,230,.34); }
+.scale-note::before { content: "· "; }
 .toast { position: absolute; z-index: 30; left: 50%; bottom: 56px; transform: translate(-50%,10px); opacity: 0; pointer-events: none; padding: 9px 13px; background: rgba(5,10,17,.96); border: 1px solid var(--line-strong); color: #d8e4f4; font: 9px var(--mono); transition: opacity .16s ease, transform .16s ease; }
 .toast.visible { opacity: 1; transform: translate(-50%,0); }
 
