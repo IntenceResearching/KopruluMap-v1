@@ -298,6 +298,67 @@
   else window.addEventListener('load', layout);
   document.addEventListener('DOMContentLoaded', layout);
 
+  /* ---------- звёздный фон как у сектора Копрулу ----------
+     Повторяет drawSchematic из app.js: цвет #03060c, три цветных облака,
+     900 звёзд с тем же генератором (зерно 100000), размер и прозрачность как там. */
+  var starfield = document.getElementById('galaxyStarfield');
+  function starRandom(seed) {
+    var s = seed >>> 0;
+    return function () {
+      s = (s * 1664525 + 1013904223) >>> 0;
+      return s / 4294967296;
+    };
+  }
+  function drawStarfield() {
+    if (!starfield || !starfield.getContext) return;
+    var host = starfield.parentNode;
+    var w = host.clientWidth;
+    var h = host.clientHeight;
+    if (!w || !h) return;
+    var dpr = window.devicePixelRatio || 1;
+    starfield.width = Math.round(w * dpr);
+    starfield.height = Math.round(h * dpr);
+    starfield.style.width = w + 'px';
+    starfield.style.height = h + 'px';
+    var ctx = starfield.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#03060c';
+    ctx.fillRect(0, 0, w, h);
+
+    var size = Math.max(w, h);
+    var clouds = [
+      { x: 0.36, y: 0.30, r: 0.26, color: 'rgba(80,120,190,.16)' },
+      { x: 0.62, y: 0.58, r: 0.30, color: 'rgba(180,120,60,.12)' },
+      { x: 0.78, y: 0.30, r: 0.22, color: 'rgba(120,90,200,.10)' }
+    ];
+    clouds.forEach(function (cloud) {
+      var cx = cloud.x * w, cy = cloud.y * h, radius = cloud.r * size;
+      var gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      gradient.addColorStop(0, cloud.color);
+      gradient.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+    });
+
+    var random = starRandom(100000);
+    ctx.fillStyle = '#cfe0f5';
+    for (var i = 0; i < 900; i++) {
+      var x = random() * w;
+      var y = random() * h;
+      var r = 0.4 + random() * 1.5;
+      var a = 0.12 + random() * 0.5;
+      ctx.globalAlpha = a;
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(0.5, r), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  window.addEventListener('resize', drawStarfield);
+  if (document.readyState === 'complete') drawStarfield();
+  else window.addEventListener('load', drawStarfield);
+  document.addEventListener('DOMContentLoaded', drawStarfield);
+
   /* ---------- превью 300×300 при ховере на хотспот ---------- */
   // Ставим слева от квадрата, если места нет — справа; всегда внутри сцены.
   function positionPreview() {
@@ -340,12 +401,10 @@
       if (panelTitle) panelTitle.textContent = sectorName;
       panel.hidden = false;
     }
-    document.body.classList.add('has-panel');
     hotspot.classList.add('is-selected');
   }
   function hidePanel() {
     if (panel) panel.hidden = true;
-    document.body.classList.remove('has-panel');
     hotspot.classList.remove('is-selected', 'is-locked');
   }
 
