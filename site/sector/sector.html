@@ -6,16 +6,15 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Интерактивный атлас: каркас.">
   <title>Timeline Project — Map Atlas</title>
-  <link rel="stylesheet" href="styles.css?v=symmetry-1">
-  <link rel="stylesheet" href="wiki-skin.css?v=symmetry-1">
-  <link rel="stylesheet" href="admin-ui.css?v=symmetry-1">
-  <link rel="stylesheet" href="readability.css?v=symmetry-1">
-  <link rel="stylesheet" href="timeline-skin.css?v=symmetry-1">
-  <link rel="stylesheet" href="catalog-typography.css?v=symmetry-1">
+  <link rel="stylesheet" href="/shared/styles.css?v=structure-1">
+  <link rel="stylesheet" href="/shared/wiki-skin.css?v=structure-1">
+  <link rel="stylesheet" href="/shared/readability.css?v=structure-1">
+  <link rel="stylesheet" href="/shared/timeline-skin.css?v=structure-1">
+  <link rel="stylesheet" href="/shared/catalog-typography.css?v=structure-1">
   <!-- минимальный скин вынесен в minimal.html: он скрывает каталог, вики-навигацию и «О данных» -->
 </head>
 <body>
-  <script src="timeline-loader.js"></script>
+  <script src="/shared/timeline-loader.js"></script>
   <div class="app-shell">
     <header class="topbar">
       <div class="topbar-left">
@@ -42,8 +41,7 @@
         <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>MAP ATLAS</span></div>
       </div>
       <div class="topbar-right">
-        <a class="galaxy-return" id="galaxyReturn" href="index.html">← К ГАЛАКТИКЕ</a>
-        <button class="admin-access-button" id="adminAccessButton" type="button"><span class="admin-lock" aria-hidden="true">⌑</span> Получить доступ администратора</button>
+        <a class="galaxy-return" id="galaxyReturn" href="/index.html">← К ГАЛАКТИКЕ</a>
         <div class="legacy-controls" hidden>
           <div class="feed-status"><span class="status-dot"></span><span>АРХИВ СИНХРОНИЗИРОВАН</span></div>
           <button class="top-action" id="helpButton" type="button"><span class="help-mark">i</span> О КАРТЕ</button>
@@ -120,26 +118,6 @@
         <div class="detail-footer" id="detailFooter"></div>
       </aside>
 
-      <aside class="admin-dock panel" id="adminDock" aria-label="Редактирование координат систем" hidden>
-        <div class="admin-dock-head">
-          <div><div class="eyebrow"><span class="eyebrow-line"></span> РЕЖИМ РЕДАКТИРОВАНИЯ</div><h2>Позиции систем</h2></div>
-          <button class="icon-button" id="exitAdmin" type="button" aria-label="Выйти из режима администратора" title="Выйти">×</button>
-        </div>
-        <p class="admin-instruction">Выбери узел на карте и перетащи его. X/Y можно задать вручную. Узел — система целиком; положение схематическое.</p>
-        <div class="admin-selected" id="adminSelectedName">Система не выбрана</div>
-        <div class="coordinate-fields">
-          <label for="coordX">X <input id="coordX" type="number" min="0" max="10000" step="1" placeholder="—"></label>
-          <label for="coordY">Y <input id="coordY" type="number" min="0" max="10000" step="1" placeholder="—"></label>
-        </div>
-        <button class="admin-primary" id="applyCoords" type="button">Сохранить координаты</button>
-        <div class="admin-tools">
-          <button id="exportCoords" type="button">Экспорт JSON</button>
-          <button id="resetCoords" type="button">Сбросить мои правки</button>
-        </div>
-        <div class="admin-save-status" id="adminSaveStatus">Изменения сохраняются в этом браузере.</div>
-      </aside>
-
-
       <div class="map-controls" aria-label="Управление картой">
         <button class="map-control" id="zoomIn" type="button" title="Приблизить (+)" aria-label="Приблизить"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></button>
         <div class="zoom-readout"><span id="zoomPercent">100%</span><span class="zoom-tick"></span></div>
@@ -150,12 +128,6 @@
       </div>
 
       <div class="map-hint"><span class="mouse-icon"><i></i></span><span>ПЕРЕТАСКИВАЙ · КОЛЁСО МЫШИ — МАСШТАБ</span></div>
-      <div class="map-scale" id="mapScale">
-        <span class="scale-line" aria-hidden="true"></span>
-        <span class="scale-value">— ед. = — px</span>
-        <span class="scale-note">1 px = — ед.</span>
-      </div>
-
       <div class="toast" id="toast" aria-live="polite"></div>
     </main>
 
@@ -174,25 +146,8 @@
         <div class="modal-foot"><span>КАСТОМНАЯ КАРТА</span><span>НЕОФИЦИАЛЬНЫЙ ПРОЕКТ</span></div>
       </section>
     </div>
-
-    <div class="modal-backdrop admin-backdrop" id="adminModal" hidden>
-      <section class="admin-modal panel" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
-        <div class="admin-modal-head">
-          <div><div class="eyebrow"><span class="eyebrow-line"></span> ДОСТУП К КАРТОГРАФИИ</div><h2 id="adminModalTitle">Получить доступ администратора</h2></div>
-          <button class="icon-button" id="closeAdminModal" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <form id="adminForm" class="admin-form">
-          <label for="adminCode">Введите код доступа</label>
-          <input id="adminCode" type="password" autocomplete="current-password" placeholder="Код доступа" required>
-          <div class="admin-error" id="adminError" aria-live="polite"></div>
-          <button class="admin-primary" type="submit">Открыть режим редактирования</button>
-        </form>
-        <div class="admin-modal-note">В режиме редактирования можно перетаскивать узлы систем или задавать координаты вручную.</div>
-        <div class="admin-security-note"><b>Важно:</b> на GitHub Pages это только блокировка интерфейса, не настоящая защита данных. Для реальной авторизации нужен сервер.</div>
-      </section>
-    </div>
   </div>
-  <script src="links.js"></script>
+  <script src="/shared/links.js?v=structure-1"></script>
   <script>
     (function () {
       var a = document.getElementById('galaxyReturn');
@@ -204,6 +159,6 @@
       });
     })();
   </script>
-  <script src="app.js?v=symmetry-1" defer></script>
+  <script src="/shared/app.js?v=structure-1" defer></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
-/* Minimal atlas skin: только раскладка — карта, поиск, досье и док админа. */
-/* Интерфейс админ-панели и читаемость подписей вынесены в admin-ui.css и readability.css: */
+/* Minimal atlas skin: только раскладка — карта, поиск и досье. */
+/* Читаемость подписей вынесена в readability.css: */
 /* они нужны не только минимальному скину. */
 .topbar { height: 58px; padding: 0 16px; gap: 18px; }
 
 .topbar::after { height: 3px; bottom: -3px; }
 
-.site-nav, .legacy-controls, .feed-status, .top-action, .collapse-button { display: none !important; }
+.legacy-controls, .feed-status, .top-action, .collapse-button { display: none !important; }
 
 .brand-lockup { margin-right: auto; min-width: 205px; }
 
@@ -33,7 +33,7 @@
 
 .left-panel { display: none !important; }
 
-.map-page-intro, .coordinates-label, .map-notice, .map-hint, .map-scale { display: none !important; }
+.map-page-intro, .coordinates-label, .map-notice, .map-hint { display: none !important; }
 
 .detail-panel { top: 16px; right: 16px; bottom: 16px; width: min(340px, calc(100% - 32px)); border-top-width: 2px; }
 

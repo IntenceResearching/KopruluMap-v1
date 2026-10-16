@@ -1,31 +1,71 @@
 # Map Atlas — skeleton
 
-Каркас интерактивного атласа: canvas-рендер карты, поиск, каталог, досье, режим правки координат, Timeline Project скин.
+Каркас интерактивного атласа: canvas-рендер карты, поиск, каталог, досье, Timeline Project скин.
 
 Специфические данные, пайплайн и документация удалены. Продакшен по ТЗ — позже.
 
 ## Запуск
 
+Сайт живёт в папке `site/` — она и есть корень публикации. Скрипты ссылаются на
+`/data/…` и `/assets/…` от корня сайта, поэтому поднимать сервер надо так,
+чтобы корнем был собранный сайт (страницы + `data/` + `assets/`):
+
 ```bash
-python3 -m http.server 8080 --bind 0.0.0.0
+rm -rf .publish && mkdir -p .publish
+cp -R site/. .publish/
+cp -R data assets .publish/          # assets/ можно симлинкой
+python3 -m http.server 8080 --bind 0.0.0.0 --directory .publish
 ```
 
 Открывайте через HTTP-сервер, а не `file://`.
 
 ## Файлы
 
+## Структура
+
+```
+site/                  ← корень сайта (это публикуется в Pages)
+├── index.html         карта галактики, стартовая страница
+├── galaxy.js          логика карты галактики
+├── galaxy.css         стили карты галактики
+├── galaxy-fx.js       эффекты (фон, свечения)
+├── galaxy-ping.js     пинг-подсветка секторов
+├── sector/
+│   └── sector.html    полный атлас сектора
+├── minimal/
+│   ├── minimal.html   минимальный скин атласа
+│   └── minimal-skin.css
+└── shared/            общий код для всех страниц
+    ├── app.js             логика атласа: canvas-рендер, поиск, каталог, досье
+    ├── links.js           пути к страницам и ассетам
+    ├── timeline-loader.js прелоадер
+    ├── styles.css         базовые стили
+    ├── timeline-skin.css  скин Timeline Project
+    ├── wiki-skin.css      вики-навигация
+    ├── readability.css    типографика
+    └── catalog-typography.css
+
+data/                  данные (CSV, JSON) — пишет tools/sync.py, вне site/
+assets/                дизайн-ассеты — вне site/
+docs/, tools/, .github/  служебное, вне site/
+```
+
+Все внутренние ссылки — от корня сайта: `/shared/…`, `/sector/sector.html`,
+`/data/…`, `/assets/…`. Поэтому страницы можно перекладывать по папкам, не
+переписывая пути, а `data/` и `assets/` оставить в корне репозитория.
+
 | Файл | Назначение |
 |---|---|
-| `index.html` | Карта галактики (стартовая) |
-| `sector.html` | Полный атлас сектора |
-| `minimal.html` | Минимальный скин |
-| `app.js` | Логика: canvas-рендер, поиск, каталог, досье, админ-режим |
-| `styles.css`, `wiki-skin.css`, `timeline-skin.css`, `admin-ui.css`, `readability.css`, `minimal-skin.css` | Стили и скины |
+| `site/index.html` | Карта галактики (стартовая) |
+| `site/sector/sector.html` | Полный атлас сектора |
+| `site/minimal/minimal.html` | Минимальный скин |
+| `site/shared/app.js` | Логика: canvas-рендер, поиск, каталог, досье |
+| `site/shared/*.css` | Стили и скины |
 | `assets/` | Дизайн-ассеты |
 
-## Документация для админов
+## Правила внесения данных
 
-Правила внесения данных: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
+Как заполнять таблицу-источник, из которой сайт забирает данные: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
 
 ## История изменений
 

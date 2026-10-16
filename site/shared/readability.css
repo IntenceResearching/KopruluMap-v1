@@ -1,5 +1,5 @@
 /* Читаемость при стандартном масштабе браузера: увеличенные подписи поиска,
-   досье, админ-панели и управления картой. Выделено из minimal-skin.css,
+   досье и управления картой. Выделено из minimal-skin.css,
    где правки шли отдельным блоком и потому не действовали в других скинах. */
 /* Readability pass for a standard browser zoom level (100%). */
 .search-wrap input { font-size: 14px; }
@@ -12,20 +12,8 @@
 .brand-copy strong { font-size: 13px; letter-spacing: .08em; }
 .brand-copy span { font-size: 9px; }
 .map-faction-filter select { font: 11px var(--mono); }
-.admin-access-button { font-size: 11px; }
-
-.admin-dock .eyebrow,
 .detail-topline .eyebrow,
 .detail-kicker { font-size: 10px; line-height: 1.45; letter-spacing: .09em; }
-.admin-dock h2 { font-size: 18px; line-height: 1.2; }
-.admin-instruction { font-size: 13px; line-height: 1.6; }
-.admin-selected { padding: 9px 10px; font-size: 13px; line-height: 1.4; }
-.coordinate-fields label { font: 11px/1.35 var(--mono); letter-spacing: .05em; }
-.coordinate-fields input,
-.admin-form input { height: 38px; font-size: 14px; }
-.admin-primary { min-height: 40px; font-size: 11px; }
-.admin-tools button { min-height: 36px; font-size: 10px; line-height: 1.35; }
-.admin-save-status { font: 10px/1.5 var(--mono); }
 
 .detail-title { font-size: 24px; line-height: 1.16; }
 .detail-subtitle { font-size: 13px; line-height: 1.55; }
@@ -42,14 +30,3 @@
 .detail-footer button { padding: 8px 10px; font: 10px var(--mono); }
 .zoom-readout { font-size: 11px; }
 .toast { font-size: 12px; }
-
-.admin-modal .eyebrow { font-size: 10px; }
-.admin-modal-head h2 { font-size: 21px; line-height: 1.2; }
-.admin-form label { font-size: 13px; }
-.admin-error { font-size: 12px; }
-.admin-modal-note,
-.admin-security-note { font-size: 12px; line-height: 1.6; }
-
-@media (max-width: 900px) {
-  .admin-access-button { font-size: 0; }
-}

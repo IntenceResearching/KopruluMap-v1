@@ -11,7 +11,7 @@ Google Sheet / upstream repo (сырые данные)
 data/upstream/<id>.*   (оригинал, для отладки)
         ↓ transform (flipY/scale/offset, мерж по id)
 data/sectors.csv, data/objects.csv, data/system-overrides.csv  (рабочие)
-        ↓ фронт (app.js)
+        ↓ фронт (site/shared/app.js)
 Каталог / досье / карта
 ```
 Правило: при провале валидации рабочие файлы не затираются.

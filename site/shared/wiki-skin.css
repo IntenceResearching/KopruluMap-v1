@@ -68,10 +68,6 @@ html, body, .app-shell { background: #030303; }
 .brand-copy strong { color: #e4e4e4; font-size: 11px; letter-spacing: .07em; }
 .brand-copy span { color: #8f8a80; font-size: 8px; letter-spacing: .08em; }
 .brand-copy i { color: #ffa900; }
-.site-nav { align-self: stretch; display: flex; align-items: stretch; gap: 2px; }
-.site-nav-link { position: relative; min-width: 55px; padding: 0 11px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #c7c7c7; font-size: 12px; cursor: pointer; white-space: nowrap; }
-.site-nav-link:hover { color: #ffae00; }
-.site-nav-link.active { color: #ffab00; border-bottom-color: #ec9a00; }
 .topbar-right { gap: 8px; }
 .feed-status { color: #9b8b68; font-size: 7px; }
 .status-dot { background: #ffa900; box-shadow: 0 0 8px rgba(255,169,0,.56); }
@@ -89,7 +85,6 @@ html, body, .app-shell { background: #030303; }
 .map-vignette { background: radial-gradient(ellipse at 54% 47%, transparent 48%, rgba(0,0,0,.10) 82%, rgba(0,0,0,.47) 100%); }
 .map-grid-overlay { opacity: .09; background-image: linear-gradient(rgba(215,159,45,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(215,159,45,.12) 1px, transparent 1px); }
 .coordinates-label { top: auto; left: calc(var(--panel-inset, 0px) + 18px); right: auto; bottom: 35px; transform: none; color: rgba(226,210,177,.48); font-size: 8px; transition: left .23s ease; }
-.map-scale { left: calc(var(--panel-inset, 0px) + 350px); transition: left .23s ease; }
 .coordinates-label span + span { color: #d39518; }
 .map-page-intro {
   position: absolute;
@@ -140,39 +135,10 @@ html, body, .app-shell { background: #030303; }
 .eyebrow-line { background: #e89a00; box-shadow: none; }
 .panel-head h1 { color: #e5e5e5; font-size: 18px; }
 .panel-close { color: #8f7b51; }
-.wiki-tree { display: flex; flex-direction: column; gap: 1px; padding: 9px 10px 11px 10px; border-bottom: 1px solid #342809; }
-.wiki-nav-item, .wiki-sub-item {
-  width: 100%;
-  min-height: 33px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px;
-  border: 0;
-  border-left: 2px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: #c4c4c4;
-  text-align: left;
-  font-size: 11px;
-  cursor: pointer;
-  transition: color .13s ease, background .13s ease;
-}
-.wiki-nav-item:hover, .wiki-sub-item:hover { color: #ffae00; background: rgba(255,169,0,.045); }
-.wiki-nav-item.has-chevron span { margin-left: auto; color: #8c887f; font-size: 18px; line-height: 1; }
-.wiki-nav-item.expanded { color: #eca000; }
-.wiki-subtree { display: flex; flex-direction: column; margin: -1px 0 1px; }
-.wiki-sub-item { min-height: 31px; padding-left: 24px; color: #bcbcbc; }
-.wiki-sub-item.active { color: #ffa900; background: rgba(255,169,0,.08); border-left-color: #e99900; }
 .catalog-stats { padding: 10px 17px 9px; border-bottom-color: #36290c; }
 .stat-value { color: #efefef; font-size: 14px; }
 .stat-label { color: #928977; font-size: 7px; }
 .stat-item + .stat-item { border-left-color: #41320f; }
-.segmented-tabs { margin: 10px 13px 9px; padding: 2px; border-color: #3a2b0c; background: #080705; }
-.tab-button { min-height: 27px; color: #a69e8e; font-size: 8px; }
-.tab-button span { color: #a3833d; }
-.tab-button.active { background: #211807; color: #ffbd38; box-shadow: inset 0 -1px #e29a00; }
-.tab-button.active span { color: #e7a000; }
 .filter-header { color: #9b907b; font-size: 7px; }
 .filter-count { color: #dcad4f; }
 .filters { border-bottom-color: #3e2d0b; }
@@ -235,8 +201,6 @@ html, body, .app-shell { background: #030303; }
 .map-hint { color: rgba(220,207,179,.66); }
 .mouse-icon { border-color: rgba(220,190,120,.55); }
 .mouse-icon i { background: #eda500; }
-.map-scale { color: rgba(220,207,179,.5); }
-.scale-line { border-color: rgba(220,190,120,.55); }
 .toast { border-color: #8b600d; background: #050505; color: #f0d28d; }
 
 /* The modal uses the same wiki treatment. */
@@ -257,7 +221,6 @@ html, body, .app-shell { background: #030303; }
   .search-wrap { flex-basis: 235px; min-width: 190px; width: 26vw; }
   .brand-lockup { min-width: 158px; }
   .brand-copy strong { font-size: 10px; }
-  .site-nav-link { padding: 0 7px; font-size: 10px; }
   .map-stage { --panel-inset: 286px; }
   .left-panel { width: 286px; }
   .map-stage.wide { --panel-inset: 0px; }
@@ -268,7 +231,6 @@ html, body, .app-shell { background: #030303; }
   .search-wrap { flex: 1 1 auto; width: auto; min-width: 0; height: 36px; }
   .brand-lockup { min-width: 0; }
   .brand-copy { display: none; }
-  .site-nav { display: none; }
   .topbar-right { margin-left: auto; }
   .topbar-right .feed-status { display: none; }
   .top-action { display: none; }
@@ -279,14 +241,8 @@ html, body, .app-shell { background: #030303; }
   .left-panel.collapsed { transform: translateY(calc(100% + 12px)); }
   .panel-head { padding: 8px 13px 7px; }
   .panel-head h1 { font-size: 15px; }
-  .wiki-tree { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 4px; overflow-x: auto; padding: 5px 8px; border-bottom-color: #45320b; }
-  .wiki-nav-item { width: auto; min-width: max-content; min-height: 28px; padding: 0 8px; font-size: 9px; }
-  .wiki-nav-item.has-chevron { display: none; }
-  .wiki-subtree { flex-direction: row; gap: 3px; margin: 0; }
-  .wiki-sub-item { width: auto; min-width: max-content; min-height: 28px; padding: 0 8px; font-size: 9px; }
   .catalog-stats { padding: 6px 12px; }
   .stat-value { font-size: 12px; }
-  .segmented-tabs { margin: 6px 9px; }
   .filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 7px; }
   .filter-chip { flex: 0 0 auto; }
   .map-page-intro { top: 11px; left: 12px; width: min(390px, calc(100% - 28px)); padding-bottom: 8px; }
@@ -298,7 +254,6 @@ html, body, .app-shell { background: #030303; }
   .detail-panel:not([hidden]) ~ .map-notice { display: none; }
   .map-controls { right: 8px; bottom: calc(min(49vh,390px) + 17px); }
   .map-hint { left: 12px; bottom: calc(min(49vh,390px) + 18px); transform: none; font-size: 6px; letter-spacing: .06em; }
-  .map-scale { display: none; }
   .modal-backdrop { padding: 10px; }
   .info-modal { max-height: 90vh; }
 }
@@ -306,6 +261,4 @@ html, body, .app-shell { background: #030303; }
   .brand-lockup { display: none; }
   .topbar { gap: 4px; }
   .search-wrap { flex-basis: auto; }
-  .wiki-nav-item { font-size: 8px; }
-  .wiki-sub-item { font-size: 8px; }
 }
