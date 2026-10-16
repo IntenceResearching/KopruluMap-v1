@@ -161,9 +161,9 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
   content: "TIMELINE // SECURE ARCHIVE";
   position: absolute;
   right: 17px;
-  bottom: -13px;
-  color: rgba(54, 238, 224, .31);
-  font: 6px var(--mono);
+  bottom: -22px;
+  color: rgba(150, 255, 246, .62);
+  font: 14px var(--mono);
   letter-spacing: .18em;
   pointer-events: none;
 }
