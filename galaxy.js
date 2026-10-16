@@ -364,7 +364,7 @@
   // Ставим слева от квадрата, если места нет — справа; всегда внутри сцены.
   function positionPreview() {
     if (!preview || !preview.classList.contains('is-on')) return;
-    var W = 300, H = 300, gap = 18, edge = 8;
+    var W = preview.offsetWidth, H = preview.offsetHeight, gap = 18, edge = 8;
     var st = stage.getBoundingClientRect();
     var h = hotspot.getBoundingClientRect();
     var sw = stage.clientWidth, sh = stage.clientHeight;
@@ -396,17 +396,35 @@
   hotspot.addEventListener('blur', hidePreview);
 
   /* ---------- панель сектора: первый клик ---------- */
-  function showPanel() {
+  // Панель общая для Копрулу и Зеруса. Для Зеруса: описание и картинка заменены на «no-data available».
+  var panelInfo = document.getElementById('sectorPanelInfo');
+  var noDataBox = document.getElementById('sectorNoData');
+  var KOPRULU_INFO = panelInfo ? panelInfo.textContent : '';
+  var ZERUS_NAME = 'Пространство Зеруса';
+  var ZERUS_NODATA = 'no-data available';
+
+  function showPanel(el) {
+    el = el || hotspot;
+    var isZerus = el !== hotspot;
     hidePreview();
     if (panel) {
-      if (panelTitle) panelTitle.textContent = sectorName;
+      if (panelTitle) panelTitle.textContent = isZerus ? ZERUS_NAME : sectorName;
+      if (panelInfo) {
+        panelInfo.textContent = isZerus ? ZERUS_NODATA : KOPRULU_INFO;
+        panelInfo.classList.toggle('is-nodata', isZerus);
+      }
+      if (iconBtn) iconBtn.hidden = isZerus;
+      if (noDataBox) noDataBox.hidden = !isZerus;
       panel.hidden = false;
     }
-    hotspot.classList.add('is-selected');
+    if (!isZerus && zerus) zerus.classList.remove('is-selected');
+    if (isZerus) hotspot.classList.remove('is-selected');
+    el.classList.add('is-selected');
   }
   function hidePanel() {
     if (panel) panel.hidden = true;
     hotspot.classList.remove('is-selected', 'is-locked');
+    if (zerus) zerus.classList.remove('is-selected', 'is-locked');
   }
 
   // Первый клик: мягко сдвигаем карту, чтобы квадрат оказался ближе к центру
@@ -668,6 +686,7 @@
 
   function focusArea(el) {
     var sz = sceneSize();
+    var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
     var c = boxOf(el);
     var nx, ny, ns, ms;
     if (view.s < CONFIG.focusZoomBelow) {
@@ -675,12 +694,12 @@
       var side = ns * base;
       var px = parseFloat(el.getAttribute('data-cx')) / 100 * side;
       var py = parseFloat(el.getAttribute('data-cy')) / 100 * side;
-      nx = sz.w / 2 - px;
+      nx = visibleW / 2 - px;
       ny = sz.h / 2 - py;
       ms = CONFIG.focusZoomMs;
     } else {
       ns = view.s;
-      nx = view.tx + (sz.w / 2 - c.cx) * CONFIG.focusStrength;
+      nx = view.tx + (visibleW / 2 - c.cx) * CONFIG.focusStrength;
       ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
       ms = CONFIG.focusMs;
     }
@@ -778,7 +797,7 @@
       runZerusTransition(zerus);
       return;
     }
-    zerus.classList.add('is-selected');
+    showPanel(zerus);
     focusArea(zerus);
   }
 
