@@ -437,9 +437,9 @@
     animateTo(ns, nx, ny, ms);
   }
 
-  // Первый клик — выбор сектора (панель + сдвиг); второй клик по выбранному — переход
-  hotspot.addEventListener('click', function (e) {
-    e.preventDefault();
+  // Выбор Копрулу: первый вызов — панель + сдвиг; повторный по выбранному — переход.
+  // Вызывается и кликом по квадрату на карте, и кликом по пункту в шторке.
+  function activateKoprulu() {
     if (busy) return;
     if (hotspot.classList.contains('is-selected')) {
       runTransition(hotspot, defaultHref);
@@ -447,6 +447,11 @@
     }
     showPanel();
     focusSector();
+  }
+
+  hotspot.addEventListener('click', function (e) {
+    e.preventDefault();
+    activateKoprulu();
   });
   if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
@@ -618,6 +623,19 @@
       setCurtain(!sectorsList.classList.contains('is-open'));
     });
   }
+  /* Макет Зеруса для миниатюры в списке. Пока пустая строка — остаётся красная заглушка.
+     Чтобы вставить картинку, укажите путь, например 'assets/zerus-macket.jpg'. */
+  var ZERUS_MACKET = '';
+  var zerusThumb = document.querySelector('.sector-list-thumb--zerus');
+  if (zerusThumb && ZERUS_MACKET) {
+    var zerusImg = document.createElement('img');
+    zerusImg.src = ZERUS_MACKET;
+    zerusImg.alt = '';
+    zerusImg.width = 48;
+    zerusImg.height = 48;
+    zerusThumb.insertBefore(zerusImg, zerusThumb.firstChild);
+  }
+
   if (closeList) closeList.addEventListener('click', function () { setCurtain(false); });
   if (backdrop) backdrop.addEventListener('click', function () { setCurtain(false); });
   document.addEventListener('keydown', function (e) {
@@ -629,12 +647,12 @@
       var btn = e.target.closest('.sector-list-item');
       if (!btn) return;
       e.preventDefault();
+      setCurtain(false);
       if (btn.hasAttribute('data-zerus')) {
-        setCurtain(false);
         activateZerus();
         return;
       }
-      runTransition(btn, btn.getAttribute('data-href') || defaultHref);
+      activateKoprulu();
     });
   }
 
