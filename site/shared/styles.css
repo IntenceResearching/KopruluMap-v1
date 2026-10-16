@@ -149,8 +149,6 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 1px solid 
 .world-list { display: flex; flex-direction: column; gap: 6px; }
 .world-card { padding: 9px 9px 8px; border: 1px solid rgba(171,194,224,.13); background: rgba(255,255,255,.018); cursor: pointer; transition: background .14s ease, border-color .14s ease; }
 .world-card:hover { border-color: rgba(181,211,250,.42); background: rgba(139,179,229,.09); }
-.world-card.focused-world { border-color: rgba(181,211,250,.62); box-shadow: inset 2px 0 0 var(--accent-2); }
-.world-card.primary-world { border-color: rgba(173,201,235,.22); background: rgba(139,179,229,.055); }
 .world-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .world-name { color: #e4ebf4; font-size: 10px; line-height: 1.35; font-weight: 540; }
 .world-kind { color: #7c8ca1; font: 7px var(--mono); text-transform: uppercase; letter-spacing: .1em; white-space: nowrap; }
@@ -259,25 +257,3 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 1px solid 
   .map-hint { letter-spacing: .06em; }
 }
 
-/* map placeholder (three-level loader fallback) */
-.map-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background: rgba(3, 17, 15, 0.85);
-  color: #7fffd4;
-  font-family: inherit;
-  z-index: 5;
-}
-.map-placeholder[hidden] { display: none; }
-.map-placeholder button {
-  padding: 6px 14px;
-  background: transparent;
-  border: 1px solid #7fffd4;
-  color: #7fffd4;
-  cursor: pointer;
-}
