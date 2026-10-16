@@ -1,7 +1,7 @@
 /*!
  * Map Atlas — интерфейс атласа.
  * Статика без зависимостей: canvas-рендер тайлов с LOD, маркеры систем,
- * поиск, каталог, досье, слой подписей карты и режим администратора.
+ * поиск, каталог, досье и слой подписей карты.
  *
  * Данные: data/meta.json, data/systems.json, data/planets.json,
  *         data/system-overrides.json, data/map-labels.json.
@@ -15,12 +15,7 @@
   /* ------------------------------------------------------------------ конфигурация */
 
   var CONFIG = {
-    // Код администратора. Это только блокировка интерфейса: статическая страница
-    // не может проверять подпись на сервере. Подробности — README.
-    adminCode: 'admin',
     storage: {
-      edits: 'map.atlas.edits.v1',
-      session: 'map.atlas.admin.v1',
       labels: 'map.atlas.labels.v1'
     },
     data: {
@@ -174,12 +169,11 @@
   var state = {
     meta: null,
     systemsRaw: [],       // базовый каталог систем
-    systems: [],          // разрешённые системы (база + оверрайды + локальные правки)
+    systems: [],          // разрешённые системы (база + оверрайды из data/system-overrides.json)
     planets: [],
     labels: [],
     overrides: null,
     tiles: null,
-    fresh: false,
     systemsById: {},
     planetsById: {},
     planetByName: {},
@@ -199,11 +193,6 @@
     activePlanetId: null,
     pinned: false,
     rasterMode: 'none',
-    admin: {
-      enabled: false,
-      selected: null,
-      edits: readJSON(CONFIG.storage.edits, {}) || {}
-    },
     view: { scale: 1, tx: 0, ty: 0 },
     viewport: { w: 1, h: 1 },
     dpr: 1
@@ -369,7 +358,6 @@
 
   function applyOverrides(system) {
     var override = (state.overrides && state.overrides.systems && state.overrides.systems[system.id]) || null;
-    var local = state.admin.edits[system.id] || null;
 
     var resolved = Object.assign({}, system);
     resolved.name = system.name;
@@ -377,7 +365,6 @@
     resolved.coord = system.coord ? [system.coord[0], system.coord[1]] : null;
     resolved.coordSource = 'conditional';
     resolved.override = override;
-    resolved.localEdit = local;
 
     if (override) {
       if (override.x != null && override.y != null) {
@@ -396,11 +383,6 @@
       resolved.mapLabel = override.label || null;
       resolved.mapConfidence = override.confidence || null;
       resolved.fromSheet = override.confidence === 'sheet' || override.source === 'google-sheets';
-    }
-
-    if (local && typeof local.x === 'number' && typeof local.y === 'number') {
-      resolved.coord = [local.x, local.y];
-      resolved.coordSource = 'local';
     }
 
     return resolved;
@@ -1122,15 +1104,14 @@
       var isActive = state.activeSystemId === system.id;
       var verified = system.coordSource === 'map';
       var fromLabel = verified && !system.fromSheet;
-      var local = system.coordSource === 'local';
       var emphasis = (isHover ? clamp(5 * scale, 1.5, 4.5) : 0) +
         (isActive ? clamp(8 * scale, 1.6, 7) : 0);
       var radius = metrics.radius + emphasis;
-      var color = local ? '#8fe3b4' : (verified ? theme.accent : theme.muted);
+      var color = verified ? theme.accent : theme.muted;
       var entry = {
         system: system, point: point, radius: radius, color: color,
         hover: isHover, active: isActive, verified: verified,
-        fromLabel: fromLabel, local: local
+        fromLabel: fromLabel
       };
       entries.push(entry);
 
@@ -1139,21 +1120,21 @@
         ctx.shadowColor = 'rgba(190,215,250,.55)';
         ctx.shadowBlur = clamp(32 * scale, 12, 30);
       }
-      ctx.globalAlpha = verified || local ? 1 : (state.labelsOn ? 0.82 : 0.66);
+      ctx.globalAlpha = verified ? 1 : (state.labelsOn ? 0.82 : 0.66);
 
       ctx.beginPath();
       ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
       ctx.lineWidth = metrics.stroke * (isHover ? 1.35 : 1);
       ctx.strokeStyle = color;
-      if (!verified && !local) {
+      if (!verified) {
         var dash = clamp(9 * scale, 3, 8);
         ctx.setLineDash([dash, dash]);
       }
       ctx.stroke();
       ctx.setLineDash([]);
 
-      if (verified || local) {
-        ctx.fillStyle = local ? 'rgba(143,227,180,.20)' : 'rgba(181,211,250,.16)';
+      if (verified) {
+        ctx.fillStyle = 'rgba(181,211,250,.16)';
         ctx.fill();
       }
       ctx.beginPath();
@@ -1188,7 +1169,7 @@
       if (showName) {
         labelCandidates.push({
           entry: entry,
-          priority: isActive ? 0 : (isHover ? 1 : (local ? 2 : (verified ? 3 : 4))),
+          priority: isActive ? 0 : (isHover ? 1 : (verified ? 2 : 3)),
           distance: Math.hypot(point.x - state.viewport.w / 2, point.y - state.viewport.h / 2)
         });
       }
@@ -1390,14 +1371,6 @@
     pointers[event.pointerId] = localPoint(event);
     pointerList = Object.keys(pointers);
 
-    var point = pointers[event.pointerId];
-    var target = state.admin.enabled ? hitTest(point.x, point.y) : null;
-
-    if (state.admin.enabled && target) {
-      drag = { mode: 'node', id: target.id, moved: false, startX: point.x, startY: point.y };
-      selectAdminNode(target.id);
-      return;
-    }
     if (pointerList.length === 1) {
       drag = {
         mode: 'pan',
@@ -1414,18 +1387,6 @@
   function onPointerMove(event) {
     if (pointers[event.pointerId]) pointers[event.pointerId] = localPoint(event);
     var point = localPoint(event);
-
-    if (drag && drag.mode === 'node') {
-      var world = toWorld(point.x, point.y);
-      var x = clamp(Math.round(world.x), 0, mapSize());
-      var y = clamp(Math.round(world.y), 0, mapSize());
-      state.admin.edits[drag.id] = { x: x, y: y, source: 'local-admin', editedAt: new Date().toISOString() };
-      if (Math.abs(point.x - drag.startX) > 2 || Math.abs(point.y - drag.startY) > 2) drag.moved = true;
-      refreshSystem(drag.id);
-      fillAdminFields(drag.id);
-      requestRender();
-      return;
-    }
 
     if (drag && drag.mode === 'pan' && pointerList.length === 1) {
       var dx = point.x - drag.startX;
@@ -1488,15 +1449,6 @@
     drag = null;
     if (!finished) return;
 
-    if (finished.mode === 'node') {
-      if (finished.moved) {
-        persistEdits();
-        updateAdminStatus();
-        toast('Координаты «' + nameOfSystem(finished.id) + '» сохранены в этом браузере');
-      }
-      return;
-    }
-
     if (finished.mode === 'pan' && !finished.moved) {
       var hit = hitTest(point.x, point.y);
       if (hit) {
@@ -1522,21 +1474,6 @@
 
   /* ------------------------------------------------------------------ доступ к записям */
 
-  function nameOfSystem(id) {
-    var system = state.systemsById[id];
-    return system ? system.name.replace(/^Система\s+/, '') : id;
-  }
-
-  function refreshSystem(id) {
-    for (var i = 0; i < state.systemsRaw.length; i++) {
-      if (state.systemsRaw[i].id === id) {
-        state.systems[i] = attachWorlds(applyOverrides(state.systemsRaw[i]));
-        state.systemsById[id] = state.systems[i];
-        return;
-      }
-    }
-  }
-
   function selectSystem(id, options) {
     options = options || {};
     var system = state.systemsById[id];
@@ -1546,7 +1483,6 @@
     state.activePlanetId = null;
     if (options.pin) state.pinned = true;
     if (options.center !== false && system.coord) centerOn(system.coord[0], system.coord[1]);
-    if (state.admin.enabled) selectAdminNode(id);
     renderDetail();
     renderCatalog();
     updateHash();
@@ -1723,13 +1659,11 @@
   function renderStats() {
     var meta = state.meta || {};
     var verified = state.systems.filter(function (system) { return system.coordSource === 'map'; }).length;
-    var local = state.systems.filter(function (system) { return system.coordSource === 'local'; }).length;
     var items = [
       { value: meta.placeCount || meta.planetCount || state.planets.length, label: 'Мест' },
       { value: meta.systemCount || state.systems.length, label: 'Систем' },
       { value: verified, label: 'С карты' }
     ];
-    if (local) items.push({ value: local, label: 'Правок' });
     el.catalogStats.innerHTML = items.map(function (item) {
       return '<div class="stat-item"><div class="stat-value">' + formatNumber(item.value) +
         '</div><div class="stat-label">' + escapeHtml(item.label) + '</div></div>';
@@ -1902,7 +1836,7 @@
     items.slice(0, 600).forEach(function (item) {
       if (isSystems) {
         var selected = item.id === activeSystem && !activePlanet;
-        var statusClass = item.coordSource === 'map' ? 'pdf-linked' : (item.coordSource === 'local' ? 'pdf-linked' : 'inferred');
+        var statusClass = item.coordSource === 'map' ? 'pdf-linked' : 'inferred';
         var glyph = item.name.replace(/^Система\s+/, '').slice(0, 2).toUpperCase();
         html += '<button class="catalog-row' + (selected ? ' selected' : '') + '" type="button" role="listitem" data-system="' + escapeHtml(item.id) + '">' +
           '<span class="row-glyph">' + escapeHtml(glyph) + '</span>' +
@@ -1910,7 +1844,7 @@
           '<span class="row-title">' + escapeHtml(item.name) + '</span>' +
           '<span class="row-meta">' +
           '<span class="row-status ' + statusClass + '"></span>' +
-          '<span class="row-meta-text">' + escapeHtml(item.coordSource === 'map' ? 'подпись карты' : (item.coordSource === 'local' ? 'локальная правка' : 'условная точка')) +
+          '<span class="row-meta-text">' + escapeHtml(item.coordSource === 'map' ? 'подпись карты' : 'условная точка') +
           ' · ' + escapeHtml(item.primaryFaction || 'фракция не указана') + '</span>' +
           '</span>' +
           '</span>' +
@@ -1941,7 +1875,6 @@
 
   function confidenceLabel(system) {
     if (!system.coord) return system.canonical ? 'каноническая · без координаты' : 'координата не задана';
-    if (system.coordSource === 'local') return 'локальная правка';
     if (system.fromSheet) return 'из опубликованной таблицы';
     if (system.coordSource === 'map') {
       var known = { high: 'высокая', medium: 'средняя', low: 'низкая' };
@@ -1977,7 +1910,7 @@
   function renderSystemDetail(system) {
     el.detailType.textContent = 'SYSTEM DOSSIER';
     var worlds = system.worlds || [];
-    var dotClass = system.coordSource === 'map' ? 'pdf-linked' : (system.coordSource === 'local' ? 'pdf-linked' : 'inferred');
+    var dotClass = system.coordSource === 'map' ? 'pdf-linked' : 'inferred';
 
     var html = '';
     html += '<div class="detail-kicker"><span class="confidence-dot ' + dotClass + '"></span>' + escapeHtml(confidenceLabel(system)) + '</div>';
@@ -1993,7 +1926,6 @@
       system.canonical ? 'pdf-linked' : '');
     if (system.mapVerified) html += badge('сверено с картой');
     if (system.needsReview) html += badge('требует проверки · Кегар', 'custom');
-    if (system.coordSource === 'local') html += badge('локальная правка', 'custom');
     html += '</div>';
 
     html += '<div class="detail-section-title"><span>МЕСТА СИСТЕМЫ</span><span>' + worlds.length + '</span></div>';
@@ -2176,133 +2108,6 @@
 
   // Старые демонстрационные Wiki-модали удалены вместе с их навигацией.
 
-  /* ------------------------------------------------------------------ режим администратора */
-
-  function persistEdits() { writeJSON(CONFIG.storage.edits, state.admin.edits); }
-
-  function enableAdmin() {
-    state.admin.enabled = true;
-    el.adminDock.hidden = false;
-    canvas.classList.add('admin-mode');
-    el.adminAccessButton.classList.add('active');
-    try { window.sessionStorage.setItem(CONFIG.storage.session, '1'); } catch (err) { /* ignore */ }
-    if (state.activeSystemId) selectAdminNode(state.activeSystemId);
-    updateAdminStatus();
-    toast('Режим редактирования включён. Перетаскивайте узлы систем.');
-  }
-
-  function disableAdmin() {
-    state.admin.enabled = false;
-    state.admin.selected = null;
-    el.adminDock.hidden = true;
-    canvas.classList.remove('admin-mode');
-    el.adminAccessButton.classList.remove('active');
-    try { window.sessionStorage.removeItem(CONFIG.storage.session); } catch (err) { /* ignore */ }
-  }
-
-  function openAdminModal() {
-    el.adminError.textContent = '';
-    el.adminCode.value = '';
-    openModal(el.adminModal);
-    setTimeout(function () { el.adminCode.focus(); }, 30);
-  }
-
-  function selectAdminNode(id) {
-    state.admin.selected = id;
-    fillAdminFields(id);
-  }
-
-  function fillAdminFields(id) {
-    var system = state.systemsById[id];
-    if (!system) return;
-    el.adminSelectedName.textContent = system.name + ' · ' + confidenceLabel(system);
-    if (system.coord) {
-      if (doc.activeElement !== el.coordX) el.coordX.value = system.coord[0];
-      if (doc.activeElement !== el.coordY) el.coordY.value = system.coord[1];
-    } else {
-      el.coordX.value = '';
-      el.coordY.value = '';
-    }
-  }
-
-  function updateAdminStatus() {
-    var count = Object.keys(state.admin.edits).length;
-    el.adminSaveStatus.textContent = count
-      ? 'Правок в этом браузере: ' + count + '. Они перекрывают опубликованную таблицу и system-overrides.json.'
-      : 'Изменения сохраняются в этом браузере (localStorage) и перекрывают опубликованные координаты.';
-  }
-
-  function applyAdminCoords() {
-    var id = state.admin.selected;
-    if (!id) { toast('Сначала выберите узел на карте'); return; }
-    var x = parseInt(el.coordX.value, 10);
-    var y = parseInt(el.coordY.value, 10);
-    if (isNaN(x) || isNaN(y) || x < 0 || x > mapSize() || y < 0 || y > mapSize()) {
-      toast('X и Y — целые числа от 0 до ' + formatNumber(mapSize()));
-      return;
-    }
-    state.admin.edits[id] = { x: x, y: y, source: 'local-admin', editedAt: new Date().toISOString() };
-    persistEdits();
-    refreshSystem(id);
-    updateAdminStatus();
-    renderCatalog();
-    renderDetail();
-    requestRender();
-    toast('Координаты сохранены: X ' + x + ' · Y ' + y);
-  }
-
-  function exportAdminCoords() {
-    var size = mapSize();
-    var payload = {
-      version: 1,
-      mapSize: size,
-      sourceImage: (state.meta && state.meta.mapImage) || null,
-      coordinateFormat: 'x/y: целые 0..' + size + '; x_norm/y_norm: 0..1',
-      generated: new Date().toISOString().slice(0, 10),
-      origin: 'admin-panel (localStorage)',
-      counts: { total: Object.keys(state.admin.edits).length },
-      systems: {}
-    };
-    Object.keys(state.admin.edits).forEach(function (id) {
-      var edit = state.admin.edits[id];
-      var system = state.systemsById[id];
-      payload.systems[id] = {
-        x: edit.x,
-        y: edit.y,
-        x_norm: Number((edit.x / size).toFixed(6)),
-        y_norm: Number((edit.y / size).toFixed(6)),
-        label: (system && system.mapLabel) || (system ? system.name.replace(/^Система\s+/, '') : null),
-        confidence: 'medium',
-        note: 'Правка через админ-панель атласа'
-      };
-    });
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var link = doc.createElement('a');
-    link.href = url;
-    link.download = 'system-overrides.local.json';
-    doc.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    toast('Экспортировано правок: ' + Object.keys(state.admin.edits).length + '. Файл совместим с data/system-overrides.json');
-  }
-
-  function resetAdminCoords() {
-    var count = Object.keys(state.admin.edits).length;
-    if (!count) { toast('Локальных правок нет'); return; }
-    if (!window.confirm('Сбросить ' + count + ' локальных правок координат? Опубликованные данные не изменятся.')) return;
-    state.admin.edits = {};
-    persistEdits();
-    buildModel();
-    renderCatalog();
-    renderFilters();
-    renderDetail();
-    updateAdminStatus();
-    requestRender();
-    toast('Локальные правки сброшены');
-  }
-
   /* ------------------------------------------------------------------ уведомления и мелочи */
 
   function toast(message) {
@@ -2312,67 +2117,10 @@
     toastsTimer = window.setTimeout(function () { el.toast.classList.remove('visible'); }, 2600);
   }
 
-  var SCALE_STEPS = [1, 2, 5, 10];
-
-  function formatDecimal(value, digits) {
-    var parts = Math.abs(value).toFixed(digits).split('.');
-    parts[0] = formatNumber(Number(parts[0]));
-    return (value < 0 ? '−' : '') + parts.join(',');
-  }
-
-  // Округление до «круглого» расстояния: 1, 2, 5, 10, 20, 50 … единиц карты.
-  // Берём ближайшее в логарифмической шкале — так длина штриха не «скачет»
-  // в два раза на каждом пороге зума.
-  function niceDistance(raw) {
-    var power = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10));
-    var best = power;
-    var bestDiff = Infinity;
-    for (var i = 0; i < SCALE_STEPS.length; i++) {
-      var candidate = power * SCALE_STEPS[i];
-      var diff = Math.abs(Math.log(candidate / raw));
-      if (diff < bestDiff) { bestDiff = diff; best = candidate; }
-    }
-    return best;
-  }
-
-  /* Масштабная линейка. Длина отрезка на экране — это реальное расстояние в
-     единицах карты, умноженное на масштаб: ровно по тому же преобразованию,
-     по которому рисуется карта (toScreen). Линейка сама подбирает «круглое»
-     расстояние, поэтому отрезок остаётся читаемым, а подпись всегда равна
-     фактической длине штриха в пикселях. */
-  function updateScaleBar() {
-    var holder = el.mapScale;
-    if (!holder) return;
-    var bar = holder.querySelector('.scale-line');
-    if (!bar) return;
-    var value = holder.querySelector('.scale-value') || holder.querySelector('span:last-child');
-    var note = holder.querySelector('.scale-note');
-    var scale = state.view.scale;
-    if (!scale || !isFinite(scale) || scale <= 0) return;
-
-    // целевая длина штриха — ~6 % ширины сцены, в разумных пределах
-    var target = clamp(Math.round((state.viewport.w || 1200) * 0.06), 52, 92);
-    var units = niceDistance(target / scale);
-    var px = units * scale;
-    if (px < 16) {
-      units = niceDistance(16 / scale);
-      px = units * scale;
-    }
-
-    var width = px.toFixed(1) + 'px';
-    if (bar.style.width !== width) bar.style.width = width;
-    if (value) value.textContent = formatNumber(units) + ' ед. = ' + Math.round(px) + ' px';
-
-    var perPixel = 1 / scale;
-    var digits = perPixel >= 100 ? 0 : (perPixel >= 10 ? 1 : (perPixel >= 1 ? 2 : 3));
-    if (note) note.textContent = '1 px = ' + formatDecimal(perPixel, digits) + ' ед.';
-  }
-
   function updateZoomReadout() {
     var fit = fitScale();
     var factor = fit > 0 ? state.view.scale / fit : 1;
     el.zoomPercent.textContent = Math.round(factor * 100) + '%';
-    updateScaleBar();
   }
 
   function applyLabelsToggle() {
@@ -2476,11 +2224,9 @@
     ['searchInput', 'clearSearch', 'suggestions', 'searchWrap', 'mapFactionFilter', 'mapStage', 'mapCanvas',
       'leftPanel', 'closePanel', 'toggleSidePanel', 'catalogStats', 'filters', 'filterResultCount',
       'listCaption', 'sortButton', 'catalogList', 'detailPanel',
-      'detailType', 'detailContent', 'detailFooter', 'pinButton', 'closeDetail', 'adminDock', 'adminSelectedName',
-      'coordX', 'coordY', 'applyCoords', 'exportCoords', 'resetCoords', 'adminSaveStatus', 'exitAdmin',
-      'adminAccessButton', 'adminModal', 'adminForm', 'adminCode', 'adminError', 'closeAdminModal', 'helpButton',
-      'closeHelp', 'helpModal', 'zoomIn', 'zoomOut', 'resetMap', 'zoomPercent', 'labelsToggle',
-      'mapScale', 'toast'].forEach(function (id) {
+      'detailType', 'detailContent', 'detailFooter', 'pinButton', 'closeDetail',
+      'helpButton', 'closeHelp', 'helpModal', 'zoomIn', 'zoomOut', 'resetMap', 'zoomPercent', 'labelsToggle',
+      'toast'].forEach(function (id) {
         el[id] = doc.getElementById(id);
       });
     el.legacyControls = qs('.legacy-controls');
@@ -2658,30 +2404,6 @@
       });
     });
 
-    el.adminAccessButton.addEventListener('click', function () {
-      if (state.admin.enabled) { disableAdmin(); toast('Режим редактирования выключен'); return; }
-      openAdminModal();
-    });
-    el.closeAdminModal.addEventListener('click', function () { closeModal(el.adminModal); });
-    el.adminForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-      var value = el.adminCode.value.trim();
-      if (!value) { el.adminError.textContent = 'Введите код доступа'; return; }
-      if (value !== CONFIG.adminCode) {
-        el.adminError.textContent = 'Неверный код. Код по умолчанию указан в README и задаётся в CONFIG.adminCode.';
-        return;
-      }
-      el.adminError.textContent = '';
-      closeModal(el.adminModal);
-      enableAdmin();
-    });
-    el.exitAdmin.addEventListener('click', function () { disableAdmin(); toast('Режим редактирования выключен'); });
-    el.applyCoords.addEventListener('click', applyAdminCoords);
-    el.coordX.addEventListener('keydown', function (event) { if (event.key === 'Enter') applyAdminCoords(); });
-    el.coordY.addEventListener('keydown', function (event) { if (event.key === 'Enter') applyAdminCoords(); });
-    el.exportCoords.addEventListener('click', exportAdminCoords);
-    el.resetCoords.addEventListener('click', resetAdminCoords);
-
     // карта: фильтр по фракции
     el.mapFactionFilter.addEventListener('change', function () {
       state.mapFaction = el.mapFactionFilter.value;
@@ -2698,7 +2420,6 @@
       if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
       if (event.key === 'Escape') {
         if (!el.helpModal.hidden) { closeModal(el.helpModal); return; }
-        if (!el.adminModal.hidden) { closeModal(el.adminModal); return; }
         clearDetail();
         return;
       }
@@ -2761,7 +2482,6 @@
     detectSkin();
     bindEvents();
 
-    try { state.fresh = new URLSearchParams(window.location.search).get('fresh') === '1'; } catch (e) { state.fresh = false; }
   loadDataset().then(function (data) {
       state.meta = data.meta || {};
       state.systemsRaw = data.systems || [];
@@ -2777,14 +2497,6 @@
       initUI();
       renderFilters();
       renderCatalog();
-      updateAdminStatus();
-
-      if (state.admin.edits && Object.keys(state.admin.edits).length) {
-        toast('Применены локальные правки координат: ' + Object.keys(state.admin.edits).length);
-      }
-      try {
-        if (window.sessionStorage.getItem(CONFIG.storage.session) === '1') enableAdmin();
-      } catch (err) { /* ignore */ }
 
       applyHash();
       updateZoomReadout();

@@ -1,6 +1,6 @@
 # Map Atlas — skeleton
 
-Каркас интерактивного атласа: canvas-рендер карты, поиск, каталог, досье, режим правки координат, Timeline Project скин.
+Каркас интерактивного атласа: canvas-рендер карты, поиск, каталог, досье, Timeline Project скин.
 
 Специфические данные, пайплайн и документация удалены. Продакшен по ТЗ — позже.
 
@@ -19,13 +19,13 @@ python3 -m http.server 8080 --bind 0.0.0.0
 | `index.html` | Карта галактики (стартовая) |
 | `sector.html` | Полный атлас сектора |
 | `minimal.html` | Минимальный скин |
-| `app.js` | Логика: canvas-рендер, поиск, каталог, досье, админ-режим |
-| `styles.css`, `wiki-skin.css`, `timeline-skin.css`, `admin-ui.css`, `readability.css`, `minimal-skin.css` | Стили и скины |
+| `app.js` | Логика: canvas-рендер, поиск, каталог, досье |
+| `styles.css`, `wiki-skin.css`, `timeline-skin.css`, `readability.css`, `minimal-skin.css` | Стили и скины |
 | `assets/` | Дизайн-ассеты |
 
-## Документация для админов
+## Правила внесения данных
 
-Правила внесения данных: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
+Как заполнять таблицу-источник, из которой сайт забирает данные: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
 
 ## История изменений
 

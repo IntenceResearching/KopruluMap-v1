@@ -219,22 +219,15 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .brand-copy strong { color: #dffffb; font-size: 11px; letter-spacing: .16em; text-shadow: 0 0 10px rgba(35,235,220,.22); }
 .brand-copy span { color: #57918c; letter-spacing: .12em; }
 .brand-copy i { color: #2ef5e6; }
-.site-nav-link { color: #86aaa7; letter-spacing: .06em; text-transform: uppercase; }
-.site-nav-link:hover { color: #9ffff7; }
-.site-nav-link.active { color: #e9fffd; border-bottom-color: #2ef5e6; text-shadow: 0 0 12px rgba(46,245,230,.4); }
 .feed-status { color: #6eaaa5; }
 .status-dot { background: #35f5e7; box-shadow: 0 0 10px rgba(48,245,230,.9); }
-.top-action,
-.admin-access-button {
+.top-action {
   border-color: rgba(46,245,230,.30);
   background: rgba(2,17,15,.78);
   color: #8fe5df;
   clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
 }
-.top-action:hover,
-.admin-access-button:hover,
-.admin-access-button.active { border-color: #2ef5e6; background: rgba(13,70,65,.38); color: #dffffb; box-shadow: 0 0 17px rgba(31,227,213,.10); }
-.admin-lock { color: #2ef5e6; }
+.top-action:hover { border-color: #2ef5e6; background: rgba(13,70,65,.38); color: #dffffb; box-shadow: 0 0 17px rgba(31,227,213,.10); }
 .icon-button { color: #77bdb8; }
 .icon-button:hover { color: #dffffb; border-color: rgba(46,245,230,.45); background: rgba(27,203,190,.10); }
 
@@ -269,9 +262,7 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .panel,
 .left-panel,
 .detail-panel,
-.info-modal,
-.admin-modal,
-.admin-dock {
+.info-modal {
   border-color: rgba(45, 238, 224, .34);
   background: linear-gradient(145deg, rgba(3,18,16,.985), rgba(1,8,7,.985));
   box-shadow: 0 18px 48px rgba(0,0,0,.61), inset 0 0 28px rgba(32,229,214,.025);
@@ -317,16 +308,7 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .eyebrow-line { background: #2ef5e6; box-shadow: 0 0 9px rgba(46,245,230,.45); }
 .panel-head h1,
 .detail-title,
-.modal-head h2,
-.admin-modal-head h2,
-.admin-dock h2 { color: #edfffd; }
-.wiki-tree { border-bottom-color: rgba(45,238,224,.16); }
-.wiki-nav-item,
-.wiki-sub-item { color: #92b7b4; text-transform: uppercase; letter-spacing: .06em; }
-.wiki-nav-item:hover,
-.wiki-sub-item:hover { color: #aafff8; background: rgba(46,245,230,.05); }
-.wiki-nav-item.expanded { color: #2ef5e6; }
-.wiki-sub-item.active { color: #eafffd; background: rgba(46,245,230,.09); border-left-color: #2ef5e6; box-shadow: inset 7px 0 18px rgba(46,245,230,.04); }
+.modal-head h2 { color: #edfffd; }
 .catalog-stats,
 .filters { border-color: rgba(45,238,224,.16); }
 .stat-value { color: #dffffb; text-shadow: 0 0 10px rgba(42,226,213,.12); }
@@ -336,11 +318,6 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .list-caption { color: #568b87; }
 .stat-item + .stat-item { border-left-color: rgba(45,238,224,.16); }
 .filter-count { color: #45e5d8; }
-.segmented-tabs { border-color: rgba(45,238,224,.20); background: rgba(0,7,6,.72); }
-.tab-button { color: #6e9a96; }
-.tab-button span { color: #39847e; }
-.tab-button.active { color: #dffffb; background: rgba(46,245,230,.10); box-shadow: inset 0 -1px #2ef5e6; }
-.tab-button.active span { color: #49f1e3; }
 .filter-chip {
   border-color: rgba(45,238,224,.19);
   background: rgba(3,17,15,.72);
@@ -414,12 +391,8 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .zoom-readout { color: #bde8e4; }
 .zoom-tick { background: #2ef5e6; box-shadow: 0 0 7px rgba(46,245,230,.45); }
 .control-divider { background: rgba(46,245,230,.25); }
-.map-hint,
-.map-scale { color: rgba(116, 194, 187, .58); }
-.scale-value { color: #b6e9e3; }
-.scale-note { color: rgba(116, 194, 187, .45); }
-.mouse-icon,
-.scale-line { border-color: rgba(61,231,218,.49); }
+.map-hint { color: rgba(116, 194, 187, .58); }
+.mouse-icon { border-color: rgba(61,231,218,.49); }
 .mouse-icon i { background: #2ef5e6; }
 .toast { border-color: rgba(46,245,230,.55); background: #010908; color: #cffffb; }
 .modal-backdrop { background: rgba(0,5,4,.84); backdrop-filter: blur(8px); }
@@ -430,26 +403,6 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .note-block p { color: #759b98; }
 .note-block p b { color: #acd8d4; }
 .modal-foot { color: #426e6a; }
-
-/* Admin surfaces follow the same secure-console language. */
-.admin-dock,
-.admin-modal { border-top-color: #2ef5e6; }
-.admin-instruction,
-.admin-modal-note { color: #729a96; }
-.admin-selected,
-.coordinate-fields input,
-.admin-form input { border-color: rgba(46,245,230,.24); background: #020b0a; color: #dffffb; }
-.coordinate-fields label,
-.admin-form label { color: #77aaa5; }
-.coordinate-fields input:focus,
-.admin-form input:focus { border-color: #2ef5e6; }
-.admin-primary { border-color: #19bdb2; background: rgba(24,150,141,.20); color: #bafff9; clip-path: polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px); }
-.admin-primary:hover { border-color: #2ef5e6; background: rgba(31,212,199,.22); color: #effffd; }
-.admin-tools button { border-color: rgba(46,245,230,.20); background: #020a09; color: #78aaa6; }
-.admin-tools button:hover { border-color: #2ef5e6; color: #cffffb; }
-.admin-save-status { color: #537c78; }
-.admin-security-note { color: #8bb5b1; }
-.admin-security-note b { color: #9ffff7; }
 
 * { scrollbar-color: #147f78 transparent; }
 .minimal-mode .topbar { height: 58px; }
@@ -484,7 +437,6 @@ select:focus-visible { outline-color: #2ef5e6; }
 }
 
 /* Screenshot-driven refinement: clean header, larger telemetry and symmetrical lockup. */
-.site-nav,
 .breadcrumb { display: none !important; }
 
 /* Симметричная шапка: два одинаковых боковых блока и центральная плашка.
@@ -564,7 +516,6 @@ select:focus-visible { outline-color: #2ef5e6; }
   align-items: center;
   gap: 12px;
 }
-.admin-access-button,
 .top-action {
   min-height: 44px;
   padding-inline: 15px;
@@ -623,7 +574,6 @@ select:focus-visible { outline-color: #2ef5e6; }
 .map-notice button { flex: 0 0 20px; width: 20px; height: 20px; }
 
 .coordinates-label,
-.map-scale,
 .map-hint {
   min-height: 36px;
   padding: 0 13px;
@@ -640,15 +590,6 @@ select:focus-visible { outline-color: #2ef5e6; }
   letter-spacing: .15em;
   transition: left .23s ease;
 }
-.map-scale {
-  left: calc(var(--panel-inset, 0px) + 302px);
-  bottom: 20px;
-  gap: 10px;
-  font-size: 8px;
-  letter-spacing: .10em;
-  transition: left .23s ease;
-}
-.scale-line { width: 55px; height: 7px; }
 .map-hint {
   bottom: 20px;
   gap: 10px;
@@ -680,8 +621,6 @@ select:focus-visible { outline-color: #2ef5e6; }
   .topbar-left .map-faction-filter { flex-basis: 145px; }
   .brand-lockup { min-width: 230px; padding-inline: 10px; }
   .brand-copy strong { font-size: 11px; }
-  .admin-access-button { width: 42px; padding: 0; justify-content: center; font-size: 0; }
-  .admin-lock { font-size: 17px; }
   .map-page-intro { width: min(520px, calc(100% - var(--panel-inset, 0px) - 390px)); }
   .map-page-intro h2 { font-size: 32px; }
 }
@@ -704,7 +643,6 @@ select:focus-visible { outline-color: #2ef5e6; }
   .map-page-intro h2 { font-size: 30px; }
   .map-notice { max-width: 320px; }
   .coordinates-label { left: calc(var(--panel-inset, 0px) + 14px); }
-  .map-scale { left: calc(var(--panel-inset, 0px) + 260px); }
 }
 
 @media (max-width: 700px) {
@@ -742,7 +680,6 @@ select:focus-visible { outline-color: #2ef5e6; }
     background: transparent;
     clip-path: none;
   }
-  .topbar-right .admin-access-button,
   .topbar-right .top-action { display: none; }
   .topbar-right .legacy-controls { gap: 0; }
   .topbar-right .icon-button { width: 42px; height: 42px; }
@@ -772,7 +709,6 @@ select:focus-visible { outline-color: #2ef5e6; }
     padding-inline: 9px;
     font-size: 6px;
   }
-  .map-scale { display: none; }
   .map-hint {
     left: auto;
     right: 8px;
@@ -892,7 +828,6 @@ select:focus-visible { outline-color: #2ef5e6; }
   font-weight: 500;
   text-align: right;
 }
-.segmented-tabs { display: none; }
 
 @media (max-width: 700px) {
   .catalog-sections {
@@ -928,14 +863,10 @@ select:focus-visible { outline-color: #2ef5e6; }
   .topbar-left .map-faction-filter select { font-size: 13px; }
   .brand-copy strong { font-size: 17px; }
   .brand-copy span { font-size: 11px; }
-  .admin-access-button,
   .top-action { font-size: 12px; }
   .map-hint { font-size: 12px; }
-  .map-scale { font-size: 11px; }
-  .scale-line { height: 8px; }
   .map-page-intro p { font-size: 13px; }
   .coordinates-label { width: 340px; box-sizing: border-box; }
-  .map-scale { left: calc(var(--panel-inset, 0px) + 374px); }
 }
 
 /* Кнопка «к галактике» на странице сектора (зелёная, в топ-панели) */
