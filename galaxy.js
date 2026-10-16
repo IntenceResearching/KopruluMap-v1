@@ -301,14 +301,82 @@
 
   /* ---------- звёздный фон как у сектора Копрулу ----------
      Повторяет drawSchematic из app.js: цвет #03060c, три цветных облака,
-     900 звёзд с тем же генератором (зерно 100000), размер и прозрачность как там. */
+     900 звёзд с тем же генератором (зерно 100000), размер и прозрачность как там.
+     Параллакс: фон перерисовывается со смещением от движения карты (view.tx/ty),
+     а не от курсора. Смещение заворачивается по размеру холста, поэтому звёзды
+     не упираются в край при любом перетаскивании. */
   var starfield = document.getElementById('galaxyStarfield');
+  var PAR_PAN = 0.06;                 // звёзды едут в 6 % от сдвига карты
+  var parReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var starState = { w: 0, h: 0, dpr: 1, stars: [] };
+  var paintedOff = { x: NaN, y: NaN };
   function starRandom(seed) {
     var s = seed >>> 0;
     return function () {
       s = (s * 1664525 + 1013904223) >>> 0;
       return s / 4294967296;
     };
+  }
+  function wrapMod(v, m) { return ((v % m) + m) % m; }
+  function parallaxOffset() {
+    if (parReduce) return { x: 0, y: 0 };
+    // округляем до полпикселя, чтобы не перерисовывать на микро-сдвигах
+    return { x: Math.round(view.tx * PAR_PAN * 2) / 2, y: Math.round(view.ty * PAR_PAN * 2) / 2 };
+  }
+  function paintStarfield(ox, oy) {
+    if (!starfield || !starfield.getContext || !starState.w) return;
+    var w = starState.w, h = starState.h;
+    var ctx = starfield.getContext('2d');
+    ctx.setTransform(starState.dpr, 0, 0, starState.dpr, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#03060c';
+    ctx.fillRect(0, 0, w, h);
+
+    var size = Math.max(w, h);
+    var clouds = [
+      { x: 0.36, y: 0.30, r: 0.26, color: 'rgba(80,120,190,.16)' },
+      { x: 0.62, y: 0.58, r: 0.30, color: 'rgba(180,120,60,.12)' },
+      { x: 0.78, y: 0.30, r: 0.22, color: 'rgba(120,90,200,.10)' }
+    ];
+    clouds.forEach(function (cloud) {
+      var radius = cloud.r * size;
+      var bx = wrapMod(cloud.x * w + ox, w);
+      var by = wrapMod(cloud.y * h + oy, h);
+      for (var i = -1; i <= 1; i++) {
+        for (var j = -1; j <= 1; j++) {
+          var cx = bx + i * w, cy = by + j * h;
+          if (cx + radius < 0 || cx - radius > w || cy + radius < 0 || cy - radius > h) continue;
+          var gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+          gradient.addColorStop(0, cloud.color);
+          gradient.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+        }
+      }
+    });
+
+    ctx.fillStyle = '#cfe0f5';
+    starState.stars.forEach(function (s) {
+      var x = wrapMod(s.x + ox, w), y = wrapMod(s.y + oy, h);
+      var rr = Math.max(0.5, s.r);
+      // звезда у края рисуется и с противоположной стороны (шов не виден)
+      var xs = [x];
+      if (x < rr + 1) xs.push(x + w);
+      if (x > w - rr - 1) xs.push(x - w);
+      var ys = [y];
+      if (y < rr + 1) ys.push(y + h);
+      if (y > h - rr - 1) ys.push(y - h);
+      ctx.globalAlpha = s.a;
+      xs.forEach(function (px) {
+        ys.forEach(function (py) {
+          ctx.beginPath();
+          ctx.arc(px, py, rr, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      });
+    });
+    ctx.globalAlpha = 1;
+    paintedOff = { x: ox, y: oy };
   }
   function drawStarfield() {
     if (!starfield || !starfield.getContext) return;
@@ -321,39 +389,19 @@
     starfield.height = Math.round(h * dpr);
     starfield.style.width = w + 'px';
     starfield.style.height = h + 'px';
-    var ctx = starfield.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#03060c';
-    ctx.fillRect(0, 0, w, h);
-
-    var size = Math.max(w, h);
-    var clouds = [
-      { x: 0.36, y: 0.30, r: 0.26, color: 'rgba(80,120,190,.16)' },
-      { x: 0.62, y: 0.58, r: 0.30, color: 'rgba(180,120,60,.12)' },
-      { x: 0.78, y: 0.30, r: 0.22, color: 'rgba(120,90,200,.10)' }
-    ];
-    clouds.forEach(function (cloud) {
-      var cx = cloud.x * w, cy = cloud.y * h, radius = cloud.r * size;
-      var gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      gradient.addColorStop(0, cloud.color);
-      gradient.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
-    });
-
+    // та же последовательность случайных чисел, что и раньше: вид при нулевом смещении не меняется
     var random = starRandom(100000);
-    ctx.fillStyle = '#cfe0f5';
+    var stars = [];
     for (var i = 0; i < 900; i++) {
       var x = random() * w;
       var y = random() * h;
       var r = 0.4 + random() * 1.5;
       var a = 0.12 + random() * 0.5;
-      ctx.globalAlpha = a;
-      ctx.beginPath();
-      ctx.arc(x, y, Math.max(0.5, r), 0, Math.PI * 2);
-      ctx.fill();
+      stars.push({ x: x, y: y, r: r, a: a });
     }
-    ctx.globalAlpha = 1;
+    starState = { w: w, h: h, dpr: dpr, stars: stars };
+    var off = parallaxOffset();
+    paintStarfield(off.x, off.y);
   }
   window.addEventListener('resize', drawStarfield);
   if (document.readyState === 'complete') drawStarfield();
@@ -992,18 +1040,9 @@
     odz.addEventListener('pointerleave', hidePreview);
   }
 
-  /* ---------- параллакс звёздного фона (слабый) ----------
-     Звёзды движутся медленнее карты: сдвиг ≈ 6 % от сдвига вида, с ограничением
-     3.5 % ширины/высоты. Плюс лёгкий сдвиг за курсором (до 1 %). Канвас чуть
-     больше области (scale 1.12), поэтому края не видны. */
-  var PAR_SCALE = 1.12;
-  var PAR_PAN = 0.06;
-  var PAR_LIMIT = 0.035;
-  var PAR_MOUSE = 0.01;
-  var parReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var parRef = null;
-  var parCur = { x: 0, y: 0 };
-  var parMouse = { x: 0, y: 0 };
+  /* ---------- параллакс звёздного фона: от движения карты ----------
+     Курсор не участвует. Перерисовка звёзд запрашивается из applyView, то есть при
+     любом сдвиге вида: перетаскивании, зуме, переходе. */
   var parQueued = false;
 
   function parallaxRequest() {
@@ -1015,24 +1054,8 @@
   function parallaxTick() {
     parQueued = false;
     if (!starfield) return;
-    var sz = sceneSize();
-    if (!parRef) parRef = { x: view.tx, y: view.ty };
-    var panX = clamp((view.tx - parRef.x) * PAR_PAN, -PAR_LIMIT * sz.w, PAR_LIMIT * sz.w);
-    var panY = clamp((view.ty - parRef.y) * PAR_PAN, -PAR_LIMIT * sz.h, PAR_LIMIT * sz.h);
-    var k = parReduce ? 0 : 1;
-    var tx = (panX + parMouse.x * sz.w * PAR_MOUSE) * k;
-    var ty = (panY + parMouse.y * sz.h * PAR_MOUSE) * k;
-    parCur.x += (tx - parCur.x) * 0.12;
-    parCur.y += (ty - parCur.y) * 0.12;
-    starfield.style.transform = 'translate(' + parCur.x.toFixed(2) + 'px,' + parCur.y.toFixed(2) + 'px) scale(' + PAR_SCALE + ')';
-    if (Math.abs(tx - parCur.x) > 0.05 || Math.abs(ty - parCur.y) > 0.05) parallaxRequest();
+    var off = parallaxOffset();
+    if (off.x === paintedOff.x && off.y === paintedOff.y) return;
+    paintStarfield(off.x, off.y);
   }
-
-  stage.addEventListener('pointermove', function (e) {
-    if (parReduce) return;
-    var r = stage.getBoundingClientRect();
-    parMouse.x = clamp((e.clientX - r.left) / r.width - 0.5, -0.5, 0.5) * 2;
-    parMouse.y = clamp((e.clientY - r.top) / r.height - 0.5, -0.5, 0.5) * 2;
-    parallaxRequest();
-  });
 })();
