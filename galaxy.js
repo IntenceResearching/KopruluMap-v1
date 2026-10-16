@@ -171,7 +171,7 @@
     panMargin: 0.25,     // край карты может уйти внутрь экрана на эту долю размера сцены
     dive: 2.6,           // финальный «прыжок» к сектору
     diveMs: 950,
-    focusStrength: 0.6, // первый клик: доля пути до центра видимой области (0 — не двигать, 1 — точно в центр)
+    focusStrength: 1,   // первый клик: доля пути до центра видимой области (1 — точно в центр)
     focusMs: 520,
     focusZoom: 4.1,       // первый клик: зум до 410% (диапазон 400–420%)
     focusZoomBelow: 4.0,  // зум подтягиваем только если текущий меньше 400%
@@ -319,12 +319,14 @@
   var pointers = {};
   var drag = null;
   var pinchDist = 0;
+  var suppressClick = false;   // после реального drag click не считается выбором пустого места
 
   function isUi(target) {
     return !!(target.closest && target.closest('.sector-panel, .map-controls, .sectors-sidebar, .sectors-curtain, .sectors-backdrop, .map-hint'));
   }
 
   stage.addEventListener('pointerdown', function (e) {
+    suppressClick = false;
     if (busy || isUi(e.target)) return;
     var p = scenePoint(e);
     pointers[e.pointerId] = p;
@@ -369,6 +371,7 @@
   function endPointer(e) {
     delete pointers[e.pointerId];
     if (drag && drag.id === e.pointerId) {
+      if (drag.moved) suppressClick = true;
       drag = null;
       stage.classList.remove('is-dragging');
     }
@@ -668,6 +671,23 @@
     activateKoprulu();
   });
   if (closeBtn) closeBtn.addEventListener('click', hidePanel);
+
+  // Клик по пустому месту карты снимает выделение: панель закрывается, квадраты
+  // возвращаются в обычное состояние. Следующий клик по квадрату снова первый
+  // (панель + приближение), а не переход, и ховер работает как прежде.
+  // Масштаб и положение карты не меняются.
+  function clearSelection() {
+    if (busy) return;
+    var active = [hotspot, zerus, odz].some(function (x) {
+      return x && (x.classList.contains('is-selected') || x.classList.contains('is-locked'));
+    });
+    if (active) hidePanel();
+  }
+  stage.addEventListener('click', function (e) {
+    if (suppressClick) { suppressClick = false; return; }
+    if (e.target.closest && e.target.closest('.sector-hotspot, .sector-preview, .sector-panel, .map-controls, .sectors-sidebar, .sectors-curtain, .sectors-backdrop, .map-hint')) return;
+    clearSelection();
+  });
 
   /* ---------- непрерывность блика хотспотов ----------
      Раньше на ховере менялась animation-duration, и браузер пересчитывал позицию
