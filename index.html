@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Карта галактики: переход к карте сектора.">
   <title>Timeline Project — Galaxy Map</title>
@@ -77,7 +77,7 @@
 
     <!-- Слой карты: масштабируется и двигается целиком, хотспот внутри него -->
     <div class="map-layer" id="mapLayer">
-      <img class="galaxy-map" id="galaxyMap" src="assets/galaxy-map.jpg" alt="Карта галактики" draggable="false">
+      <img class="galaxy-map" id="galaxyMap" src="assets/galaxy-map.jpg" alt="Карта галактики" draggable="false" fetchpriority="high">
 
       <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи -->
       <button class="sector-hotspot" id="sectorHotspot" type="button"
@@ -147,14 +147,14 @@
   </main>
 
   <!-- Консоль после загрузки: печатает скрипт сверху вниз, висит 8 с (на мобильных 2 с) -->
-  <div class="boot-console" id="bootConsole" aria-hidden="true" hidden>
+  <div class="boot-console" id="bootConsole" hidden>
     <button class="boot-console-close" id="bootConsoleClose" type="button" aria-label="Закрыть консоль">×</button>
-    <div class="boot-console-body" id="bootConsoleBody"></div>
+    <div class="boot-console-body" id="bootConsoleBody" aria-hidden="true"></div>
   </div>
 
-  <script src="links.js"></script>
-  <script src="galaxy-fx.js?v=galaxy-fx-1"></script>
-  <script src="galaxy-ping.js?v=galaxy-ping-1"></script>
+  <script src="links.js" defer></script>
+  <script src="galaxy-fx.js?v=galaxy-fx-1" defer></script>
+  <script src="galaxy-ping.js?v=galaxy-ping-1" defer></script>
   <script src="galaxy.js?v=galaxy-hs39" defer></script>
 </body>
 </html>
