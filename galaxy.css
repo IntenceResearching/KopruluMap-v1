@@ -175,6 +175,7 @@ body {
   filter: drop-shadow(0 0 6px rgba(127, 255, 212, 0.8));
   pointer-events: none;
   box-sizing: border-box;
+  transition: border-color 0.4s ease, filter 0.4s ease;
 }
 
 .tc-tl { border-top-width: 2px; border-left-width: 2px; }
@@ -515,6 +516,7 @@ body {
   pointer-events: none;
   overflow: visible;
   filter: drop-shadow(0 0 6px rgba(127, 255, 212, 0.8));
+  transition: filter 0.4s ease;
 }
 
 .target-outer path {
@@ -522,6 +524,7 @@ body {
   stroke: rgba(127, 255, 212, 0.95);
   stroke-width: 3px;
   stroke-linecap: square;
+  transition: stroke 0.4s ease;
 }
 
 .galaxy-stage.is-red-target .target-outer {
@@ -535,6 +538,20 @@ body {
 .galaxy-stage.is-red-target .target-corner {
   border-color: rgba(255, 90, 90, 0.95);
   filter: drop-shadow(0 0 6px rgba(255, 70, 70, 0.8));
+}
+
+/* Пинг ОЗД: синий на всём сужении, красный только в самом конце (см. galaxy.js) */
+.galaxy-stage.is-odz-ping .target-corner {
+  border-color: rgba(90, 170, 255, 0.95);
+  filter: drop-shadow(0 0 6px rgba(90, 170, 255, 0.8));
+}
+
+.galaxy-stage.is-odz-ping .target-outer {
+  filter: drop-shadow(0 0 6px rgba(90, 170, 255, 0.8));
+}
+
+.galaxy-stage.is-odz-ping .target-outer path {
+  stroke: rgba(90, 170, 255, 0.95);
 }
 
 .galaxy-error {

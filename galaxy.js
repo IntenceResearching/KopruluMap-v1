@@ -1066,8 +1066,9 @@
     busy = true;
     cancelAnim();
     hidePanel();
-    el.classList.add('is-odz-red');          // цвет меняется плавно (CSS transition)
-    stage.classList.add('is-red-target');
+    // Пинг синий на всём сужении; красным становится только в самом конце (LOCK_AT)
+    stage.classList.add('is-odz-ping');
+    var reddened = false;
     var side = view.s * base;
     var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
     var MSG_AT = LOCK_AT + CONFIG.animateMs + 150;
@@ -1083,6 +1084,12 @@
       var ms = now - t0;
       cornerTrack.p = progressAt(ms);
       refreshCorners();
+      if (!reddened && ms >= LOCK_AT) {
+        reddened = true;
+        el.classList.add('is-odz-red');      // квадрат и рамка плавно краснеют (CSS transition)
+        stage.classList.remove('is-odz-ping');
+        stage.classList.add('is-red-target');
+      }
       if (!zoomed && ms >= LOCK_AT) {
         zoomed = true;
         el.classList.add('is-locked');
@@ -1094,7 +1101,7 @@
       cancelAnim();
       cornerTrack = null;
       teardownCorners();
-      stage.classList.remove('is-red-target');
+      stage.classList.remove('is-red-target', 'is-odz-ping');
       showOdzMessages();
     }
     window.requestAnimationFrame(frame);
