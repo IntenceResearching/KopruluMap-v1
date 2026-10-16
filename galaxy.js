@@ -632,10 +632,10 @@
   }
 
   // Внешняя рамка: чуть больше основной, догоняет её с отставанием (лаг).
-  var OUTER_GAP = 10;        // зазор внешней рамки от основной, px
+  var OUTER_GAP = 18;        // зазор внешней рамки от основной, px
   var OUTER_TURN = Math.PI / 6; // 30°: поворот концов линий к центру
   var OUTER_ARM_K = 0.5;     // длина плеч внешней рамки относительно основной
-  var OUTER_TAIL_MAX = 40;   // максимальная длина загнутого конца, px
+  var OUTER_TAIL_MAX = 22;   // максимальная длина загнутого конца, px
   var outerEl = null;
   var outerPath = null;
   var outerBox = null;       // текущий (догоняющий) box внешней рамки
@@ -683,8 +683,8 @@
     // плечи короче основных: внешние углы читаются как уголки, а не как контур
     var base = armSizes(b.l, b.t, b.r, b.b);
     var a = { w: base.w * OUTER_ARM_K, h: base.h * OUTER_ARM_K };
-    var tailH = Math.min(OUTER_TAIL_MAX, a.w * 0.6);
-    var tailV = Math.min(OUTER_TAIL_MAX, a.h * 0.6);
+    var tailH = Math.min(OUTER_TAIL_MAX, a.w * 0.4);
+    var tailV = Math.min(OUTER_TAIL_MAX, a.h * 0.4);
     var s30 = Math.sin(OUTER_TURN), c30 = Math.cos(OUTER_TURN);
     var d = '';
     // [угол x, угол y, ix (внутрь по x), iy (внутрь по y)]

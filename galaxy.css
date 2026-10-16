@@ -520,7 +520,7 @@ body {
 .target-outer path {
   fill: none;
   stroke: rgba(127, 255, 212, 0.95);
-  stroke-width: 2px;
+  stroke-width: 3px;
   stroke-linecap: square;
 }
 
