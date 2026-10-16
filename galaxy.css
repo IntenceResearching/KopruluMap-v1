@@ -1,8 +1,15 @@
 /* Galaxy map page */
+/* Страница — колонка: шапка в потоке сверху, сцена занимает всё остальное (как .map-stage у сектора) */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 .galaxy-stage {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
   overflow: hidden;
   background: #010605;
   cursor: grab;
@@ -11,6 +18,18 @@
 
 .galaxy-stage.is-dragging { cursor: grabbing; }
 
+/* Шапка галактики: та же, что у сектора (.topbar из скина), но в потоке страницы, а не абсолютная */
+.galaxy-topbar {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  flex: 0 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 20;
+}
+
 /* Фон как у карты сектора: радиальный градиент .app-shell + сетка .app-shell::before
    + виньетка .map-vignette. Лежит под картой (первый потомок сцены). */
 .galaxy-bg {
@@ -18,14 +37,22 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 67% 44%, rgba(18, 93, 87, 0.17), transparent 31%),
-    radial-gradient(circle at 67% 44%, #03100f 0, #010706 58%, #010403 100%);
+  overflow: hidden;
+  background: #03060c;
+}
+
+/* Звёздное поле (рисуется в galaxy.js, как drawSchematic у сектора) */
+.galaxy-starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
 }
 
 .galaxy-bg::before {
   content: "";
   position: absolute;
+  z-index: 1;
   inset: 0;
   opacity: 0.42;
   background-image:
@@ -39,6 +66,7 @@
 .galaxy-bg::after {
   content: "";
   position: absolute;
+  z-index: 2;
   inset: 0;
   background: radial-gradient(ellipse at 53% 46%, transparent 40%, rgba(0, 8, 7, 0.16) 74%, rgba(0, 3, 3, 0.67) 100%);
 }
@@ -133,29 +161,12 @@
 .tc-br { border-bottom-width: 2px; border-right-width: 2px; }
 
 /* Плашка сверху по центру — тот же .brand-lockup, что в шапке сектора */
-.galaxy-plate {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 11;
-  pointer-events: none;
-  background: rgba(1, 8, 7, 0.86);
-  backdrop-filter: blur(10px);
-}
 
 /* Док списка секторов справа вверху: кнопка-иконка + список, выезжающий влево */
 .sectors-sidebar {
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  position: relative;
   z-index: 12;
-  transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Когда открыта панель сектора — док уходит левее её, чтобы не перекрывать крестик */
-body.has-panel .sectors-sidebar {
-  right: calc(min(360px, 90vw) + 14px);
+  flex: 0 0 auto;
 }
 
 .sectors-toggle {
@@ -252,7 +263,7 @@ body.has-panel .sectors-sidebar {
   right: 0;
   width: 360px;
   max-width: 90vw;
-  height: 100vh;
+  height: 100%;
   background: rgba(3, 17, 15, 0.92);
   border-left: 1px solid rgba(127, 255, 212, 0.3);
   backdrop-filter: blur(6px);

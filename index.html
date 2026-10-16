@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Карта галактики: переход к карте сектора.">
   <title>Timeline Project — Galaxy Map</title>
-  <link rel="stylesheet" href="styles.css?v=galaxy-hs9">
-  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs9">
-  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs9">
+  <link rel="stylesheet" href="styles.css?v=galaxy-hs10">
+  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs10">
+  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs10">
 </head>
 <body>
   <div class="timeline-loader" id="timelineLoader" role="status" aria-live="polite">
@@ -19,30 +19,57 @@
     </div>
   </div>
 
-  <!-- Список секторов: выезжает влево из кнопки-иконки справа вверху (подписи нет: кнопка и список не дублируют друг друга) -->
-  <div class="sectors-sidebar" id="sectorsSidebar">
-    <ul class="sectors-list" id="sectorsList">
-      <li>
-        <button class="sector-list-item" type="button"
-                data-cx="73.8167" data-cy="32.3167" data-size="1.8667" data-href="sector.html"
-                data-name="Сектор Копрулу">
-          <span class="sector-list-thumb">
-            <img src="assets/thumb-koprulu.jpg" alt="" width="48" height="48">
-          </span>
-          <span class="sector-list-name">Сектор Копрулу</span>
-        </button>
-      </li>
-    </ul>
-    <button class="icon-button sectors-toggle" id="sectorsToggle" type="button"
-            aria-expanded="true" aria-controls="sectorsList" aria-label="Список секторов" title="Список секторов">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M4 12h10M4 17h10M17 9l3 3-3 3"></path></svg>
-    </button>
-  </div>
+  <!-- Шапка как у сектора Копрулу: поиск, фильтр, плашка, кнопки справа, логотип -->
+  <header class="topbar galaxy-topbar">
+    <div class="topbar-left">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.4 15.4 5 5"></path></svg>
+        <input type="search" autocomplete="off" placeholder="Место или система…" aria-label="Поиск места или системы">
+        <kbd>/</kbd>
+      </div>
+      <div class="map-faction-filter">
+        <label class="sr-only" for="mapFactionFilter">Фильтр системы по фракции</label>
+        <select id="mapFactionFilter" aria-label="Фильтр систем по фракции">
+          <option value="all">Все фракции</option>
+        </select>
+      </div>
+    </div>
 
+    <div class="brand-lockup" aria-label="Timeline Project — Galaxy Map">
+      <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>GALAXY MAP</span></div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="admin-access-button" type="button"><span class="admin-lock" aria-hidden="true">⌑</span> Получить доступ администратора</button>
+      <button class="top-action" type="button"><span class="help-mark">i</span> О ДАННЫХ</button>
+
+      <!-- Список секторов: кнопка-иконка справа в шапке, список выезжает влево -->
+      <div class="sectors-sidebar is-collapsed" id="sectorsSidebar">
+        <ul class="sectors-list" id="sectorsList">
+          <li>
+            <button class="sector-list-item" type="button"
+                    data-cx="73.8167" data-cy="32.3167" data-size="1.8667" data-href="sector.html"
+                    data-name="Сектор Копрулу">
+              <span class="sector-list-thumb">
+                <img src="assets/thumb-koprulu.jpg" alt="" width="48" height="48">
+              </span>
+              <span class="sector-list-name">Сектор Копрулу</span>
+            </button>
+          </li>
+        </ul>
+        <button class="icon-button sectors-toggle" id="sectorsToggle" type="button"
+                aria-expanded="false" aria-controls="sectorsList" aria-label="Список секторов" title="Список секторов">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M4 12h10M4 17h10M17 9l3 3-3 3"></path></svg>
+        </button>
+      </div>
+
+      <div class="brand-emblem corner-mark" role="img" aria-label="Timeline Project"></div>
+    </div>
+  </header>
 
   <main class="galaxy-stage" id="galaxyStage">
     <!-- Фон как у карты сектора: градиент, сетка, виньетка (под картой) -->
-    <div class="galaxy-bg" aria-hidden="true"></div>
+    <div class="galaxy-bg" aria-hidden="true"><canvas class="galaxy-starfield" id="galaxyStarfield"></canvas></div>
 
     <!-- Слой карты: масштабируется и двигается целиком, хотспот внутри него -->
     <div class="map-layer" id="mapLayer">
@@ -58,11 +85,6 @@
     <!-- Превью при ховере на хотспот: макет 300×300 (тот же, что в панели сектора) -->
     <div class="sector-preview" id="sectorPreview" aria-hidden="true">
       <img src="assets/timeline-project-mark.webp" alt="" width="300" height="300">
-    </div>
-
-    <!-- Плашка сверху по центру: тот же стиль, что .brand-lockup в шапке сектора -->
-    <div class="brand-lockup galaxy-plate" aria-label="Timeline Project — Galaxy Map">
-      <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>GALAXY MAP</span></div>
     </div>
 
     <!-- Управление картой: как на странице сектора -->
@@ -97,6 +119,6 @@
 
   </main>
 
-  <script src="galaxy.js?v=galaxy-hs9" defer></script>
+  <script src="galaxy.js?v=galaxy-hs10" defer></script>
 </body>
 </html>
