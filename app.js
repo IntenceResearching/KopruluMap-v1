@@ -2646,29 +2646,6 @@
     }
   }
 
-  function fillHelp() {
-    var meta = state.meta || {};
-    var verified = state.systems.filter(function (system) { return system.coordSource === 'map'; }).length;
-    var blocks = el.helpModal.querySelectorAll('.note-block p');
-    if (blocks[0]) {
-      blocks[0].innerHTML = 'Каталог: <b>' + (meta.placeCount || meta.planetCount) + ' канонических мест</b> и <b>' + meta.systemCount +
-        ' систем</b> по полному аудиту StarCraft Wiki. Планеты, луны, астероиды и станции учитываются отдельно. ' +
-        'Подложка: <b>' + escapeHtml(meta.mapImage || '') + '</b>, ' + formatNumber(mapSize()) + ' × ' + formatNumber(mapSize()) + ' px.';
-    }
-    if (blocks[1]) {
-      blocks[1].innerHTML = 'Большинство источников не дают надёжных координат звёздных систем. ' +
-        '<b>' + verified + ' из ' + meta.systemCount + ' систем</b> получили координату с подписей карты (' + meta.mapLabeledObjects +
-        ' читаемых подписей; ' + (state.labels.length) + ' точек в слое подписей). Остальные ' + (meta.systemCount - verified) +
-        ' — условные точки: подпись на карте не найдена. Режим редактирования координат включается кодом из CONFIG.adminCode.';
-    }
-    if (blocks[2]) {
-      blocks[2].innerHTML = 'Карта разбита на WebP-тайлы 512 × 512 в уровнях ' + ((meta.levels || []).join(' / ')) + ' px. ' +
-        (state.rasterMode === 'none'
-          ? 'Сейчас растр не подключён — рисуется схема с сеткой и слоем подписей карты; тайлы появятся после <code>tools/build_tiles.py</code>.'
-          : 'Canvas берёт только видимую область, грубый слой служит подложкой, кэш ограничен размером ' + CONFIG.tiles.cacheLimit + ' тайлов.');
-    }
-  }
-
   /* ------------------------------------------------------------------ запуск */
 
   function initUI() {
@@ -2688,9 +2665,6 @@
     }).join('');
     el.mapFactionFilter.innerHTML = '<option value="all">Все фракции · ' + state.systems.length + '</option>' + options;
 
-    if (state.meta && state.meta.coordinateNote) {
-      el.helpModal.querySelector('.modal-foot span:last-child').textContent = 'ДАННЫЕ ОТ ' + (state.meta.generated || '');
-    }
   }
 
   function boot() {
@@ -2724,7 +2698,6 @@
       renderFilters();
       renderCatalog();
       updateNotice();
-      fillHelp();
       updateAdminStatus();
 
       if (state.admin.edits && Object.keys(state.admin.edits).length) {

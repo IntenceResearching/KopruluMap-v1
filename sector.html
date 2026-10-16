@@ -51,7 +51,7 @@
         <button class="admin-access-button" id="adminAccessButton" type="button"><span class="admin-lock" aria-hidden="true">⌑</span> Получить доступ администратора</button>
         <div class="legacy-controls" hidden>
           <div class="feed-status"><span class="status-dot"></span><span>АРХИВ СИНХРОНИЗИРОВАН</span></div>
-          <button class="top-action" id="helpButton" type="button"><span class="help-mark">i</span> О ДАННЫХ</button>
+          <button class="top-action" id="helpButton" type="button"><span class="help-mark">i</span> О КАРТЕ</button>
         </div>
         <div class="brand-emblem corner-mark" role="img" aria-label="Timeline Project"></div>
       </div>
@@ -65,9 +65,9 @@
 
       <div class="coordinates-label" aria-hidden="true"><span>TIMELINE NAVIGATION GRID</span><span>SECTOR</span></div>
       <section class="map-page-intro" aria-label="Текущий раздел">
-        <div class="breadcrumb"><span>Лор</span><i>›</i><span>Вводная часть</span><i>›</i><b>Карта сектора</b></div>
-        <h2>Карта сектора</h2>
-        <p>Timeline Project · канонический реестр Копрулу</p>
+        <div class="breadcrumb"><span>Лор</span><i>›</i><span>Вводная часть</span><i>›</i><b>Пространство сектора Копрулу</b></div>
+        <h2>Пространство сектора Копрулу</h2>
+        <p>И его ближайшие территории...</p>
       </section>
 
       <aside class="left-panel panel" id="leftPanel" aria-label="Каталог систем и мест">
@@ -164,16 +164,16 @@
     <div class="modal-backdrop" id="helpModal" hidden>
       <section class="info-modal panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-head">
-          <div><div class="eyebrow"><span class="eyebrow-line"></span> SYSTEM NOTES</div><h2 id="modalTitle">О карте и данных</h2></div>
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> SYSTEM NOTES</div><h2 id="modalTitle">О карте</h2></div>
           <button class="icon-button" id="closeHelp" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
         </div>
         <div class="modal-body">
-          <div class="note-block"><span class="note-number">01</span><div><h3>Источники</h3><p>Подложка загружается из публичного файла Google Drive. Главный каталог — строгий канонический реестр StarCraft Wiki; исходные 316 строк сохранены отдельно для аудита.</p></div></div>
-          <div class="note-block"><span class="note-number">02</span><div><h3>Системы и точность</h3><p>PDF перечисляет миры, но почти нигде не указывает их звёздные системы. Поэтому подтверждённые связи отделены от группировок по повторяющимся обозначениям. <b>Положение узлов на карте схематическое:</b> координат систем в исходниках нет, а точки на подложке не подписаны.</p><div class="source-links"><a href="https://starcraft.fandom.com/wiki/Category:Star_Systems" target="_blank" rel="noreferrer">Список известных систем ↗</a><a href="https://starcraft.fandom.com/wiki/Sara_system" target="_blank" rel="noreferrer">Sara system ↗</a><a href="https://starcraft.fandom.com/wiki/Tarsonis_system" target="_blank" rel="noreferrer">Tarsonis system ↗</a><a href="https://starcraft.fandom.com/wiki/Korhal" target="_blank" rel="noreferrer">Korhal system ↗</a></div></div></div>
-          <div class="note-block"><span class="note-number">03</span><div><h3>Плавный зум без тяжёлой подложки</h3><p>Карта разбита на WebP-тайлы 512 × 512 в четырёх уровнях детализации (1 250 → 10 000 px). Canvas загружает только видимую область, использует грубый слой как подложку и хранит ограниченный LRU-кэш. Перетаскивание и масштабирование не пересоздают изображение целиком.</p></div></div>
+          <div class="note-block"><span class="note-number">01</span><div><h3>Что это за карта</h3><p>Неофициальная кастомная карта сектора Копрулу. Это не копия официальной схемы, а собранная заново визуальная модель: поиск по местам и системам, фильтр по фракциям, подписи систем.</p></div></div>
+          <div class="note-block"><span class="note-number">02</span><div><h3>Основа: канон</h3><p>Названия миров, систем и фракций опираются на канонические сведения о вселенной StarCraft. Основной каталог собран по реестру StarCraft Wiki.</p></div></div>
+          <div class="note-block"><span class="note-number">03</span><div><h3>Как читать схему</h3><p>Расположение систем условное. В источниках нет точных астрометрических координат, поэтому расстояния и взаимное положение объектов не отражают реальный масштаб. StarCraft и связанные названия принадлежат Blizzard Entertainment.</p></div></div>
           <div class="note-block"><span class="note-number">04</span><div><h3>Управление</h3><p>Колесо мыши или жест pinch — приблизить; зажми и перетаскивай — переместить; <kbd>+</kbd>/<kbd>−</kbd> — масштаб; <kbd>0</kbd> — вернуть обзор; <kbd>/</kbd> — фокус поиска. Наведи на узел, чтобы увидеть места системы, нажми — закрепить карточку.</p></div></div>
         </div>
-        <div class="modal-foot"><span>DATASET REV.</span><span>NO ASTROMETRIC COORDINATES IN SOURCE</span></div>
+        <div class="modal-foot"><span>КАСТОМНАЯ КАРТА</span><span>НЕОФИЦИАЛЬНЫЙ ПРОЕКТ</span></div>
       </section>
     </div>
 
