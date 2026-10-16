@@ -1350,16 +1350,18 @@
     var best = null;
     var bestDistance = Infinity;
     var list = state.systems;
+    // метрики от масштаба, а не от системы: считаем один раз на вызов
+    var metrics = markerMetrics(state.view.scale);
+    var hoverBonus = clamp(5 * state.view.scale, 2, 7);
     for (var i = 0; i < list.length; i++) {
       var system = list[i];
       if (!system.coord) continue;
       var point = toScreen(system.coord[0], system.coord[1]);
       var dx = point.x - screenX;
       var dy = point.y - screenY;
-      var distance = Math.sqrt(dx * dx + dy * dy);
-      var metrics = markerMetrics(state.view.scale);
-      var radius = metrics.hitRadius + (state.hoverId === system.id ? clamp(5 * state.view.scale, 2, 7) : 0);
-      if (distance <= radius && distance < bestDistance) {
+      var distance = dx * dx + dy * dy; // сравниваем квадраты, корень — только для ответа
+      var radius = metrics.hitRadius + (state.hoverId === system.id ? hoverBonus : 0);
+      if (distance <= radius * radius && distance < bestDistance) {
         best = system;
         bestDistance = distance;
       }
