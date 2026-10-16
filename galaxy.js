@@ -44,7 +44,9 @@
     fitInset: 1,
     panMargin: 0.25,     // край карты может уйти внутрь экрана на эту долю размера сцены
     dive: 2.6,           // финальный «прыжок» к сектору
-    diveMs: 950
+    diveMs: 950,
+    focusStrength: 0.6, // первый клик: доля пути до центра видимой области (0 — не двигать, 1 — точно в центр)
+    focusMs: 520
   };
 
   /* ---------- вид карты ----------
@@ -339,13 +341,33 @@
   }
   function hidePanel() {
     if (panel) panel.hidden = true;
-    hotspot.classList.remove('is-selected');
+    hotspot.classList.remove('is-selected', 'is-locked');
   }
 
+  // Первый клик: мягко сдвигаем карту, чтобы квадрат оказался ближе к центру
+  // видимой области (левее открытой панели). Масштаб не меняем.
+  function focusSector() {
+    if (busy) return;
+    var sz = sceneSize();
+    var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
+    var c = boxOf(hotspot);
+    var k = CONFIG.focusStrength;
+    var nx = view.tx + (visibleW / 2 - c.cx) * k;
+    var ny = view.ty + (sz.h / 2 - c.cy) * k;
+    hotspot.classList.add('is-locked');
+    animateTo(view.s, nx, ny, CONFIG.focusMs);
+  }
+
+  // Первый клик — выбор сектора (панель + сдвиг); второй клик по выбранному — переход
   hotspot.addEventListener('click', function (e) {
     e.preventDefault();
     if (busy) return;
+    if (hotspot.classList.contains('is-selected')) {
+      runTransition(hotspot, defaultHref);
+      return;
+    }
     showPanel();
+    focusSector();
   });
   if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
