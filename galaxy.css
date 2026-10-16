@@ -528,6 +528,12 @@ body {
 
 .galaxy-error[hidden] { display: none; }
 
+.galaxy-error {
+  transition: opacity 0.4s ease;
+}
+
+.galaxy-error.is-out { opacity: 0; }
+
 .galaxy-error-dot { visibility: hidden; }
 
 .galaxy-error.is-done .galaxy-error-dot {

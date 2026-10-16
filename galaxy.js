@@ -118,6 +118,8 @@
     layer.style.setProperty('--s', String(view.s));
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
     positionPreview();
+    refreshCorners();
+    parallaxRequest();
   }
 
   function layout() {
@@ -491,6 +493,23 @@
     corners = [];
   }
 
+  // Состояние рамки, которая следует за картой: {start, p, el}. Пока задано,
+  // рамка пересчитывается при каждом изменении вида (applyView), а не на кадр позже.
+  var cornerTrack = null;
+  function refreshCorners() {
+    if (!cornerTrack || !corners.length) return;
+    var st = cornerTrack;
+    var end = boxOf(st.el);
+    var p = st.p;
+    var s0 = st.start;
+    placeCorners(
+      s0.l + p * (end.l - s0.l),
+      s0.t + p * (end.t - s0.t),
+      s0.r + p * (end.r - s0.r),
+      s0.b + p * (end.b - s0.b)
+    );
+  }
+
   function placeCorners(l, t, r, b) {
     var w = Math.max(8, Math.min(260, (r - l) * 0.34));
     var h = Math.max(8, Math.min(260, (b - t) * 0.34));
@@ -632,8 +651,26 @@
     animateTo(ns, nx, ny, ms);
   }
 
+  var ZERUS_SHOW_MS = 5000;   // сколько сообщение висит на экране
+  var ZERUS_FADE_MS = 400;    // длительность затухания
+  var zerusHide = null;
+  var zerusFade = null;
+
+  function hideZerusError() {
+    if (!zerusMsg) return;
+    zerusMsg.classList.add('is-out');
+    zerusFade = window.setTimeout(function () {
+      zerusMsg.hidden = true;
+      zerusFade = null;
+    }, ZERUS_FADE_MS);
+  }
+
   function showZerusError() {
     if (!zerusMsg || !zerusText) return;
+    if (zerusHide) window.clearTimeout(zerusHide);
+    if (zerusFade) window.clearTimeout(zerusFade);
+    zerusHide = window.setTimeout(hideZerusError, ZERUS_SHOW_MS);
+    zerusMsg.classList.remove('is-out');
     zerusMsg.hidden = false;
     zerusMsg.classList.remove('is-done');
     zerusText.textContent = '';
@@ -660,7 +697,8 @@
     var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
 
     setupCorners();
-    placeCorners(start.l, start.t, start.r, start.b);
+    cornerTrack = { start: start, p: 0, el: el };
+    refreshCorners();
 
     var t0 = performance.now();
     var locked = false;
@@ -668,14 +706,8 @@
 
     function frame(now) {
       var ms = now - t0;
-      var p = progressAt(ms);
-      var end = boxOf(el);
-      placeCorners(
-        start.l + p * (end.l - start.l),
-        start.t + p * (end.t - start.t),
-        start.r + p * (end.r - start.r),
-        start.b + p * (end.b - start.b)
-      );
+      cornerTrack.p = progressAt(ms);
+      refreshCorners();
       if (!locked && ms >= LOCK_AT) {
         locked = true;
         el.classList.add('is-locked');
@@ -694,6 +726,7 @@
       // вместо перехода — сообщение об ошибке
       busy = false;
       cancelAnim();
+      cornerTrack = null;
       teardownCorners();
       stage.classList.remove('is-red-target');
       showZerusError();
@@ -713,4 +746,48 @@
       focusArea(zerus);
     });
   }
+
+  /* ---------- параллакс звёздного фона (слабый) ----------
+     Звёзды движутся медленнее карты: сдвиг ≈ 6 % от сдвига вида, с ограничением
+     3.5 % ширины/высоты. Плюс лёгкий сдвиг за курсором (до 1 %). Канвас чуть
+     больше области (scale 1.12), поэтому края не видны. */
+  var PAR_SCALE = 1.12;
+  var PAR_PAN = 0.06;
+  var PAR_LIMIT = 0.035;
+  var PAR_MOUSE = 0.01;
+  var parReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var parRef = null;
+  var parCur = { x: 0, y: 0 };
+  var parMouse = { x: 0, y: 0 };
+  var parQueued = false;
+
+  function parallaxRequest() {
+    if (!starfield || parQueued) return;
+    parQueued = true;
+    window.requestAnimationFrame(parallaxTick);
+  }
+
+  function parallaxTick() {
+    parQueued = false;
+    if (!starfield) return;
+    var sz = sceneSize();
+    if (!parRef) parRef = { x: view.tx, y: view.ty };
+    var panX = clamp((view.tx - parRef.x) * PAR_PAN, -PAR_LIMIT * sz.w, PAR_LIMIT * sz.w);
+    var panY = clamp((view.ty - parRef.y) * PAR_PAN, -PAR_LIMIT * sz.h, PAR_LIMIT * sz.h);
+    var k = parReduce ? 0 : 1;
+    var tx = (panX + parMouse.x * sz.w * PAR_MOUSE) * k;
+    var ty = (panY + parMouse.y * sz.h * PAR_MOUSE) * k;
+    parCur.x += (tx - parCur.x) * 0.12;
+    parCur.y += (ty - parCur.y) * 0.12;
+    starfield.style.transform = 'translate(' + parCur.x.toFixed(2) + 'px,' + parCur.y.toFixed(2) + 'px) scale(' + PAR_SCALE + ')';
+    if (Math.abs(tx - parCur.x) > 0.05 || Math.abs(ty - parCur.y) > 0.05) parallaxRequest();
+  }
+
+  stage.addEventListener('pointermove', function (e) {
+    if (parReduce) return;
+    var r = stage.getBoundingClientRect();
+    parMouse.x = clamp((e.clientX - r.left) / r.width - 0.5, -0.5, 0.5) * 2;
+    parMouse.y = clamp((e.clientY - r.top) / r.height - 0.5, -0.5, 0.5) * 2;
+    parallaxRequest();
+  });
 })();
