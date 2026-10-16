@@ -30,6 +30,17 @@ body {
   z-index: 20;
 }
 
+/* Правый блок шапки без обрезки: иначе clip-path скина режет раскрытый список секторов */
+.galaxy-topbar .topbar-right {
+  clip-path: none;
+  grid-column: 3;
+}
+
+/* Левой колонки (поиска) больше нет: плашка остаётся по центру шапки */
+.galaxy-topbar .brand-lockup {
+  grid-column: 2;
+}
+
 /* Фон как у карты сектора: радиальный градиент .app-shell + сетка .app-shell::before
    + виньетка .map-vignette. Лежит под картой (первый потомок сцены). */
 .galaxy-bg {
