@@ -504,6 +504,34 @@ body {
   background-repeat: no-repeat;
 }
 
+/* Внешняя рамка: те же цвет, толщина и свечение, что у основных уголков */
+.target-outer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 21;
+  pointer-events: none;
+  overflow: visible;
+  filter: drop-shadow(0 0 6px rgba(127, 255, 212, 0.8));
+}
+
+.target-outer path {
+  fill: none;
+  stroke: rgba(127, 255, 212, 0.95);
+  stroke-width: 2px;
+  stroke-linecap: square;
+}
+
+.galaxy-stage.is-red-target .target-outer {
+  filter: drop-shadow(0 0 6px rgba(255, 70, 70, 0.8));
+}
+
+.galaxy-stage.is-red-target .target-outer path {
+  stroke: rgba(255, 90, 90, 0.95);
+}
+
 .galaxy-stage.is-red-target .target-corner {
   border-color: rgba(255, 90, 90, 0.95);
   filter: drop-shadow(0 0 6px rgba(255, 70, 70, 0.8));
