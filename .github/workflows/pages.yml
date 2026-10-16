@@ -23,8 +23,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v4
+      # Публикуется содержимое site/ — это корень сайта. data/ и assets/ лежат в корне
+      # репозитория (их пишет sync.py), поэтому перед загрузкой копируются в артефакт.
+      - name: Собрать публикацию
+        run: |
+          rm -rf .publish
+          mkdir -p .publish
+          cp -R site/. .publish/
+          for dir in data assets; do
+            if [ -d "$dir" ]; then cp -R "$dir" .publish/; fi
+          done
+          ls -la .publish
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./.publish
       - id: deployment
         uses: actions/deploy-pages@v4

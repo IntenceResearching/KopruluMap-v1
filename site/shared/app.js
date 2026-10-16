@@ -3,10 +3,11 @@
  * Статика без зависимостей: canvas-рендер тайлов с LOD, маркеры систем,
  * поиск, каталог, досье и слой подписей карты.
  *
- * Данные: data/meta.json, data/systems.json, data/planets.json,
- *         data/system-overrides.json, data/map-labels.json.
- * Растр:  assets/tiles.json (+ assets/tiles/<level>/<x>_<y>.webp) либо
- *         assets/map-preview.webp. Если растра нет — рисуется схема с сеткой,
+ * Данные: /data/meta.json, /data/systems.json, /data/planets.json,
+ *         /data/system-overrides.json, /data/map-labels.json.
+ * Растр:  /assets/tiles.json (+ /assets/tiles/<level>/<x>_<y>.webp) либо
+ *         /assets/map-preview.webp.
+ * Пути от корня сайта: страницы лежат в site/<страница>/, общий код — в site/shared/. Если растра нет — рисуется схема с сеткой,
  *         звёздным полем и слоем подписей, снятых с карты.
  */
 (function () {
@@ -19,7 +20,7 @@
       labels: 'map.atlas.labels.v1'
     },
     data: {
-      dir: 'data/',
+      dir: '/data/',
       meta: 'meta.json',
       systems: 'systems.json',
       planets: 'planets.json',
@@ -27,8 +28,8 @@
       labels: 'map-labels.json'
     },
     tiles: {
-      manifest: 'assets/tiles.json',
-      dir: 'assets/tiles',
+      manifest: '/assets/tiles.json',
+      dir: '/assets/tiles',
       cacheLimit: 260
     },
     view: {
@@ -335,8 +336,8 @@
         fetchJSON(dir + CONFIG.data.overrides + suffix, { systems: {} }),
         fetchJSON(dir + CONFIG.data.labels + suffix, []),
         wantsRaster ? fetchJSON(CONFIG.tiles.manifest + suffix, null) : Promise.resolve(null),
-        fetchCSV('data/systems.csv' + suffix),
-        fetchCSV('data/places.csv' + suffix)
+        fetchCSV('/data/systems.csv' + suffix),
+        fetchCSV('/data/places.csv' + suffix)
       ]).then(function (parts) {
         var systems = parts[0];
         var planets = parts[1];
@@ -726,7 +727,7 @@
     } else if ((window.SITE_LINKS && SITE_LINKS.sectorMapPreview) || rasterExpected(meta)) {
       // манифеста нет, но растр собран — пробуем один предпросмотр
       // (ссылка из links.js имеет приоритет над meta.json)
-      var previewUrl = (window.SITE_LINKS && SITE_LINKS.sectorMapPreview) || (meta && meta.assets && meta.assets.preview) || 'assets/map-preview.webp';
+      var previewUrl = (window.SITE_LINKS && SITE_LINKS.sectorMapPreview) || (meta && meta.assets && meta.assets.preview) || '/assets/map-preview.webp';
       loadPreview(previewUrl);
     }
   }
@@ -2508,7 +2509,7 @@
 
       if (!state.systems.length) {
         doc.body.insertAdjacentHTML('beforeend',
-          '<div class="data-error">Не удалось прочитать <code>data/systems.json</code>. ' +
+          '<div class="data-error">Не удалось прочитать <code>/data/systems.json</code>. ' +
           'Откройте сайт через HTTP-сервер (не <code>file://</code>): например <code>python3 -m http.server 8080</code>.</div>');
       }
     });

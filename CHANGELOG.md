@@ -1,3 +1,13 @@
+## Структура: одна папка сайта, подпапки под страницы, общий код в shared/
+
+- Весь сайт собран в `site/` — эта папка и есть корень публикации. Главная (карта галактики) лежит плоско: `site/index.html` открывается по `/`.
+- У каждой остальной страницы своя папка по имени страницы: `site/sector/sector.html`, `site/minimal/minimal.html` (+ `minimal-skin.css`).
+- Общий код вынесен в `site/shared/`: `app.js`, `links.js`, `timeline-loader.js`, `styles.css`, `timeline-skin.css`, `wiki-skin.css`, `readability.css`, `catalog-typography.css`.
+- Все внутренние ссылки переведены на пути от корня сайта: `/shared/…`, `/sector/sector.html`, `/data/…`, `/assets/…`. Страницы теперь можно перекладывать по папкам без переписывания путей.
+- `data/` и `assets/` остались в корне репозитория (их пишет `tools/sync.py`, пути не тронуты). Публикация Pages копирует их в артефакт рядом с содержимым `site/`; папка сборки `.publish/` в `.gitignore`.
+- Служебное (`docs/`, `tools/`, `.github/`, README, CHANGELOG) осталось вне `site/`. Удалён устаревший `demo/target-lock.html`.
+- Версии статики в кэш-бастах обновлены на `?v=structure-1`.
+
 ## Чистка: пиксельная линейка и админ-доступ удалены, вычищен мёртвый код
 
 - Пиксельная линейка масштаба убрана полностью: разметка в `sector.html`/`minimal.html`, стили (`.map-scale`, `.scale-line`, `.scale-value`, `.scale-note`) и счёт в `app.js` (`updateScaleBar`, `niceDistance`, `formatDecimal`). В шапке остался только процент зума.

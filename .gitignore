@@ -10,6 +10,7 @@ assets/map-source.sha256
 # Сборки
 koprulu-atlas.html
 dist/
+.publish/
 
 # Служебное
 __pycache__/

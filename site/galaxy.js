@@ -170,7 +170,7 @@
   if (!hotspot || !stage || !map || !layer) return;
 
   var sectorName = hotspot.getAttribute('data-name') || 'Сектор';
-  var defaultHref = (window.SITE_LINKS && SITE_LINKS.sectorPage) || 'sector.html';
+  var defaultHref = (window.SITE_LINKS && SITE_LINKS.sectorPage) || '/sector/sector.html';
 
   // Параметры — как на странице сектора (app.js → CONFIG.view)
   var CONFIG = {
@@ -811,7 +811,7 @@
     });
   }
   /* Макет Зеруса для миниатюры в списке. Пока пустая строка — остаётся красная заглушка.
-     Чтобы вставить картинку, укажите путь, например 'assets/zerus-macket.jpg'. */
+     Чтобы вставить картинку, укажите путь, например '/assets/zerus-macket.jpg'. */
   var ZERUS_MACKET = '';
   var zerusThumb = document.querySelector('.sector-list-thumb--zerus');
   if (zerusThumb && ZERUS_MACKET) {

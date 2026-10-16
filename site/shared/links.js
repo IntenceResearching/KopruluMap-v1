@@ -9,8 +9,8 @@
 */
 window.SITE_LINKS = {
   // Картинка карты галактики: локальный файл или внешняя ссылка (например, на GitHub)
-  galaxyMapImage: 'assets/galaxy-map.jpg',
-  sectorPage: 'sector.html',
-  galaxyPage: 'index.html',
+  galaxyMapImage: '/assets/galaxy-map.jpg',
+  sectorPage: '/sector/sector.html',
+  galaxyPage: '/index.html',
   sectorMapPreview: 'https://drive.google.com/uc?export=view&id=1j9FL3Pd8vSRsw_D-R4SQuAV3Ufxhf7Dc'
 };

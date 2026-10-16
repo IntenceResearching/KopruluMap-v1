@@ -210,7 +210,7 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
   border: 1px solid rgba(54, 247, 233, .48);
   border-radius: 50%;
   background-color: #020807;
-  background-image: url("assets/timeline-project-mark.webp");
+  background-image: url("/assets/timeline-project-mark.webp");
   background-size: contain;
   background-position: center;
   box-shadow: 0 0 15px rgba(35,235,220,.13), inset 0 0 10px rgba(35,235,220,.08);
@@ -603,7 +603,7 @@ select:focus-visible { outline-color: #2ef5e6; }
   border: 0;
   border-radius: 0;
   background-color: transparent;
-  background-image: url("assets/timeline-project-mark.webp");
+  background-image: url("/assets/timeline-project-mark.webp");
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
