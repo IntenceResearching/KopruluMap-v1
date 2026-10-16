@@ -471,3 +471,75 @@ body {
     opacity: 0.35;
   }
 }
+
+/* --- Зерус: красная версия маркера, перехода и сообщения ---------------- */
+.sector-hotspot--zerus {
+  border-color: rgba(255, 90, 90, 0.85);
+  background: rgba(255, 70, 70, 0.08);
+  box-shadow: 0 0 calc(10px / var(--s, 1)) rgba(255, 70, 70, 0.35);
+}
+
+.sector-hotspot--zerus:hover,
+.sector-hotspot--zerus:focus-visible,
+.sector-hotspot--zerus.is-selected {
+  border-color: #ff5a5a;
+  background: rgba(255, 70, 70, 0.18);
+  box-shadow: 0 0 calc(18px / var(--s, 1)) rgba(255, 70, 70, 0.7);
+}
+
+.sector-hotspot--zerus.is-locked {
+  border-color: #ff5a5a;
+  background: rgba(255, 70, 70, 0.28);
+  box-shadow: 0 0 calc(26px / var(--s, 1)) rgba(255, 70, 70, 0.95);
+}
+
+.sector-hotspot--zerus::after {
+  background: linear-gradient(110deg,
+    transparent 38%,
+    rgba(255, 60, 60, 0.10) 44%,
+    rgba(255, 90, 90, 0.70) 50%,
+    rgba(255, 60, 60, 0.10) 56%,
+    transparent 62%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+}
+
+.galaxy-stage.is-red-target .target-corner {
+  border-color: rgba(255, 90, 90, 0.95);
+  filter: drop-shadow(0 0 6px rgba(255, 70, 70, 0.8));
+}
+
+.galaxy-error {
+  position: fixed;
+  z-index: 30;
+  top: 33.33vh; /* треть высоты экрана, по центру */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 14px 22px;
+  border: 1px solid rgba(255, 70, 70, 0.7);
+  background: rgba(24, 2, 2, 0.82);
+  color: #ff5a5a;
+  font: 22px/1.2 var(--mono);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  box-shadow: 0 0 28px rgba(255, 60, 60, 0.35);
+  pointer-events: none;
+}
+
+.galaxy-error[hidden] { display: none; }
+
+.galaxy-error-dot { visibility: hidden; }
+
+.galaxy-error.is-done .galaxy-error-dot {
+  visibility: visible;
+  animation: galaxy-error-blink 1s step-end infinite;
+}
+
+@keyframes galaxy-error-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (max-width: 480px) {
+  .galaxy-error { font-size: 17px; padding: 12px 16px; letter-spacing: 0.08em; }
+}

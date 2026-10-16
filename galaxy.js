@@ -599,4 +599,118 @@
       runTransition(btn, btn.getAttribute('data-href') || defaultHref);
     });
   }
+
+  /* ---------- Зерус: красная область без страницы ----------
+     Первый клик — приближение к квадрату (как у Копрулу, без панели).
+     Второй клик — красный переход из 4 уголков, приближение, затем сообщение
+     «Ошибка. Нет данных»: печатается по буквам, точка в конце моргает. */
+  var zerus = document.getElementById('zerusHotspot');
+  var zerusMsg = document.getElementById('galaxyError');
+  var zerusText = document.getElementById('galaxyErrorText');
+  var ZERUS_MESSAGE = 'Ошибка. Нет данных';
+  var zerusTimer = null;
+
+  function focusArea(el) {
+    var sz = sceneSize();
+    var c = boxOf(el);
+    var nx, ny, ns, ms;
+    if (view.s < CONFIG.focusZoomBelow) {
+      ns = CONFIG.focusZoom;
+      var side = ns * base;
+      var px = parseFloat(el.getAttribute('data-cx')) / 100 * side;
+      var py = parseFloat(el.getAttribute('data-cy')) / 100 * side;
+      nx = sz.w / 2 - px;
+      ny = sz.h / 2 - py;
+      ms = CONFIG.focusZoomMs;
+    } else {
+      ns = view.s;
+      nx = view.tx + (sz.w / 2 - c.cx) * CONFIG.focusStrength;
+      ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
+      ms = CONFIG.focusMs;
+    }
+    el.classList.add('is-locked');
+    animateTo(ns, nx, ny, ms);
+  }
+
+  function showZerusError() {
+    if (!zerusMsg || !zerusText) return;
+    zerusMsg.hidden = false;
+    zerusMsg.classList.remove('is-done');
+    zerusText.textContent = '';
+    if (zerusTimer) window.clearInterval(zerusTimer);
+    var i = 0;
+    zerusTimer = window.setInterval(function () {
+      i += 1;
+      zerusText.textContent = ZERUS_MESSAGE.slice(0, i);
+      if (i >= ZERUS_MESSAGE.length) {
+        window.clearInterval(zerusTimer);
+        zerusTimer = null;
+        zerusMsg.classList.add('is-done');
+      }
+    }, 45);
+  }
+
+  function runZerusTransition(el) {
+    if (busy) return;
+    busy = true;
+    cancelAnim();
+    stage.classList.add('is-red-target');
+    var side = view.s * base;
+    var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
+    var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
+
+    setupCorners();
+    placeCorners(start.l, start.t, start.r, start.b);
+
+    var t0 = performance.now();
+    var locked = false;
+    var diving = false;
+
+    function frame(now) {
+      var ms = now - t0;
+      var p = progressAt(ms);
+      var end = boxOf(el);
+      placeCorners(
+        start.l + p * (end.l - start.l),
+        start.t + p * (end.t - start.t),
+        start.r + p * (end.r - start.r),
+        start.b + p * (end.b - start.b)
+      );
+      if (!locked && ms >= LOCK_AT) {
+        locked = true;
+        el.classList.add('is-locked');
+      }
+      if (!diving && ms >= DIVE_AT) {
+        diving = true;
+        var c = boxOf(el);
+        var nextS = clamp(view.s * CONFIG.dive, CONFIG.minFactor, CONFIG.maxFactor);
+        var k = nextS / view.s;
+        animateTo(nextS,
+          c.cx - (c.cx - view.tx) * k,
+          c.cy - (c.cy - view.ty) * k,
+          CONFIG.diveMs);
+      }
+      if (ms < NAV_AT) { window.requestAnimationFrame(frame); return; }
+      // вместо перехода — сообщение об ошибке
+      busy = false;
+      cancelAnim();
+      teardownCorners();
+      stage.classList.remove('is-red-target');
+      showZerusError();
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  if (zerus) {
+    zerus.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (busy) return;
+      if (zerus.classList.contains('is-selected')) {
+        runZerusTransition(zerus);
+        return;
+      }
+      zerus.classList.add('is-selected');
+      focusArea(zerus);
+    });
+  }
 })();
