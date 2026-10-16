@@ -785,3 +785,70 @@ body {
 @media (max-width: 480px) {
   .odz-message { font-size: 15px; }
 }
+
+/* --- Консоль после загрузки ------------------------------------------------
+   Маленький текст синим, чёрная полупрозрачная подложка, строки ~1/5 экрана.
+   Печатается сверху вниз, висит 8 с; кнопка-крестик сбоку. Логика — galaxy.js. */
+.boot-console {
+  position: fixed;
+  left: 16px;
+  top: 96px;
+  z-index: 40;
+  width: 22vw;
+  min-width: 240px;
+  max-height: 46vh;
+  padding: 26px 10px 8px;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid rgba(90, 170, 255, 0.45);
+  box-shadow: 0 0 14px rgba(90, 170, 255, 0.18);
+  font: 11px/1.45 var(--mono);
+  color: #5aa8ff;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.boot-console[hidden] { display: none; }
+.boot-console.is-out { opacity: 0; }
+
+.boot-console-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(90, 170, 255, 0.5);
+  color: #5aa8ff;
+  font: 14px/1 var(--mono);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.boot-console-close:hover { background: rgba(90, 170, 255, 0.15); }
+
+.boot-console-body {
+  max-height: calc(46vh - 40px);
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.boot-console-line { min-height: 1.45em; }
+
+.boot-console-cursor {
+  display: inline-block;
+  width: 0.6em;
+  margin-left: 1px;
+  animation: boot-console-blink 0.9s step-end infinite;
+}
+
+@keyframes boot-console-blink { 50% { opacity: 0; } }
+
+@media (max-width: 768px) {
+  .boot-console { width: 62vw; font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-console-cursor { animation: none; }
+}

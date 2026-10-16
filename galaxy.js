@@ -20,13 +20,140 @@
 
   /* ---------- loader: полный логотип не меньше 1.6 с ---------- */
   function dismissLoader() {
-    if (!loader) return;
-    window.setTimeout(function () { loader.style.display = 'none'; }, 1600);
+    window.setTimeout(function () {
+      if (loader) loader.style.display = 'none';
+      startBootConsole();
+    }, 1600);
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', dismissLoader);
   } else {
     dismissLoader();
+  }
+
+  /* ---------- консоль после загрузки ----------
+     Печатает скрипт сверху вниз, синим, на чёрной полупрозрачной подложке.
+     Висит 8 с, в конце «Welcome, Commander.». На мобильных в 4 раза быстрее (2 с).
+     Скорость печати подстраивается под частоту кадров, а не под число тиков. */
+  var BOOT_SCRIPT = [
+    'system> init secure_link --atlas timeline',
+    'system> auth commander_id=0x7F2A clearance=LEVEL-4 ... ok',
+    'system> request access: space-data: xx:xx:2513',
+    'system> request access: directorate_fleet/ued_space ... pending',
+    'system> -redirect from=<Station_Terminal_№11.>',
+    'system> route: Station_Terminal_№11 -> UED_SPACE ... ok',
+    'system> scanning registry: 3182 nodes, 19245 links',
+    'system> decrypt KopruluSectorData2513 ........ ok',
+    'system> bypass firewall proxy=10.431.3182.19245',
+    'system> handshake [##########------] 62%',
+    'system> handshake [################] 100%',
+    'system> session_token = 4f:9c:12:e0:aa:31:0b',
+    'system> checksum 02931-8549-2022-301855 ... match',
+    'system> mount /zerus/archive/cam#001 ... ok',
+    'system> mount /zerus/archive/cam#002 ... ok',
+    'system> if (clearance < 4) { deny(); } // skipped',
+    'system> for node in registry: sync(node)',
+    'system> sync 3182/3182 ... done',
+    'system> access granted: space-data',
+    '...',
+    '...',
+    '...',
+    'Welcome, Commander.'
+  ];
+  var BOOT_TOTAL_MS = 8000;
+  var BOOT_TOTAL_MOBILE_MS = 2000;
+  var BOOT_FADE_MS = 400;
+  var BOOT_LINE_PAUSE_MS = 90;
+  var BOOT_TICK_MS = 16;
+  var bootTimer = null;
+  var bootHideTimer = null;
+  var bootClosed = false;
+  var bootWired = false;
+
+  function closeBootConsole() {
+    if (bootClosed) return;
+    bootClosed = true;
+    if (bootTimer) window.clearTimeout(bootTimer);
+    if (bootHideTimer) window.clearTimeout(bootHideTimer);
+    var box = document.getElementById('bootConsole');
+    if (!box || box.hidden) return;
+    box.classList.add('is-out');
+    window.setTimeout(function () {
+      box.hidden = true;
+      box.classList.remove('is-out');
+    }, BOOT_FADE_MS);
+  }
+
+  function startBootConsole() {
+    var box = document.getElementById('bootConsole');
+    var body = document.getElementById('bootConsoleBody');
+    var closeBtn = document.getElementById('bootConsoleClose');
+    if (!box || !body) return;
+    if (!bootWired && closeBtn) {
+      bootWired = true;
+      closeBtn.addEventListener('click', closeBootConsole);
+    }
+
+    var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+    var total = mobile ? BOOT_TOTAL_MOBILE_MS : BOOT_TOTAL_MS;
+    var pause = mobile ? 25 : BOOT_LINE_PAUSE_MS;
+    var chars = 0;
+    BOOT_SCRIPT.forEach(function (s) { chars += s.length; });
+    // 85 % общего времени уходит на печать, остальное — дочитать последнюю строку
+    var charMs = Math.max(0.5, (total * 0.85 - BOOT_SCRIPT.length * pause) / chars);
+
+    box.hidden = false;
+    body.innerHTML = '';
+    var li = 0, ci = 0, row = null, textNode = null;
+    var waitUntil = 0, acc = 0, last = performance.now(), done = false;
+
+    function newRow() {
+      row = document.createElement('div');
+      row.className = 'boot-console-line';
+      textNode = document.createTextNode('');
+      var cursor = document.createElement('span');
+      cursor.className = 'boot-console-cursor';
+      cursor.textContent = '▌';
+      row.appendChild(textNode);
+      row.appendChild(cursor);
+      body.appendChild(row);
+    }
+
+    function schedule() {
+      if (!done) bootTimer = window.setTimeout(tick, BOOT_TICK_MS);
+    }
+
+    function tick() {
+      bootTimer = null;
+      var now = performance.now();
+      var dt = now - last;
+      last = now;
+      if (now < waitUntil) { schedule(); return; }
+      acc += dt;
+      while (acc >= charMs && !done) {
+        acc -= charMs;
+        if (li >= BOOT_SCRIPT.length) { done = true; break; }
+        if (!row) newRow();
+        var text = BOOT_SCRIPT[li];
+        if (ci < text.length) {
+          ci++;
+          textNode.nodeValue = text.slice(0, ci);
+        } else {
+          // строка готова: следующая начнётся после короткой паузы
+          li++;
+          ci = 0;
+          row = null;
+          waitUntil = now + pause;
+          acc = 0;
+          break;
+        }
+      }
+      body.scrollTop = body.scrollHeight;
+      schedule();
+    }
+
+    bootHideTimer = window.setTimeout(closeBootConsole, total);
+    schedule();
   }
 
   if (!hotspot || !stage || !map || !layer) return;
