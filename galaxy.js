@@ -592,14 +592,26 @@
       stage.appendChild(d);
       return d;
     });
+    // внешняя рамка: SVG с загнутыми концами (поворот 30° к центру)
+    outerEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    outerEl.setAttribute('class', 'target-outer');
+    outerEl.setAttribute('aria-hidden', 'true');
+    outerPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    outerEl.appendChild(outerPath);
+    stage.appendChild(outerEl);
     window.requestAnimationFrame(function () { dim.classList.add('is-on'); });
   }
 
   function teardownCorners() {
     if (dim && dim.parentNode) dim.parentNode.removeChild(dim);
     corners.forEach(function (c) { if (c.parentNode) c.parentNode.removeChild(c); });
+    if (outerEl && outerEl.parentNode) outerEl.parentNode.removeChild(outerEl);
     dim = null;
     corners = [];
+    outerEl = null;
+    outerPath = null;
+    outerBox = null;
+    mainBox = null;
   }
 
   // Состояние рамки, которая следует за картой: {start, p, el}. Пока задано,
@@ -619,9 +631,76 @@
     );
   }
 
+  // Внешняя рамка: чуть больше основной, догоняет её с отставанием (лаг).
+  var OUTER_GAP = 10;        // зазор внешней рамки от основной, px
+  var OUTER_TURN = Math.PI / 6; // 30°: поворот концов линий к центру
+  var OUTER_TAIL_MAX = 60;   // максимальная длина загнутого конца, px
+  var outerEl = null;
+  var outerPath = null;
+  var outerBox = null;       // текущий (догоняющий) box внешней рамки
+  var mainBox = null;        // основная рамка (цель для догона)
+  var outerQueued = false;
+
+  function expandBox(b, g) { return { l: b.l - g, t: b.t - g, r: b.r + g, b: b.b + g }; }
+
+  function armSizes(l, t, r, b) {
+    return {
+      w: Math.max(8, Math.min(260, (r - l) * 0.34)),
+      h: Math.max(8, Math.min(260, (b - t) * 0.34))
+    };
+  }
+
+  function outerRequest() {
+    if (!outerEl || outerQueued) return;
+    outerQueued = true;
+    window.requestAnimationFrame(outerTick);
+  }
+
+  function outerTick() {
+    outerQueued = false;
+    if (!outerEl || !mainBox || !outerBox) return;
+    var goal = expandBox(mainBox, OUTER_GAP);
+    var k = 0.12;
+    outerBox = {
+      l: outerBox.l + (goal.l - outerBox.l) * k,
+      t: outerBox.t + (goal.t - outerBox.t) * k,
+      r: outerBox.r + (goal.r - outerBox.r) * k,
+      b: outerBox.b + (goal.b - outerBox.b) * k
+    };
+    var settled = Math.abs(goal.l - outerBox.l) < 0.3 && Math.abs(goal.t - outerBox.t) < 0.3 &&
+                  Math.abs(goal.r - outerBox.r) < 0.3 && Math.abs(goal.b - outerBox.b) < 0.3;
+    if (settled) outerBox = goal;
+    drawOuter(outerBox);
+    if (!settled) outerRequest();
+  }
+
+  // Рисует четыре угла внешней рамки. От каждого угла идут два плеча, на концах
+  // каждого плеча — загиб на 30° к центру рамки.
+  function drawOuter(b) {
+    var sz = sceneSize();
+    outerEl.setAttribute('viewBox', '0 0 ' + sz.w + ' ' + sz.h);
+    var a = armSizes(b.l, b.t, b.r, b.b);
+    var tailH = Math.min(OUTER_TAIL_MAX, a.w * 0.5);
+    var tailV = Math.min(OUTER_TAIL_MAX, a.h * 0.5);
+    var s30 = Math.sin(OUTER_TURN), c30 = Math.cos(OUTER_TURN);
+    var d = '';
+    // [угол x, угол y, ix (внутрь по x), iy (внутрь по y)]
+    [[b.l, b.t, 1, 1], [b.r, b.t, -1, 1], [b.l, b.b, 1, -1], [b.r, b.b, -1, -1]].forEach(function (c) {
+      var cx = c[0], cy = c[1], ix = c[2], iy = c[3];
+      var eh = [cx + ix * a.w, cy];                 // конец горизонтального плеча
+      var ev = [cx, cy + iy * a.h];                 // конец вертикального плеча
+      var th = [eh[0] + tailH * ix * c30, eh[1] + tailH * iy * s30];
+      var tv = [ev[0] + tailV * ix * s30, ev[1] + tailV * iy * c30];
+      d += 'M' + eh[0] + ' ' + eh[1] + 'L' + cx + ' ' + cy + 'L' + ev[0] + ' ' + ev[1];
+      d += 'M' + eh[0] + ' ' + eh[1] + 'L' + th[0] + ' ' + th[1];
+      d += 'M' + ev[0] + ' ' + ev[1] + 'L' + tv[0] + ' ' + tv[1];
+    });
+    outerPath.setAttribute('d', d);
+  }
+
   function placeCorners(l, t, r, b) {
-    var w = Math.max(8, Math.min(260, (r - l) * 0.34));
-    var h = Math.max(8, Math.min(260, (b - t) * 0.34));
+    var a = armSizes(l, t, r, b);
+    var w = a.w, h = a.h;
     var pos = [[l, t], [r - w, t], [l, b - h], [r - w, b - h]];
     corners.forEach(function (c, i) {
       c.style.left = pos[i][0] + 'px';
@@ -629,6 +708,10 @@
       c.style.width = w + 'px';
       c.style.height = h + 'px';
     });
+    mainBox = { l: l, t: t, r: r, b: b };
+    // внешняя рамка стартует заметно больше и догоняет основную
+    if (!outerBox) outerBox = expandBox(mainBox, OUTER_GAP * 2);
+    outerRequest();
   }
 
   // прогресс 0..1 → состояние рамки на текущем кадре
