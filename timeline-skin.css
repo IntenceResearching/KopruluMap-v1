@@ -238,9 +238,13 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .icon-button { color: #77bdb8; }
 .icon-button:hover { color: #dffffb; border-color: rgba(46,245,230,.45); background: rgba(27,203,190,.10); }
 
-/* Map surface and grid. */
-.map-stage { inset: 68px 0 0 300px; background: #010605; }
-.map-stage.wide { left: 0; }
+/* Map surface and grid.
+   Сцена всегда занимает всю ширину: каталог лежит поверх карты, поэтому при
+   открытии/закрытии панели canvas не меняет размер — карта не «моргает» и не
+   сдвигается. --panel-inset — ширина занятой панелью полосы; её используют
+   заголовок раздела и нижние чипы, чтобы обвеска не уезжала под каталог. */
+.map-stage { inset: 68px 0 0 0; --panel-inset: 300px; background: #010605; }
+.map-stage.wide { --panel-inset: 0px; }
 .map-vignette { background: radial-gradient(ellipse at 53% 46%, transparent 40%, rgba(0,8,7,.16) 74%, rgba(0,3,3,.67) 100%); }
 .map-grid-overlay {
   opacity: .28;
@@ -273,11 +277,18 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
   box-shadow: 0 18px 48px rgba(0,0,0,.61), inset 0 0 28px rgba(32,229,214,.025);
   backdrop-filter: blur(12px);
 }
-.left-panel {
-  top: 0;
-  left: -300px;
-  border-right-color: rgba(45,238,224,.38);
+/* Десктоп: каталог — плавающая панель над картой (сцену он не сдвигает).
+   Позиция задана только для шире 700 px: на телефоне остаётся нижняя шторка
+   из styles.css/wiki-skin.css, а не «отъехавшая» влево колонка. */
+@media (min-width: 701px) {
+  .left-panel {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+  }
 }
+.left-panel { border-right-color: rgba(45,238,224,.38); }
 .left-panel::before {
   content: "";
   position: absolute;
@@ -405,6 +416,8 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
 .control-divider { background: rgba(46,245,230,.25); }
 .map-hint,
 .map-scale { color: rgba(116, 194, 187, .58); }
+.scale-value { color: #b6e9e3; }
+.scale-note { color: rgba(116, 194, 187, .45); }
 .mouse-icon,
 .scale-line { border-color: rgba(61,231,218,.49); }
 .mouse-icon i { background: #2ef5e6; }
@@ -474,21 +487,31 @@ select:focus-visible { outline-color: #2ef5e6; }
 .site-nav,
 .breadcrumb { display: none !important; }
 
+/* Симметричная шапка: два одинаковых боковых блока и центральная плашка.
+   Ритм отступов: 22 px снаружи · 22 px до плашки · 12 px между элементами внутри блоков. */
 .topbar {
   height: 80px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 24px;
+  gap: 22px;
   padding: 0 22px;
 }
-.topbar-left {
+.topbar-left,
+.topbar-right {
   min-width: 0;
   display: flex;
   align-items: center;
-  justify-self: stretch;
   gap: 12px;
+  height: 56px;
+  width: max-content;
+  max-width: 100%;
+  padding: 6px;
+  border: 1px solid rgba(46, 245, 230, .18);
+  background: rgba(2, 15, 13, .56);
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
+.topbar-left { justify-self: start; }
 .topbar-left .search-wrap {
   flex: 1 1 300px;
   width: auto;
@@ -532,37 +555,39 @@ select:focus-visible { outline-color: #2ef5e6; }
   letter-spacing: .15em;
 }
 .topbar-right {
-  min-width: 0;
   margin-left: 0;
-  justify-self: stretch;
+  justify-self: end;
   justify-content: flex-end;
-  gap: 10px;
 }
 .topbar-right .legacy-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 .admin-access-button,
 .top-action {
-  min-height: 42px;
+  min-height: 44px;
   padding-inline: 15px;
   font-size: 9px;
   letter-spacing: .08em;
 }
 .top-action { min-width: 92px; justify-content: center; }
-.topbar-right .icon-button {
-  width: 42px;
-  height: 42px;
+/* Одна высота для всех элементов шапки: строка читается как единая линия */
+.topbar-right .icon-button,
+.topbar-right .brand-emblem {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
 }
 .topbar-right .icon-button svg { width: 18px; height: 18px; }
 
-.map-stage { inset: 80px 0 0 300px; }
-.map-stage.wide { left: 0; }
+.map-stage { inset: 80px 0 0 0; }
+.map-stage.wide { --panel-inset: 0px; }
 .map-page-intro {
   top: 22px;
-  left: 24px;
-  width: min(590px, calc(100% - 440px));
+  left: calc(var(--panel-inset, 0px) + 24px);
+  width: min(590px, calc(100% - var(--panel-inset, 0px) - 440px));
+  transition: left .23s ease, width .23s ease;
   min-height: 104px;
   display: flex;
   flex-direction: column;
@@ -608,18 +633,20 @@ select:focus-visible { outline-color: #2ef5e6; }
   clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
 }
 .coordinates-label {
-  left: 22px;
+  left: calc(var(--panel-inset, 0px) + 22px);
   bottom: 20px;
   gap: 13px;
   font-size: 12px;
   letter-spacing: .15em;
+  transition: left .23s ease;
 }
 .map-scale {
-  left: 302px;
+  left: calc(var(--panel-inset, 0px) + 302px);
   bottom: 20px;
   gap: 10px;
   font-size: 8px;
   letter-spacing: .10em;
+  transition: left .23s ease;
 }
 .scale-line { width: 55px; height: 7px; }
 .map-hint {
@@ -643,27 +670,19 @@ select:focus-visible { outline-color: #2ef5e6; }
   filter: drop-shadow(0 0 7px rgba(35,235,220,.28));
 }
 .feed-status { display: none !important; }
-.topbar-right {
-  justify-self: end;
-  width: max-content;
-  height: 56px;
-  padding: 6px;
-  border: 1px solid rgba(46,245,230,.18);
-  background: rgba(2,15,13,.56);
-  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-}
 .minimal-mode .topbar { height: 58px; }
 
 @media (max-width: 1240px) {
   .topbar { gap: 15px; padding-inline: 14px; }
-  .topbar-left { gap: 8px; }
+  .topbar-left,
+  .topbar-right { gap: 10px; }
   .topbar-left .search-wrap { max-width: 245px; min-width: 160px; }
   .topbar-left .map-faction-filter { flex-basis: 145px; }
   .brand-lockup { min-width: 230px; padding-inline: 10px; }
   .brand-copy strong { font-size: 11px; }
   .admin-access-button { width: 42px; padding: 0; justify-content: center; font-size: 0; }
   .admin-lock { font-size: 17px; }
-  .map-page-intro { width: min(520px, calc(100% - 390px)); }
+  .map-page-intro { width: min(520px, calc(100% - var(--panel-inset, 0px) - 390px)); }
   .map-page-intro h2 { font-size: 32px; }
 }
 
@@ -679,13 +698,13 @@ select:focus-visible { outline-color: #2ef5e6; }
   .brand-emblem { width: 44px; height: 44px; flex-basis: 44px; }
   .top-action { min-width: 42px; width: 42px; padding: 0; font-size: 0; }
   .top-action .help-mark { font-size: 12px; }
-  .map-stage { inset: 72px 0 0 286px; }
-  .map-stage.wide { left: 0; }
-  .map-page-intro { width: min(470px, calc(100% - 340px)); }
+  .map-stage { inset: 72px 0 0 0; --panel-inset: 286px; }
+  .map-stage.wide { --panel-inset: 0px; }
+  .map-page-intro { width: min(470px, calc(100% - var(--panel-inset, 0px) - 340px)); }
   .map-page-intro h2 { font-size: 30px; }
   .map-notice { max-width: 320px; }
-  .coordinates-label { left: 14px; }
-  .map-scale { left: 260px; }
+  .coordinates-label { left: calc(var(--panel-inset, 0px) + 14px); }
+  .map-scale { left: calc(var(--panel-inset, 0px) + 260px); }
 }
 
 @media (max-width: 700px) {
@@ -694,6 +713,17 @@ select:focus-visible { outline-color: #2ef5e6; }
     display: flex;
     gap: 8px;
     padding: 0 9px;
+  }
+  /* телефон: боковые блоки шапки снова обычные flex-строки без рамок */
+  .topbar-left,
+  .topbar-right {
+    height: auto;
+    width: auto;
+    max-width: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    clip-path: none;
   }
   .topbar-left { flex: 1 1 auto; gap: 7px; }
   .topbar-left .search-wrap { flex: 1 1 auto; min-width: 0; height: 42px; padding-inline: 10px; }
@@ -717,7 +747,7 @@ select:focus-visible { outline-color: #2ef5e6; }
   .topbar-right .legacy-controls { gap: 0; }
   .topbar-right .icon-button { width: 42px; height: 42px; }
   .map-stage,
-  .map-stage.wide { inset: 68px 0 0 0; }
+  .map-stage.wide { inset: 68px 0 0 0; --panel-inset: 0px; }
   .map-page-intro {
     top: 15px;
     left: 12px;
@@ -887,9 +917,9 @@ select:focus-visible { outline-color: #2ef5e6; }
 
 /* Бургер каталога на странице сектора — слева в шапке (перенесён из правого блока) */
 .topbar-left .collapse-button {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
 }
 
 /* Сектор, десктоп: крупнее шрифт в шапке и подписях; линейка масштаба — справа от подписи навигации */
@@ -901,18 +931,20 @@ select:focus-visible { outline-color: #2ef5e6; }
   .admin-access-button,
   .top-action { font-size: 12px; }
   .map-hint { font-size: 12px; }
+  .map-scale { font-size: 11px; }
+  .scale-line { height: 8px; }
   .map-page-intro p { font-size: 13px; }
   .coordinates-label { width: 340px; box-sizing: border-box; }
-  .map-scale { left: 374px; }
+  .map-scale { left: calc(var(--panel-inset, 0px) + 374px); }
 }
 
 /* Кнопка «к галактике» на странице сектора (зелёная, в топ-панели) */
 .galaxy-return {
   display: inline-flex;
   align-items: center;
-  height: 34px;
-  padding: 0 12px;
-  margin-right: 8px;
+  height: 44px;
+  padding: 0 13px;
+  margin-right: 0;
   border: 1px solid #4ef08a;
   background: rgba(78, 240, 138, 0.14);
   color: #4ef08a;
