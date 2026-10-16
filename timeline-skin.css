@@ -894,3 +894,17 @@ select:focus-visible { outline-color: #2ef5e6; }
   height: 42px;
   flex: 0 0 42px;
 }
+
+/* Сектор, десктоп: крупнее шрифт в шапке и подписях; линейка масштаба — справа от подписи навигации */
+@media (min-width: 1100px) {
+  .topbar-left .search-wrap input { font-size: 16px; }
+  .topbar-left .map-faction-filter select { font-size: 13px; }
+  .brand-copy strong { font-size: 17px; }
+  .brand-copy span { font-size: 11px; }
+  .admin-access-button,
+  .top-action { font-size: 12px; }
+  .map-hint { font-size: 12px; }
+  .map-page-intro p { font-size: 13px; }
+  .coordinates-label { width: 340px; box-sizing: border-box; }
+  .map-scale { left: 374px; }
+}
