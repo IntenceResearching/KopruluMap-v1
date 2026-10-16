@@ -256,7 +256,7 @@
     layer.style.setProperty('--s', String(view.s));
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
     positionPreview();
-    refreshCorners();
+    GalaxyPing.refresh();
     parallaxRequest();
   }
 
@@ -727,176 +727,33 @@
   });
 
 
-  /* ---------- переход: квадрат из 4 сегментов ----------
-     Старт — границы изображения (квадрат карты на экране) → 4 равных этапа
-     сужения в квадрат сектора → захват (подсветка) → плавный zoom ×2.6 с фиксацией
-     точки сектора → переход на страницу сектора.
-     Конечный квадрат берётся из той же геометрии, что и сам хотспот.          */
-  var STAGE_START = [0, 400, 800, 1200]; // начало каждого этапа, мс
-  var STAGE_LEN = 300;                   // длительность этапа, мс
-  var STAGE_TO = [0.25, 0.5, 0.75, 1];   // равные шаги: 4 этапа сужения
-  var LOCK_AT = 1500;
-  var DIVE_AT = 1500;
+  /* ---------- переход: квадрат из 9 сегментов ----------
+     Рамка (уголки, внешний контур, затемнение) живёт в galaxy-ping.js:
+     9 одинаковых этапов сужения от границ карты к маркеру, затем захват.
+     Здесь — логика перехода: захват, приближение и навигация.                */
+  var LOCK_AT = 1500;   // захват маркера, мс
+  var DIVE_AT = 1500;   // старт приближения, мс (совпадает с захватом)
 
-  var dim = null;
-  var corners = [];
-
-  function setupCorners() {
-    dim = document.createElement('div');
-    dim.className = 'target-dim';
-    stage.appendChild(dim);
-    corners = ['tc-tl', 'tc-tr', 'tc-bl', 'tc-br'].map(function (cls) {
-      var d = document.createElement('div');
-      d.className = 'target-corner ' + cls;
-      stage.appendChild(d);
-      return d;
-    });
-    // внешняя рамка: SVG с загнутыми концами (поворот 30° к центру)
-    outerEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    outerEl.setAttribute('class', 'target-outer');
-    outerEl.setAttribute('aria-hidden', 'true');
-    outerPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    outerEl.appendChild(outerPath);
-    stage.appendChild(outerEl);
-    window.requestAnimationFrame(function () { dim.classList.add('is-on'); });
+  function startBox() {
+    var side = view.s * base;
+    return { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
   }
 
-  function teardownCorners() {
-    if (dim && dim.parentNode) dim.parentNode.removeChild(dim);
-    corners.forEach(function (c) { if (c.parentNode) c.parentNode.removeChild(c); });
-    if (outerEl && outerEl.parentNode) outerEl.parentNode.removeChild(outerEl);
-    dim = null;
-    corners = [];
-    outerEl = null;
-    outerPath = null;
-    outerBox = null;
-    mainBox = null;
-  }
-
-  // Состояние рамки, которая следует за картой: {start, p, el}. Пока задано,
-  // рамка пересчитывается при каждом изменении вида (applyView), а не на кадр позже.
-  var cornerTrack = null;
-  function refreshCorners() {
-    if (!cornerTrack || !corners.length) return;
-    var st = cornerTrack;
-    var end = boxOf(st.el);
-    var p = st.p;
-    var s0 = st.start;
-    placeCorners(
-      s0.l + p * (end.l - s0.l),
-      s0.t + p * (end.t - s0.t),
-      s0.r + p * (end.r - s0.r),
-      s0.b + p * (end.b - s0.b)
-    );
-  }
-
-  // Внешняя рамка: чуть больше основной, догоняет её с отставанием (лаг).
-  var OUTER_GAP = 18;        // зазор внешней рамки от основной, px
-  var OUTER_TURN = Math.PI / 6; // 30°: поворот концов линий к центру
-  var OUTER_ARM_K = 0.5;     // длина плеч внешней рамки относительно основной
-  var OUTER_TAIL_MAX = 22;   // максимальная длина загнутого конца, px
-  var outerEl = null;
-  var outerPath = null;
-  var outerBox = null;       // текущий (догоняющий) box внешней рамки
-  var mainBox = null;        // основная рамка (цель для догона)
-  var outerQueued = false;
-
-  function expandBox(b, g) { return { l: b.l - g, t: b.t - g, r: b.r + g, b: b.b + g }; }
-
-  function armSizes(l, t, r, b) {
-    return {
-      w: Math.max(8, Math.min(260, (r - l) * 0.34)),
-      h: Math.max(8, Math.min(260, (b - t) * 0.34))
-    };
-  }
-
-  function outerRequest() {
-    if (!outerEl || outerQueued) return;
-    outerQueued = true;
-    window.requestAnimationFrame(outerTick);
-  }
-
-  function outerTick() {
-    outerQueued = false;
-    if (!outerEl || !mainBox || !outerBox) return;
-    var goal = expandBox(mainBox, OUTER_GAP);
-    var k = 0.12;
-    outerBox = {
-      l: outerBox.l + (goal.l - outerBox.l) * k,
-      t: outerBox.t + (goal.t - outerBox.t) * k,
-      r: outerBox.r + (goal.r - outerBox.r) * k,
-      b: outerBox.b + (goal.b - outerBox.b) * k
-    };
-    var settled = Math.abs(goal.l - outerBox.l) < 0.3 && Math.abs(goal.t - outerBox.t) < 0.3 &&
-                  Math.abs(goal.r - outerBox.r) < 0.3 && Math.abs(goal.b - outerBox.b) < 0.3;
-    if (settled) outerBox = goal;
-    drawOuter(outerBox);
-    if (!settled) outerRequest();
-  }
-
-  // Рисует четыре угла внешней рамки. От каждого угла идут два плеча, на концах
-  // каждого плеча — загиб на 30° к центру рамки.
-  function drawOuter(b) {
-    var sz = sceneSize();
-    outerEl.setAttribute('viewBox', '0 0 ' + sz.w + ' ' + sz.h);
-    // плечи короче основных: внешние углы читаются как уголки, а не как контур
-    var base = armSizes(b.l, b.t, b.r, b.b);
-    var a = { w: base.w * OUTER_ARM_K, h: base.h * OUTER_ARM_K };
-    var tailH = Math.min(OUTER_TAIL_MAX, a.w * 0.4);
-    var tailV = Math.min(OUTER_TAIL_MAX, a.h * 0.4);
-    var s30 = Math.sin(OUTER_TURN), c30 = Math.cos(OUTER_TURN);
-    var d = '';
-    // [угол x, угол y, ix (внутрь по x), iy (внутрь по y)]
-    [[b.l, b.t, 1, 1], [b.r, b.t, -1, 1], [b.l, b.b, 1, -1], [b.r, b.b, -1, -1]].forEach(function (c) {
-      var cx = c[0], cy = c[1], ix = c[2], iy = c[3];
-      var eh = [cx + ix * a.w, cy];                 // конец горизонтального плеча
-      var ev = [cx, cy + iy * a.h];                 // конец вертикального плеча
-      var th = [eh[0] + tailH * ix * c30, eh[1] + tailH * iy * s30];
-      var tv = [ev[0] + tailV * ix * s30, ev[1] + tailV * iy * c30];
-      d += 'M' + eh[0] + ' ' + eh[1] + 'L' + cx + ' ' + cy + 'L' + ev[0] + ' ' + ev[1];
-      d += 'M' + eh[0] + ' ' + eh[1] + 'L' + th[0] + ' ' + th[1];
-      d += 'M' + ev[0] + ' ' + ev[1] + 'L' + tv[0] + ' ' + tv[1];
-    });
-    outerPath.setAttribute('d', d);
-  }
-
-  function placeCorners(l, t, r, b) {
-    var a = armSizes(l, t, r, b);
-    var w = a.w, h = a.h;
-    var pos = [[l, t], [r - w, t], [l, b - h], [r - w, b - h]];
-    corners.forEach(function (c, i) {
-      c.style.left = pos[i][0] + 'px';
-      c.style.top = pos[i][1] + 'px';
-      c.style.width = w + 'px';
-      c.style.height = h + 'px';
-    });
-    mainBox = { l: l, t: t, r: r, b: b };
-    // внешняя рамка стартует заметно больше и догоняет основную
-    if (!outerBox) outerBox = expandBox(mainBox, OUTER_GAP * 2);
-    outerRequest();
-  }
-
-  // прогресс 0..1 → состояние рамки на текущем кадре
-  function progressAt(ms) {
-    var prev = 0;
-    for (var k = 0; k < STAGE_START.length; k++) {
-      var s0 = STAGE_START[k];
-      var s1 = s0 + STAGE_LEN;
-      if (ms < s0) return prev;
-      if (ms <= s1) {
-        var u = (ms - s0) / STAGE_LEN;
-        var q = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
-        return prev + (STAGE_TO[k] - prev) * q;
-      }
-      prev = STAGE_TO[k];
-    }
-    return 1;
+  // Приближение к маркеру с фиксацией его точки на экране
+  function diveInto(el) {
+    var c = boxOf(el);
+    var nextS = clamp(view.s * CONFIG.dive, CONFIG.minFactor, CONFIG.maxFactor);
+    var k = nextS / view.s;
+    animateTo(nextS,
+      c.cx - (c.cx - view.tx) * k,
+      c.cy - (c.cy - view.ty) * k,
+      CONFIG.diveMs);
   }
 
   function resetTransition() {
     busy = false;
     cancelAnim();
-    teardownCorners();
+    GalaxyPing.stop();
     hotspot.classList.remove('is-locked');
   }
 
@@ -906,50 +763,19 @@
     cancelAnim();
     hidePanel();
     hidePreview();
-
-    var side = view.s * base;
-    var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
-    var end = boxOf(el);
     var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
-
-    setupCorners();
-    placeCorners(start.l, start.t, start.r, start.b); // сразу в стартовой позиции, без вспышки
-
-    var t0 = performance.now();
-    var locked = false;
-    var diving = false;
-
-    function frame(now) {
-      var ms = now - t0;
-      var p = progressAt(ms);
-      placeCorners(
-        start.l + p * (end.l - start.l),
-        start.t + p * (end.t - start.t),
-        start.r + p * (end.r - start.r),
-        start.b + p * (end.b - start.b)
-      );
-
-      if (!locked && ms >= LOCK_AT) {
-        locked = true;
+    GalaxyPing.start({
+      stage: stage,
+      from: startBox(),
+      to: function () { return boxOf(el); },
+      lockAt: LOCK_AT,
+      endAt: NAV_AT,
+      onLock: function () {
         hotspot.classList.add('is-locked');
-      }
-
-      if (!diving && ms >= DIVE_AT) {
-        diving = true;
-        // zoom с фиксацией точки сектора на экране
-        var c = boxOf(el);
-        var nextS = clamp(view.s * CONFIG.dive, CONFIG.minFactor, CONFIG.maxFactor);
-        var k = nextS / view.s;
-        animateTo(nextS,
-          c.cx - (c.cx - view.tx) * k,
-          c.cy - (c.cy - view.ty) * k,
-          CONFIG.diveMs);
-      }
-
-      if (ms < NAV_AT) { window.requestAnimationFrame(frame); return; }
-      window.location.href = href;
-    }
-    window.requestAnimationFrame(frame);
+        diveInto(el);
+      },
+      onEnd: function () { window.location.href = href; }
+    });
   }
 
   // Возврат назад (bfcache): сбрасываем переход, а не показываем залипший кадр
@@ -1095,46 +921,26 @@
     busy = true;
     cancelAnim();
     stage.classList.add('is-red-target');
-    var side = view.s * base;
-    var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
     var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
-
-    setupCorners();
-    cornerTrack = { start: start, p: 0, el: el };
-    refreshCorners();
-
-    var t0 = performance.now();
-    var locked = false;
-    var diving = false;
-
-    function frame(now) {
-      var ms = now - t0;
-      cornerTrack.p = progressAt(ms);
-      refreshCorners();
-      if (!locked && ms >= LOCK_AT) {
-        locked = true;
+    GalaxyPing.start({
+      stage: stage,
+      from: startBox(),
+      to: function () { return boxOf(el); },
+      lockAt: LOCK_AT,
+      endAt: NAV_AT,
+      onLock: function () {
         el.classList.add('is-locked');
+        diveInto(el);
+      },
+      onEnd: function () {
+        // вместо перехода — сообщение об ошибке
+        busy = false;
+        cancelAnim();
+        GalaxyPing.stop();
+        stage.classList.remove('is-red-target');
+        showZerusError();
       }
-      if (!diving && ms >= DIVE_AT) {
-        diving = true;
-        var c = boxOf(el);
-        var nextS = clamp(view.s * CONFIG.dive, CONFIG.minFactor, CONFIG.maxFactor);
-        var k = nextS / view.s;
-        animateTo(nextS,
-          c.cx - (c.cx - view.tx) * k,
-          c.cy - (c.cy - view.ty) * k,
-          CONFIG.diveMs);
-      }
-      if (ms < NAV_AT) { window.requestAnimationFrame(frame); return; }
-      // вместо перехода — сообщение об ошибке
-      busy = false;
-      cancelAnim();
-      cornerTrack = null;
-      teardownCorners();
-      stage.classList.remove('is-red-target');
-      showZerusError();
-    }
-    window.requestAnimationFrame(frame);
+    });
   }
 
   // Клик по области Зеруса (на карте или в списке): первый — приближение, второй — переход
@@ -1235,43 +1041,29 @@
     hidePanel();
     // Пинг синий на всём сужении; красным становится только в самом конце (LOCK_AT)
     stage.classList.add('is-odz-ping');
-    var reddened = false;
-    var side = view.s * base;
-    var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
     var MSG_AT = LOCK_AT + CONFIG.animateMs + 150;
-
-    setupCorners();
-    cornerTrack = { start: start, p: 0, el: el };
-    refreshCorners();
-
-    var t0 = performance.now();
-    var zoomed = false;
-
-    function frame(now) {
-      var ms = now - t0;
-      cornerTrack.p = progressAt(ms);
-      refreshCorners();
-      if (!reddened && ms >= LOCK_AT) {
-        reddened = true;
+    GalaxyPing.start({
+      stage: stage,
+      from: startBox(),
+      to: function () { return boxOf(el); },
+      lockAt: LOCK_AT,
+      endAt: MSG_AT,
+      onLock: function () {
         el.classList.add('is-odz-red');      // квадрат и рамка плавно краснеют (CSS transition)
         stage.classList.remove('is-odz-ping');
         stage.classList.add('is-red-target');
-      }
-      if (!zoomed && ms >= LOCK_AT) {
-        zoomed = true;
         el.classList.add('is-locked');
         var sz = sceneSize();
         animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
+      },
+      onEnd: function () {
+        busy = false;
+        cancelAnim();
+        GalaxyPing.stop();
+        stage.classList.remove('is-red-target', 'is-odz-ping');
+        showOdzMessages();
       }
-      if (ms < MSG_AT) { window.requestAnimationFrame(frame); return; }
-      busy = false;
-      cancelAnim();
-      cornerTrack = null;
-      teardownCorners();
-      stage.classList.remove('is-red-target', 'is-odz-ping');
-      showOdzMessages();
-    }
-    window.requestAnimationFrame(frame);
+    });
   }
 
   function commitOdz() {
