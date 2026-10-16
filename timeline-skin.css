@@ -887,3 +887,10 @@ select:focus-visible { outline-color: #2ef5e6; }
   .catalog-section-copy strong { font-size: 8px; }
   .catalog-section-copy small { display: none; }
 }
+
+/* Бургер каталога на странице сектора — слева в шапке (перенесён из правого блока) */
+.topbar-left .collapse-button {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+}
