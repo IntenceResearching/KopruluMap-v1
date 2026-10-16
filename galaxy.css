@@ -796,7 +796,7 @@ body {
   z-index: 40;
   width: 26vw;
   min-width: 280px;
-  max-height: 46vh;
+  height: 46vh;   /* фикс. высота: печать не двигает рамку (CLS) */
   padding: 26px 12px 10px;
   background: rgba(0, 0, 0, 0.62);
   border: 1px solid rgba(90, 170, 255, 0.45);
