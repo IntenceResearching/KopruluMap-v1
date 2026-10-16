@@ -2,9 +2,9 @@
 
    1. «Лаги»: полосы карты съезжают по горизонтали короткими всплесками.
    2. Волна: быстрый проход деформации сверху вниз, как у ретро-телевизора.
-   3. Линия-преломление: тонкая горизонтальная полоса медленно проходит сверху вниз и
-      стабильно сдвигает картинку на несколько пикселей вправо, с резкими краями
-      (как в GIF, где буквы заголовка смещены по прямой).
+   3. Линии-преломление: две тонкие горизонтальные полосы идут сверху вниз одна за другой,
+      с одинаковой скоростью и формой. Строки внутри полосы стабильно сдвигаются вправо
+      на несколько пикселей, края резкие (как в GIF, где буквы заголовка смещены по прямой).
 
    Работает поверх картинки: над #galaxyMap создаётся слой из N полос с той же картинкой.
    В покое слой скрыт. Хотспоты не трогаются (слой pointer-events: none).
@@ -25,7 +25,8 @@
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   // Настройки
-  var N = 120;              // число полос (тонкая линия: ≈0.8 % высоты карты на полосу)
+  var N = 240;              // число полос: тонкая линия ≈ 0.4 % высоты карты на полосу
+  var TEAR_GROUP = 2;       // «лаги» режутся по 2 полосы, как раньше (зернистость не меняется)
   var GAP_MIN = 4000;       // пауза между «лагами» и волной, мс
   var GAP_MAX = 9000;
 
@@ -33,15 +34,16 @@
   var WAVE_HALF = 0.2;      // ширина фронта волны (доля высоты)
   var WAVE_AMP = 1.6;       // амплитуда волны, % ширины
   var TEAR_STEP = 80;       // мс между перетасовками «лагов»
-  var TEAR_CHANCE = 0.3;    // доля полос, которые съезжают в такт
+  var TEAR_CHANCE = 0.3;    // доля групп полос, которые съезжают в такт
   var TEAR_MIN = 1;         // сдвиг «лага», % ширины
   var TEAR_MAX = 2.5;
 
-  var SWEEP_GAP_MIN = 9000; // пауза между проходами линии, мс
+  var SWEEP_GAP_MIN = 9000; // пауза между парами линий, мс (от конца второй линии)
   var SWEEP_GAP_MAX = 14000;
-  var SWEEP_MS = 5000;      // проход сверху вниз
+  var SWEEP_MS = 10000;     // проход одной линии сверху вниз (в 2 раза медленнее прежнего)
+  var SWEEP_LAG = 1600;     // отставание второй линии от первой, мс (синхронно, но вслед)
   var SWEEP_EDGE = 0.05;    // линия стартует и заканчивается за краями карты
-  var SWEEP_HALF = 0.015;   // половина толщины линии (доля высоты), края резкие
+  var SWEEP_HALF = 0.004;   // половина толщины линии (доля высоты), края резкие
   var SWEEP_AMP = 0.45;     // сдвиг строк линии вправо, % ширины (несколько пикселей)
 
   // Слой полос: каждая полоса показывает свой кусок картинки на весь размер карты
@@ -65,7 +67,7 @@
   map.insertAdjacentElement('afterend', fx);
 
   var burst = null;   // «лаги» или волна
-  var sweep = null;   // линия-преломление
+  var sweeps = [];    // линии-преломления: [{ start }]
   var raf = 0;
   var timerBurst = 0;
   var timerSweep = 0;
@@ -86,7 +88,7 @@
     cancelAnimationFrame(raf);
     raf = 0;
     burst = null;
-    sweep = null;
+    sweeps = [];
     fx.classList.remove('is-on');
     clearBands();
   }
@@ -109,9 +111,12 @@
     run();
   }
 
-  function startSweep() {
-    if (sweep) return;
-    sweep = { start: performance.now() };
+  // Пара линий: первая стартует сейчас, вторая — с отставанием SWEEP_LAG
+  function startSweeps() {
+    if (sweeps.length) return;
+    var now = performance.now();
+    sweeps.push({ start: now });
+    sweeps.push({ start: now + SWEEP_LAG });
     run();
   }
 
@@ -126,8 +131,8 @@
   function scheduleSweep() {
     clearTimeout(timerSweep);
     timerSweep = setTimeout(function () {
-      if (busy() || sweep) { scheduleSweep(); return; }
-      startSweep();
+      if (busy() || sweeps.length) { scheduleSweep(); return; }
+      startSweeps();
     }, rand(SWEEP_GAP_MIN, SWEEP_GAP_MAX));
   }
 
@@ -154,29 +159,33 @@
         waveFront = -WAVE_HALF + (1 + 2 * WAVE_HALF) * Math.min(t / WAVE_MS, 1);
         if (tear && now - lastTear >= TEAR_STEP) {
           lastTear = now;
-          for (var k = 0; k < N; k++) {
-            tearDx[k] = Math.random() < TEAR_CHANCE
+          // группы по TEAR_GROUP полос съезжают вместе: зернистость «лагов» как раньше
+          for (var k = 0; k < N; k += TEAR_GROUP) {
+            var v = Math.random() < TEAR_CHANCE
               ? (Math.random() < 0.5 ? -1 : 1) * rand(TEAR_MIN, TEAR_MAX)
               : 0;
+            for (var g = 0; g < TEAR_GROUP; g++) tearDx[k + g] = v;
           }
         }
       }
     }
 
-    var sweepOn = false;
-    var sweepFront = 0;
-    if (sweep) {
-      var s = (now - sweep.start) / SWEEP_MS;
+    // Линии: собираем фронты активных (уже стартовавших) линий
+    var fronts = [];
+    var sweepEnded = false;
+    for (var q = sweeps.length - 1; q >= 0; q--) {
+      var s = (now - sweeps[q].start) / SWEEP_MS;
       if (s >= 1) {
-        sweep = null;
-        scheduleSweep();
-      } else {
-        sweepOn = true;
-        sweepFront = -SWEEP_EDGE + (1 + 2 * SWEEP_EDGE) * s;
+        sweeps.splice(q, 1);
+        sweepEnded = true;
+      } else if (s >= 0) {
+        fronts.push(-SWEEP_EDGE + (1 + 2 * SWEEP_EDGE) * s);
       }
     }
+    // Пауза до следующей пары — от окончания предыдущей (один раз, без сброса таймера каждый кадр)
+    if (sweepEnded && !sweeps.length) scheduleSweep();
 
-    if (!burst && !sweep) { stopAll(); return; }
+    if (!burst && !sweeps.length) { stopAll(); return; }
 
     for (var j = 0; j < N; j++) {
       var c = (j + 0.5) / N;
@@ -185,8 +194,10 @@
         var d = (c - waveFront) / WAVE_HALF;
         if (Math.abs(d) < 1.6) dx += WAVE_AMP * Math.exp(-d * d) * Math.sin(d * Math.PI * 2);
       }
-      // Линия: строки внутри полосы сдвигаются на одинаковую малую величину, края резкие
-      if (sweepOn && Math.abs(c - sweepFront) < SWEEP_HALF) dx += SWEEP_AMP;
+      // Линии: строки внутри полосы сдвигаются на одинаковую малую величину, края резкие
+      for (var f = 0; f < fronts.length; f++) {
+        if (Math.abs(c - fronts[f]) < SWEEP_HALF) { dx += SWEEP_AMP; break; }
+      }
       bands[j].style.transform = dx ? 'translate3d(' + dx.toFixed(2) + '%,0,0)' : '';
     }
     raf = requestAnimationFrame(tick);
