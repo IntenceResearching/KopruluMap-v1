@@ -403,10 +403,11 @@ body {
   animation: sector-sheen 3.6s linear infinite;
 }
 
+/* Скорость на ховере меняет galaxy.js (updatePlaybackRate), а не animation-duration:
+   смена длительности сбрасывает позицию полосы. */
 .sector-hotspot:hover::after,
 .sector-hotspot:focus-visible::after,
 .sector-hotspot.is-selected::after {
-  animation-duration: 1.4s;
   opacity: 1;
 }
 

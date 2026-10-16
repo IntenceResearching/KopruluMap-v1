@@ -494,6 +494,31 @@
   });
   if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
+  /* ---------- непрерывность блика хотспотов ----------
+     Раньше на ховере менялась animation-duration, и браузер пересчитывал позицию
+     полосы по тому же времени: полоса прыгала назад и выглядела как перезапуск.
+     Теперь длительность не меняется, а скорость проигрывания плавно меняется через
+     Web Animations (updatePlaybackRate): текущая позиция сохраняется. */
+  var SHEEN_HOT_RATE = 3.6 / 1.4;   // 3.6 s → 1.4 s на ховере/фокусе/выбранном
+  function applySheenRate(el) {
+    var hot = el.matches(':hover') || el.matches(':focus-visible') || el.classList.contains('is-selected');
+    var rate = hot ? SHEEN_HOT_RATE : 1;
+    if (!document.getAnimations) return;
+    document.getAnimations().forEach(function (a) {
+      if (a.animationName === 'sector-sheen' && a.effect && a.effect.target === el && a.playbackRate !== rate) {
+        a.updatePlaybackRate(rate);
+      }
+    });
+  }
+  document.querySelectorAll('.sector-hotspot').forEach(function (el) {
+    el.addEventListener('pointerenter', function () { applySheenRate(el); });
+    el.addEventListener('pointerleave', function () { applySheenRate(el); });
+    el.addEventListener('focus', function () { applySheenRate(el); });
+    el.addEventListener('blur', function () { applySheenRate(el); });
+    new MutationObserver(function () { applySheenRate(el); })
+      .observe(el, { attributes: true, attributeFilter: ['class'] });
+  });
+
 
   /* ---------- переход: квадрат из 4 сегментов ----------
      Старт — границы изображения (квадрат карты на экране) → 4 равных этапа
