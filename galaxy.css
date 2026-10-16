@@ -4,12 +4,44 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #03110f;
+  background: #010605;
   cursor: grab;
   touch-action: none;
 }
 
 .galaxy-stage.is-dragging { cursor: grabbing; }
+
+/* Фон как у карты сектора: радиальный градиент .app-shell + сетка .app-shell::before
+   + виньетка .map-vignette. Лежит под картой (первый потомок сцены). */
+.galaxy-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 67% 44%, rgba(18, 93, 87, 0.17), transparent 31%),
+    radial-gradient(circle at 67% 44%, #03100f 0, #010706 58%, #010403 100%);
+}
+
+.galaxy-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(26, 201, 188, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 201, 188, 0.09) 1px, transparent 1px),
+    linear-gradient(rgba(26, 201, 188, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 201, 188, 0.035) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 12px 12px, 12px 12px;
+}
+
+.galaxy-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 53% 46%, transparent 40%, rgba(0, 8, 7, 0.16) 74%, rgba(0, 3, 3, 0.67) 100%);
+}
 
 /* Слой карты: масштабируется и двигается из JS (translate + scale, origin 0 0) */
 /* Размер слоя задаётся из JS (base·s), сдвиг — translate. Без will-change и scale:
