@@ -710,12 +710,31 @@ body {
   letter-spacing: 0.08em;
   color: #ff5a5a;
   text-shadow: 0 0 10px rgba(255, 60, 60, 0.6);
+  /* Консоль: тёмная подложка, красная рамка, скан-линии. Ширина фиксирована,
+     чтобы коробка не дёргалась, пока строки печатаются. */
+  min-width: 19em;
+  padding: 0.7em 1.1em 0.9em;
+  background: rgba(4, 6, 10, 0.88);
+  border: 1px solid rgba(255, 90, 90, 0.6);
+  border-radius: 4px;
+  box-shadow: 0 0 18px rgba(255, 60, 60, 0.28), inset 0 0 28px rgba(0, 0, 0, 0.7);
   transition: opacity 0.4s ease;
+}
+
+.odz-message::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.28) 0 1px,
+    transparent 1px 3px);
 }
 
 .odz-message[hidden] { display: none; }
 .odz-message.is-out { opacity: 0; }
-.odz-line { min-height: 1.45em; }
+.odz-line { position: relative; min-height: 1.45em; }
 
 @media (max-width: 480px) {
   .odz-message { font-size: 15px; }
