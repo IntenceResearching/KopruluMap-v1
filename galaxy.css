@@ -292,12 +292,13 @@
   color: #7fffd4;
 }
 
+/* Подпись в левом нижнем углу: не пересекается с хинтом управления по центру
+   и кнопками зума справа внизу */
 .galaxy-caption {
   position: absolute;
   bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+  left: 24px;
+  text-align: left;
   color: rgba(127, 255, 212, 0.7);
   font-size: 12px;
   letter-spacing: 0.2em;
