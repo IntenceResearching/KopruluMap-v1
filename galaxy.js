@@ -46,7 +46,10 @@
     dive: 2.6,           // финальный «прыжок» к сектору
     diveMs: 950,
     focusStrength: 0.6, // первый клик: доля пути до центра видимой области (0 — не двигать, 1 — точно в центр)
-    focusMs: 520
+    focusMs: 520,
+    focusZoom: 4.1,       // первый клик: зум до 410% (диапазон 400–420%)
+    focusZoomBelow: 4.0,  // зум подтягиваем только если текущий меньше 400%
+    focusZoomMs: 650
   };
 
   /* ---------- вид карты ----------
@@ -346,16 +349,30 @@
 
   // Первый клик: мягко сдвигаем карту, чтобы квадрат оказался ближе к центру
   // видимой области (левее открытой панели). Масштаб не меняем.
+  // Если зум меньше focusZoomBelow — доводим до focusZoom и центрируем точно;
+  // если уже приближено — только мягкий сдвиг, масштаб не меняем.
   function focusSector() {
     if (busy) return;
     var sz = sceneSize();
     var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
     var c = boxOf(hotspot);
-    var k = CONFIG.focusStrength;
-    var nx = view.tx + (visibleW / 2 - c.cx) * k;
-    var ny = view.ty + (sz.h / 2 - c.cy) * k;
+    var nx, ny, ns, ms;
+    if (view.s < CONFIG.focusZoomBelow) {
+      ns = CONFIG.focusZoom;
+      var side = ns * base;
+      var px = parseFloat(hotspot.getAttribute('data-cx')) / 100 * side;
+      var py = parseFloat(hotspot.getAttribute('data-cy')) / 100 * side;
+      nx = visibleW / 2 - px;
+      ny = sz.h / 2 - py;
+      ms = CONFIG.focusZoomMs;
+    } else {
+      ns = view.s;
+      nx = view.tx + (visibleW / 2 - c.cx) * CONFIG.focusStrength;
+      ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
+      ms = CONFIG.focusMs;
+    }
     hotspot.classList.add('is-locked');
-    animateTo(view.s, nx, ny, CONFIG.focusMs);
+    animateTo(ns, nx, ny, ms);
   }
 
   // Первый клик — выбор сектора (панель + сдвиг); второй клик по выбранному — переход
