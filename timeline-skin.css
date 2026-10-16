@@ -929,3 +929,57 @@ select:focus-visible { outline-color: #2ef5e6; }
   box-shadow: 0 0 14px rgba(78, 240, 138, 0.35);
   outline: none;
 }
+
+/* Телефон: верхняя панель сектора — горизонтальная лента (слайдер).
+   Поиск, фракции, «К ГАЛАКТИКЕ» и эмблема листаются пальцем, ничего не сжимается в кашу.
+   Подсказки поиска выводятся поверх карты (fixed), иначе прокрутка их обрезала бы. */
+@media (max-width: 700px) {
+  .topbar {
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 9px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    backdrop-filter: none;
+    z-index: 80;
+  }
+  .topbar::-webkit-scrollbar { display: none; }
+  .topbar-left .search-wrap input::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+  .topbar > * { flex: 0 0 auto; scroll-snap-align: start; }
+  .topbar-left { flex: 0 0 auto; gap: 8px; }
+  .topbar-left .search-wrap {
+    flex: 0 0 min(72vw, 260px);
+    width: min(72vw, 260px);
+    min-width: 0;
+    height: 42px;
+  }
+  .topbar-left .map-faction-filter { flex: 0 0 150px; width: 150px; position: static; }
+  .topbar-left .map-faction-filter select { height: 42px; }
+  /* clip-path поля поиска обрезал бы подсказки: на время открытого списка снимаем обрезку */
+  .topbar-left .search-wrap:has(.suggestions:not([hidden])) { clip-path: none; }
+  .topbar-left .search-wrap .suggestions {
+    position: fixed;
+    top: 68px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: 60vh;
+    overflow-y: auto;
+    z-index: 90;
+  }
+  .topbar-right {
+    width: auto;
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+  .topbar-right .galaxy-return {
+    height: 42px;
+    margin-right: 0;
+    white-space: nowrap;
+    padding: 0 12px;
+    font-size: 11px;
+  }
+  .brand-emblem { flex: 0 0 40px; }
+}
