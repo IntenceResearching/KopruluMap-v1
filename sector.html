@@ -41,6 +41,7 @@
         <div class="brand-copy"><strong>TIMELINE PROJECT</strong><span>MAP ATLAS</span></div>
       </div>
       <div class="topbar-right">
+        <a class="galaxy-return" id="galaxyReturn" href="index.html">← К ГАЛАКТИКЕ</a>
         <button class="admin-access-button" id="adminAccessButton" type="button"><span class="admin-lock" aria-hidden="true">⌑</span> Получить доступ администратора</button>
         <div class="legacy-controls" hidden>
           <div class="feed-status"><span class="status-dot"></span><span>АРХИВ СИНХРОНИЗИРОВАН</span></div>
@@ -187,6 +188,17 @@
     </div>
   </div>
   <script src="links.js"></script>
-  <script src="app.js?v=sector-links-1" defer></script>
+  <script>
+    (function () {
+      var a = document.getElementById('galaxyReturn');
+      if (!a) return;
+      if (window.SITE_LINKS && SITE_LINKS.galaxyPage) a.href = SITE_LINKS.galaxyPage;
+      // при возврате галактика не проигрывает консоль и сохраняет доступ к ОЗД
+      a.addEventListener('click', function () {
+        try { sessionStorage.setItem('galaxyReturn', '1'); } catch (e) {}
+      });
+    })();
+  </script>
+  <script src="app.js?v=sector-camera-1" defer></script>
 </body>
 </html>

@@ -40,6 +40,7 @@
       fitInset: 0.94,      // «вся карта» с небольшим запасом по краям
       minFactor: 0.62,     // насколько можно отъехать от режима «вся карта»
       maxFactor: 22,       // предел приближения относительно «вся карта»
+      panMargin: 0.25,     // карта может уйти внутрь экрана на эту долю размера экрана (как на галактике)
       wheelStep: 0.0016,
       animate: 340
     },
@@ -612,21 +613,24 @@
     clampView();
   }
 
+  // Запас CONFIG.view.panMargin от размера экрана: карту можно сдвинуть выше-ниже и левее-правее
+  // дальше краёв, как на галактике. Когда карта меньше экрана, она свободно ходит внутри запаса.
+  function clampAxis(value, span, viewport) {
+    var m = viewport * CONFIG.view.panMargin;
+    if (span <= viewport) {
+      var c = (viewport - span) / 2;
+      return clamp(value, c - m, c + m);
+    }
+    return clamp(value, viewport - span - m, m);
+  }
+
   function clampView() {
     var size = mapSize();
     var scale = clamp(state.view.scale, minScale(), maxScale());
     state.view.scale = scale;
     var span = size * scale;
-    if (span <= state.viewport.w) {
-      state.view.tx = (state.viewport.w - span) / 2;
-    } else {
-      state.view.tx = clamp(state.view.tx, state.viewport.w - span, 0);
-    }
-    if (span <= state.viewport.h) {
-      state.view.ty = (state.viewport.h - span) / 2;
-    } else {
-      state.view.ty = clamp(state.view.ty, state.viewport.h - span, 0);
-    }
+    state.view.tx = clampAxis(state.view.tx, span, state.viewport.w);
+    state.view.ty = clampAxis(state.view.ty, span, state.viewport.h);
   }
 
   function toScreen(worldX, worldY) {
@@ -676,8 +680,8 @@
     var tx = state.viewport.w / 2 - worldX * target;
     var ty = state.viewport.h / 2 - worldY * target;
     var size = mapSize();
-    tx = (size * target <= state.viewport.w) ? (state.viewport.w - size * target) / 2 : clamp(tx, state.viewport.w - size * target, 0);
-    ty = (size * target <= state.viewport.h) ? (state.viewport.h - size * target) / 2 : clamp(ty, state.viewport.h - size * target, 0);
+    tx = clampAxis(tx, size * target, state.viewport.w);
+    ty = clampAxis(ty, size * target, state.viewport.h);
     animateTo(target, tx, ty);
   }
 
