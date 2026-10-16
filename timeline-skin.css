@@ -132,10 +132,15 @@ body { text-shadow: 0 0 12px rgba(37, 234, 219, .03); }
   max-width: 100%;
   margin-top: 10px;
   color: #477f7a;
-  font: 22px/1.25 var(--mono);
+  font: 16px/1.25 var(--mono);
+  letter-spacing: .08em;
   text-align: center;
-  letter-spacing: .16em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+/* Телефон: размер от ширины экрана, чтобы строка оставалась в одну линию */
+@media (max-width: 600px) {
+  .timeline-loader-meta { font-size: 3.6vw; letter-spacing: .04em; }
 }
 @keyframes timeline-loader-scan { from { transform: translateY(-56%); } to { transform: translateY(56%); } }
 @keyframes timeline-loader-ring { to { transform: rotate(360deg); } }
