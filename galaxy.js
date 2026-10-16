@@ -362,11 +362,13 @@
 
   /* ---------- превью 300×300 при ховере на хотспот ---------- */
   // Ставим слева от квадрата, если места нет — справа; всегда внутри сцены.
+  var previewAnchor = hotspot;
+
   function positionPreview() {
     if (!preview || !preview.classList.contains('is-on')) return;
     var W = preview.offsetWidth, H = preview.offsetHeight, gap = 18, edge = 8;
     var st = stage.getBoundingClientRect();
-    var h = hotspot.getBoundingClientRect();
+    var h = (previewAnchor || hotspot).getBoundingClientRect();
     var sw = stage.clientWidth, sh = stage.clientHeight;
     var hl = h.left - st.left, hr = h.right - st.left;
     var hcy = (h.top + h.bottom) / 2 - st.top;
@@ -377,8 +379,14 @@
     preview.style.transform = 'translate(' + Math.round(left) + 'px,' + Math.round(top) + 'px)';
   }
 
-  function showPreview() {
+  function showPreview(anchor) {
+    anchor = anchor || hotspot;
     if (!preview || (panel && !panel.hidden) || busy) return;
+    if (anchor.classList.contains('is-odz-locked')) return;
+    previewAnchor = anchor;
+    var img = preview.querySelector('img');
+    var src = anchor.getAttribute('data-macket');
+    if (img && src && img.getAttribute('src') !== src) img.setAttribute('src', src);
     preview.classList.add('is-on');
     positionPreview();
   }
@@ -403,28 +411,41 @@
   var ZERUS_NAME = 'Пространство Зеруса';
   var ZERUS_NODATA = 'no-data available';
 
+  var ODZ_NAME = 'Пространство Директората';
+  var iconImg = iconBtn ? iconBtn.querySelector('img') : null;
+  var panelArea = null;   // область, для которой открыта панель
+
   function showPanel(el) {
     el = el || hotspot;
-    var isZerus = el !== hotspot;
+    var isZerus = el === zerus;
+    var isOdz = el === odz;
+    panelArea = el;
     hidePreview();
     if (panel) {
-      if (panelTitle) panelTitle.textContent = isZerus ? ZERUS_NAME : sectorName;
+      if (panelTitle) panelTitle.textContent = isZerus ? ZERUS_NAME : (isOdz ? ODZ_NAME : sectorName);
       if (panelInfo) {
         panelInfo.textContent = isZerus ? ZERUS_NODATA : KOPRULU_INFO;
         panelInfo.classList.toggle('is-nodata', isZerus);
       }
       if (iconBtn) iconBtn.hidden = isZerus;
+      if (iconImg) {
+        var macket = el.getAttribute('data-macket');
+        if (macket && iconImg.getAttribute('src') !== macket) iconImg.setAttribute('src', macket);
+      }
       if (noDataBox) noDataBox.hidden = !isZerus;
       panel.hidden = false;
     }
-    if (!isZerus && zerus) zerus.classList.remove('is-selected');
-    if (isZerus) hotspot.classList.remove('is-selected');
+    [hotspot, zerus, odz].forEach(function (x) {
+      if (x && x !== el) x.classList.remove('is-selected');
+    });
     el.classList.add('is-selected');
   }
   function hidePanel() {
     if (panel) panel.hidden = true;
-    hotspot.classList.remove('is-selected', 'is-locked');
-    if (zerus) zerus.classList.remove('is-selected', 'is-locked');
+    panelArea = null;
+    [hotspot, zerus, odz].forEach(function (x) {
+      if (x) x.classList.remove('is-selected', 'is-locked');
+    });
   }
 
   // Первый клик: мягко сдвигаем карту, чтобы квадрат оказался ближе к центру
@@ -621,6 +642,10 @@
   if (iconBtn) {
     iconBtn.addEventListener('click', function (e) {
       e.preventDefault();
+      if (odz && panelArea === odz) {
+        commitOdz();
+        return;
+      }
       runTransition(hotspot, defaultHref);
     });
   }
@@ -668,6 +693,10 @@
       setCurtain(false);
       if (btn.hasAttribute('data-zerus')) {
         activateZerus();
+        return;
+      }
+      if (btn.hasAttribute('data-odz')) {
+        activateOdz();
         return;
       }
       activateKoprulu();
@@ -806,6 +835,136 @@
       e.preventDefault();
       activateZerus();
     });
+  }
+
+  /* ---------- Пространство Директората (ОЗД) ----------
+     Как Копрулу: первый клик — панель и приближение, второй — переход.
+     Переход: рамка сходится к квадрату, квадрат и блик краснеют, камера отдаляется
+     до 100 %, затем печатаются 12 строк «ОТКАЗ ДОСТУПА.» … «Файл заблокирован.».
+     Строки гаснут через 5 с, после этого кнопка неактивна. Перезагрузка сбрасывает всё. */
+  var odz = document.getElementById('odzHotspot');
+  var odzMsg = document.getElementById('odzMessage');
+  var odzListItem = document.querySelector('.sector-list-item[data-odz]');
+  var odzDone = false;          // переход уже запущен: повторно не запускается
+  var ODZ_LINES = [];
+  for (var li = 0; li < 11; li++) ODZ_LINES.push('ОТКАЗ ДОСТУПА.');
+  ODZ_LINES.push('Файл заблокирован.');
+  var ODZ_LINE_STEP = 110;      // мс между началом строк (строки пишутся каскадом)
+  var ODZ_CHAR_MS = 22;         // мс на символ
+  var ODZ_SHOW_MS = 5000;       // строки висят 5 с от первой буквы
+  var ODZ_FADE_MS = 400;
+  var odzTimers = [];
+  var odzHideTimer = null;
+  var odzFadeTimer = null;
+
+  function setOdzLocked() {
+    if (odz) odz.classList.add('is-odz-locked');
+    if (odzListItem) odzListItem.classList.add('is-odz-locked');
+  }
+
+  function clearOdzTimers() {
+    odzTimers.forEach(function (t) { window.clearTimeout(t); });
+    odzTimers = [];
+  }
+
+  function hideOdzMessages() {
+    clearOdzTimers();
+    setOdzLocked();
+    if (!odzMsg) return;
+    odzMsg.classList.add('is-out');
+    odzFadeTimer = window.setTimeout(function () {
+      odzMsg.hidden = true;
+      odzMsg.classList.remove('is-out');
+    }, ODZ_FADE_MS);
+  }
+
+  function showOdzMessages() {
+    if (!odzMsg) { setOdzLocked(); return; }
+    clearOdzTimers();
+    if (odzHideTimer) window.clearTimeout(odzHideTimer);
+    if (odzFadeTimer) window.clearTimeout(odzFadeTimer);
+    odzMsg.innerHTML = '';
+    odzMsg.classList.remove('is-out');
+    odzMsg.hidden = false;
+    ODZ_LINES.forEach(function (text, i) {
+      var line = document.createElement('div');
+      line.className = 'odz-line';
+      odzMsg.appendChild(line);
+      for (var k = 1; k <= text.length; k++) {
+        (function (n) {
+          var at = i * ODZ_LINE_STEP + n * ODZ_CHAR_MS;
+          odzTimers.push(window.setTimeout(function () {
+            line.textContent = text.slice(0, n);
+          }, at));
+        })(k);
+      }
+    });
+    odzHideTimer = window.setTimeout(hideOdzMessages, ODZ_SHOW_MS);
+  }
+
+  function runOdzTransition(el) {
+    odzDone = true;
+    busy = true;
+    cancelAnim();
+    hidePanel();
+    el.classList.add('is-odz-red');          // цвет меняется плавно (CSS transition)
+    stage.classList.add('is-red-target');
+    var side = view.s * base;
+    var start = { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
+    var MSG_AT = LOCK_AT + CONFIG.animateMs + 150;
+
+    setupCorners();
+    cornerTrack = { start: start, p: 0, el: el };
+    refreshCorners();
+
+    var t0 = performance.now();
+    var zoomed = false;
+
+    function frame(now) {
+      var ms = now - t0;
+      cornerTrack.p = progressAt(ms);
+      refreshCorners();
+      if (!zoomed && ms >= LOCK_AT) {
+        zoomed = true;
+        el.classList.add('is-locked');
+        var sz = sceneSize();
+        animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
+      }
+      if (ms < MSG_AT) { window.requestAnimationFrame(frame); return; }
+      busy = false;
+      cancelAnim();
+      cornerTrack = null;
+      teardownCorners();
+      stage.classList.remove('is-red-target');
+      showOdzMessages();
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  function commitOdz() {
+    if (!odz || odzDone || busy) return;
+    runOdzTransition(odz);
+  }
+
+  function activateOdz() {
+    if (!odz || odzDone || busy) return;
+    if (odz.classList.contains('is-selected')) {
+      commitOdz();
+      return;
+    }
+    showPanel(odz);
+    focusArea(odz);
+  }
+
+  if (odz) {
+    odz.addEventListener('click', function (e) {
+      e.preventDefault();
+      activateOdz();
+    });
+    odz.addEventListener('pointerenter', function (e) {
+      if (e.pointerType === 'mouse') showPreview(odz);
+    });
+    odz.addEventListener('pointerleave', hidePreview);
   }
 
   /* ---------- параллакс звёздного фона (слабый) ----------
