@@ -792,16 +792,16 @@ body {
 .boot-console {
   position: fixed;
   left: 16px;
-  top: 96px;
+  bottom: 72px;
   z-index: 40;
-  width: 22vw;
-  min-width: 240px;
+  width: 26vw;
+  min-width: 280px;
   max-height: 46vh;
-  padding: 26px 10px 8px;
+  padding: 26px 12px 10px;
   background: rgba(0, 0, 0, 0.62);
   border: 1px solid rgba(90, 170, 255, 0.45);
   box-shadow: 0 0 14px rgba(90, 170, 255, 0.18);
-  font: 11px/1.45 var(--mono);
+  font: 13px/1.45 var(--mono);
   color: #5aa8ff;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -846,7 +846,7 @@ body {
 @keyframes boot-console-blink { 50% { opacity: 0; } }
 
 @media (max-width: 768px) {
-  .boot-console { width: 62vw; font-size: 10px; }
+  .boot-console { width: 70vw; font-size: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
