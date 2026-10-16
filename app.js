@@ -779,7 +779,6 @@
       // манифест есть, а файлов нет — показываем схему вместо пустого экрана
       if (tiles.failedCount >= 4 && !Object.keys(tiles.cache).length) {
         state.rasterMode = 'none';
-        updateNotice();
         requestRender();
       }
     };
@@ -2306,21 +2305,6 @@
     }
   }
 
-  function updateNotice() {
-    var verified = state.systems.filter(function (system) { return system.coordSource === 'map'; }).length;
-    var withCoord = state.systems.filter(function (system) { return !!system.coord; }).length;
-    var conditional = Math.max(0, withCoord - verified);
-    var withoutCoord = Math.max(0, state.systems.length - withCoord);
-    var local = Object.keys(state.admin.edits).length;
-    var node = qs('.map-notice span:nth-child(2)');
-    if (!node) return;
-    var detail = state.rasterMode === 'none'
-      ? 'Растр не подключён: видна схема и слой подписей.'
-      : (conditional + ' точек условны' + (withoutCoord ? '; без координат — ' + withoutCoord + '.' : '.'));
-    node.innerHTML = '<b>' + verified + ' из ' + state.systems.length + ' систем — по подписям карты.</b> ' +
-      (local ? 'Плюс ' + local + ' локальных правок. ' : '') + detail;
-  }
-
   function applyLabelsToggle() {
     el.labelsToggle.setAttribute('aria-pressed', String(state.labelsOn));
     writeJSON(CONFIG.storage.labels, state.labelsOn);
@@ -2398,7 +2382,7 @@
       'detailType', 'detailContent', 'detailFooter', 'pinButton', 'closeDetail', 'adminDock', 'adminSelectedName',
       'coordX', 'coordY', 'applyCoords', 'exportCoords', 'resetCoords', 'adminSaveStatus', 'exitAdmin',
       'adminAccessButton', 'adminModal', 'adminForm', 'adminCode', 'adminError', 'closeAdminModal', 'helpButton',
-      'closeHelp', 'helpModal', 'noticeInfo', 'zoomIn', 'zoomOut', 'resetMap', 'zoomPercent', 'labelsToggle',
+      'closeHelp', 'helpModal', 'zoomIn', 'zoomOut', 'resetMap', 'zoomPercent', 'labelsToggle',
       'mapScale', 'toast'].forEach(function (id) {
         el[id] = doc.getElementById(id);
       });
@@ -2568,7 +2552,6 @@
     // шапка и модальные окна
     el.helpButton.addEventListener('click', function () { openModal(el.helpModal); });
     el.closeHelp.addEventListener('click', function () { closeModal(el.helpModal); });
-    el.noticeInfo.addEventListener('click', function () { openModal(el.helpModal); });
     el.helpModal.addEventListener('click', function (event) {
       if (event.target === el.helpModal) closeModal(el.helpModal);
     });
@@ -2697,7 +2680,6 @@
       initUI();
       renderFilters();
       renderCatalog();
-      updateNotice();
       updateAdminStatus();
 
       if (state.admin.edits && Object.keys(state.admin.edits).length) {
