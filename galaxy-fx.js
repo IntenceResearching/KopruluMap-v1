@@ -2,8 +2,9 @@
 
    1. «Лаги»: полосы карты съезжают по горизонтали короткими всплесками.
    2. Волна: быстрый проход деформации сверху вниз, как у ретро-телевизора.
-   3. Линия-смаз: медленно проходит сверху вниз; в зоне линии картинка смазывается
-      вправо горизонтальными полосами (как в GIF, кадры со сбоем строк).
+   3. Линия-преломление: тонкая горизонтальная полоса медленно проходит сверху вниз и
+      стабильно сдвигает картинку на несколько пикселей вправо, с резкими краями
+      (как в GIF, где буквы заголовка смещены по прямой).
 
    Работает поверх картинки: над #galaxyMap создаётся слой из N полос с той же картинкой.
    В покое слой скрыт. Хотспоты не трогаются (слой pointer-events: none).
@@ -24,7 +25,7 @@
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   // Настройки
-  var N = 48;               // число полос (тоньше — точнее линия)
+  var N = 120;              // число полос (тонкая линия: ≈0.8 % высоты карты на полосу)
   var GAP_MIN = 4000;       // пауза между «лагами» и волной, мс
   var GAP_MAX = 9000;
 
@@ -36,14 +37,12 @@
   var TEAR_MIN = 1;         // сдвиг «лага», % ширины
   var TEAR_MAX = 2.5;
 
-  var SWEEP_GAP_MIN = 9000; // пауза между проходами линии-смаза, мс
+  var SWEEP_GAP_MIN = 9000; // пауза между проходами линии, мс
   var SWEEP_GAP_MAX = 14000;
-  var SWEEP_MS = 6000;      // медленный проход сверху вниз
-  var SWEEP_EDGE = 0.1;     // линия начинается и заканчивается за краями карты
-  var SWEEP_SIGMA = 0.02;   // толщина линии (доля высоты)
-  var SWEEP_AMP = 0.6;      // лёгкий сдвиг самой полосы вправо, % ширины
-  var SMEAR_SHIFT = 3.5;    // смаз: копия полосы уезжает вправо на этот % ширины
-  var SMEAR_OPACITY = 0.6;  // смаз: непрозрачность копии в центре линии
+  var SWEEP_MS = 5000;      // проход сверху вниз
+  var SWEEP_EDGE = 0.05;    // линия стартует и заканчивается за краями карты
+  var SWEEP_HALF = 0.015;   // половина толщины линии (доля высоты), края резкие
+  var SWEEP_AMP = 0.45;     // сдвиг строк линии вправо, % ширины (несколько пикселей)
 
   // Слой полос: каждая полоса показывает свой кусок картинки на весь размер карты
   var fx = document.createElement('div');
@@ -65,27 +64,8 @@
   }
   map.insertAdjacentElement('afterend', fx);
 
-  // Слой смаза: копии полос, которые в зоне линии смазываются вправо (горизонтальные полосы)
-  var fxSmear = document.createElement('div');
-  fxSmear.className = 'map-fx map-fx-smear';
-  fxSmear.setAttribute('aria-hidden', 'true');
-  var smear = [];
-  for (var q = 0; q < N; q++) {
-    var sb = document.createElement('div');
-    sb.className = 'map-fx-band';
-    sb.style.top = (q * 100 / N) + '%';
-    sb.style.height = (100 / N) + '%';
-    sb.style.backgroundImage = bands[q].style.backgroundImage;
-    sb.style.backgroundSize = bands[q].style.backgroundSize;
-    sb.style.backgroundPosition = bands[q].style.backgroundPosition;
-    sb.style.opacity = '0';
-    fxSmear.appendChild(sb);
-    smear.push(sb);
-  }
-  fx.insertAdjacentElement('afterend', fxSmear);
-
   var burst = null;   // «лаги» или волна
-  var sweep = null;   // линия-смаз
+  var sweep = null;   // линия-преломление
   var raf = 0;
   var timerBurst = 0;
   var timerSweep = 0;
@@ -99,11 +79,7 @@
   }
 
   function clearBands() {
-    for (var k = 0; k < N; k++) {
-      bands[k].style.transform = '';
-      smear[k].style.transform = '';
-      smear[k].style.opacity = '0';
-    }
+    for (var k = 0; k < N; k++) bands[k].style.transform = '';
   }
 
   function stopAll() {
@@ -112,13 +88,11 @@
     burst = null;
     sweep = null;
     fx.classList.remove('is-on');
-    fxSmear.classList.remove('is-on');
     clearBands();
   }
 
   function run() {
     fx.classList.add('is-on');
-    fxSmear.classList.add('is-on');
     if (!raf) raf = requestAnimationFrame(tick);
   }
 
@@ -211,22 +185,9 @@
         var d = (c - waveFront) / WAVE_HALF;
         if (Math.abs(d) < 1.6) dx += WAVE_AMP * Math.exp(-d * d) * Math.sin(d * Math.PI * 2);
       }
-      var g = 0;
-      if (sweepOn) {
-        var ds = (c - sweepFront) / SWEEP_SIGMA;
-        if (Math.abs(ds) < 3) {
-          g = Math.exp(-ds * ds);
-          dx += SWEEP_AMP * g;
-        }
-      }
+      // Линия: строки внутри полосы сдвигаются на одинаковую малую величину, края резкие
+      if (sweepOn && Math.abs(c - sweepFront) < SWEEP_HALF) dx += SWEEP_AMP;
       bands[j].style.transform = dx ? 'translate3d(' + dx.toFixed(2) + '%,0,0)' : '';
-      if (g > 0.01) {
-        smear[j].style.transform = 'translate3d(' + (SMEAR_SHIFT * g).toFixed(2) + '%,0,0)';
-        smear[j].style.opacity = (SMEAR_OPACITY * g).toFixed(3);
-      } else {
-        smear[j].style.transform = '';
-        smear[j].style.opacity = '0';
-      }
     }
     raf = requestAnimationFrame(tick);
   }
