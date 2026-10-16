@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Карта галактики: переход к карте сектора.">
   <title>Timeline Project — Galaxy Map</title>
-  <link rel="stylesheet" href="styles.css?v=galaxy-hs19">
-  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs19">
-  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs19">
+  <link rel="stylesheet" href="styles.css?v=galaxy-hs20">
+  <link rel="stylesheet" href="timeline-skin.css?v=galaxy-hs20">
+  <link rel="stylesheet" href="galaxy.css?v=galaxy-hs20">
 </head>
 <body>
   <script src="timeline-loader.js"></script>
@@ -59,6 +59,15 @@
           <span class="sector-list-name">Пространство Зеруса</span>
         </button>
       </li>
+      <li>
+        <button class="sector-list-item sector-list-item--odz" type="button"
+                data-odz="1" data-name="Пространство Директората">
+          <span class="sector-list-thumb">
+            <img src="assets/ozd-macket.png" alt="" width="48" height="48">
+          </span>
+          <span class="sector-list-name">Пространство Директората</span>
+        </button>
+      </li>
     </ul>
   </aside>
 
@@ -73,7 +82,7 @@
       <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи -->
       <button class="sector-hotspot" id="sectorHotspot" type="button"
               data-cx="73.8167" data-cy="32.3167" data-size="1.8667"
-              data-href="sector.html" data-name="Сектор Копрулу"
+              data-href="sector.html" data-name="Сектор Копрулу" data-macket="assets/koprulu-macket.jpg"
               aria-label="Сектор Копрулу"></button>
 
       <!-- Зерус: красная область без страницы (только анимация и сообщение) -->
@@ -81,7 +90,17 @@
               style="left: 55.45%; top: 52.63%;"
               data-cx="55.45" data-cy="52.63" data-size="1.8667" data-name="Зерус"
               aria-label="Зерус"></button>
+
+      <!-- Пространство Директората (ОЗД): квадрат на метке UED SPACE -->
+      <button class="sector-hotspot sector-hotspot--odz" id="odzHotspot" type="button"
+              style="left: 49.0%; top: 69.9%;"
+              data-cx="49.0" data-cy="69.9" data-size="1.8667"
+              data-name="Пространство Директората" data-macket="assets/ozd-macket.png"
+              aria-label="Пространство Директората"></button>
     </div>
+
+    <!-- Строки отказа доступа ОЗД: печатаются по одной, затем гаснут -->
+    <div class="odz-message" id="odzMessage" role="status" aria-live="polite" hidden></div>
 
     <!-- Сообщение для Зеруса: печатается по буквам, точка в конце моргает -->
     <div class="galaxy-error" id="galaxyError" role="alert" hidden>
@@ -128,6 +147,6 @@
 
   </main>
 
-  <script src="galaxy.js?v=galaxy-hs19" defer></script>
+  <script src="galaxy.js?v=galaxy-hs20" defer></script>
 </body>
 </html>
