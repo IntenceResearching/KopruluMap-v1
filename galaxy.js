@@ -172,6 +172,7 @@
     dive: 2.6,           // финальный «прыжок» к сектору
     diveMs: 950,
     focusStrength: 1,   // первый клик: доля пути до центра видимой области (1 — точно в центр)
+    focusAnchorX: 0.2, // первый клик: где по горизонтали ставится квадрат в видимой области (0 — у левого края, 0.5 — по центру, 1 — у правого). Меньше — карта правее, справа видно больше
     focusMs: 520,
     focusZoom: 4.1,       // первый клик: зум до 410% (диапазон 400–420%)
     focusZoomBelow: 4.0,  // зум подтягиваем только если текущий меньше 400%
@@ -641,12 +642,12 @@
       var side = ns * base;
       var px = parseFloat(hotspot.getAttribute('data-cx')) / 100 * side;
       var py = parseFloat(hotspot.getAttribute('data-cy')) / 100 * side;
-      nx = visibleW / 2 - px;
+      nx = visibleW * CONFIG.focusAnchorX - px;
       ny = sz.h / 2 - py;
       ms = CONFIG.focusZoomMs;
     } else {
       ns = view.s;
-      nx = view.tx + (visibleW / 2 - c.cx) * CONFIG.focusStrength;
+      nx = view.tx + (visibleW * CONFIG.focusAnchorX - c.cx) * CONFIG.focusStrength;
       ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
       ms = CONFIG.focusMs;
     }
@@ -1029,12 +1030,12 @@
       var side = ns * base;
       var px = parseFloat(el.getAttribute('data-cx')) / 100 * side;
       var py = parseFloat(el.getAttribute('data-cy')) / 100 * side;
-      nx = visibleW / 2 - px;
+      nx = visibleW * CONFIG.focusAnchorX - px;
       ny = sz.h / 2 - py;
       ms = CONFIG.focusZoomMs;
     } else {
       ns = view.s;
-      nx = view.tx + (visibleW / 2 - c.cx) * CONFIG.focusStrength;
+      nx = view.tx + (visibleW * CONFIG.focusAnchorX - c.cx) * CONFIG.focusStrength;
       ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
       ms = CONFIG.focusMs;
     }
