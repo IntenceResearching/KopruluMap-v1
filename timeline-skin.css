@@ -993,37 +993,18 @@ select:focus-visible { outline-color: #2ef5e6; }
   }
   .left-panel.collapsed { transform: translateY(calc(100% + 18px)); }
 
-  /* Taxonomy (yellow area in the reference): modest size and contrast lift. */
+  /* Keep more of the catalogue reachable, with comfortable touch targets. */
   .catalog-section { flex-basis: 174px; min-height: 48px; }
-  .catalog-section-code { width: 30px; height: 27px; font-size: 8px; }
-  .catalog-section-copy strong { font-size: 10px; }
-  .catalog-section-copy small { display: block; font-size: 7px; }
-  .catalog-section,
-  .catalog-section > b { color: #91c4bf; }
-  .catalog-section.active { color: #effffd; }
-  .catalog-section-copy small { color: #75aaa5; }
-  .catalog-section.active .catalog-section-copy small { color: #9acdc7; }
-  .catalog-section > b { color: #55e5d9; font-size: 9px; }
-
-  /* Main catalogue area: consistently larger type, controls and touch targets. */
+  .catalog-section-copy small { display: block; }
   .panel-head { padding: 12px 15px 10px; }
-  .eyebrow { font-size: 9px; color: #79b8b2; }
-  .panel-head h1 { font-size: 18px; }
   .catalog-stats { padding: 9px 14px; }
-  .stat-value { font-size: 16px; }
-  .stat-label { font-size: 9px; color: #82aaa6; }
-  .filter-header { font-size: 9px; color: #82aaa6; }
-  .filter-label { font-size: 9px; color: #79a9a5; }
-  .filter-chip { min-height: 30px; padding-inline: 10px; font-size: 10px; }
+  .filter-chip { min-height: 30px; padding-inline: 10px; }
   .filters { gap: 7px; padding: 0 13px 10px; }
-  .list-caption { min-height: 36px; font-size: 9px; color: #83b3ae; }
-  .sort-button { font-size: 9px; }
+  .list-caption { min-height: 36px; }
   .catalog-row { min-height: 54px; gap: 11px; padding: 8px 9px; }
-  .row-glyph { width: 29px; height: 29px; font-size: 10px; }
-  .row-title { font-size: 12px; }
-  .row-meta { font-size: 10px; margin-top: 5px; }
-  .row-count { font-size: 10px; }
-  .panel-foot { display: flex; min-height: 50px; padding: 9px 13px; font-size: 9px; }
+  .row-glyph { width: 29px; height: 29px; }
+  .row-meta { margin-top: 5px; }
+  .panel-foot { display: flex; min-height: 50px; padding: 9px 13px; }
 
   .map-controls { bottom: calc(min(88dvh, 760px) + 20px + env(safe-area-inset-bottom)); }
   .map-hint { bottom: calc(min(88dvh, 760px) + 22px + env(safe-area-inset-bottom)); }

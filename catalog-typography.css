@@ -1,0 +1,62 @@
+@charset "UTF-8";
+/*
+ * Catalogue typography scale and contrast overrides.
+ * Groups follow the visual hierarchy (header → taxonomy → filters → entries).
+ * Desktop is the base scale; mobile values are proportional adjustments below.
+ */
+
+/* Header and summary — the catalogue's primary information tier. */
+.left-panel .eyebrow { font-size: 10px; color: #79b8b2; }
+.left-panel .panel-head h1 { font-size: 22px; }
+.left-panel .stat-value { font-size: 18px; }
+.left-panel .stat-label { font-size: 10px; color: #82aaa6; }
+
+/* Taxonomy — one modest step above its former micro-label size. */
+.left-panel .catalog-section-code { font-size: 9px; }
+.left-panel .catalog-section-copy strong { font-size: 12px; }
+.left-panel .catalog-section-copy small { font-size: 8px; color: #75aaa5; }
+.left-panel .catalog-section.active .catalog-section-copy small { color: #9acdc7; }
+.left-panel .catalog-section,
+.left-panel .catalog-section > b { color: #91c4bf; }
+.left-panel .catalog-section.active { color: #effffd; }
+.left-panel .catalog-section > b { color: #55e5d9; font-size: 10px; }
+
+/* Filters and list controls — consistently legible labels and chip text. */
+.left-panel .filter-header,
+.left-panel .filter-label { font-size: 10px; color: #82aaa6; }
+.left-panel .filter-chip { font-size: 10px; }
+.left-panel .list-caption { font-size: 10px; color: #83b3ae; }
+.left-panel .sort-button { font-size: 10px; }
+.left-panel .filter-count { font-size: 10px; }
+
+/* Catalogue rows — title, supporting metadata, counts, and footer. */
+.left-panel .row-glyph { font-size: 10px; }
+.left-panel .row-title { font-size: 13px; }
+.left-panel .row-meta { font-size: 10px; }
+.left-panel .row-count { font-size: 11px; }
+.left-panel .panel-foot { font-size: 10px; }
+
+/* Mobile scale: slightly larger taxonomy; stronger lift for the dense list area. */
+@media (max-width: 700px) {
+  .left-panel .eyebrow { font-size: 9px; }
+  .left-panel .panel-head h1 { font-size: 18px; }
+  .left-panel .stat-value { font-size: 16px; }
+  .left-panel .stat-label,
+  .left-panel .filter-header,
+  .left-panel .filter-label { font-size: 9px; }
+
+  .left-panel .catalog-section-code { font-size: 8px; }
+  .left-panel .catalog-section-copy strong { font-size: 10px; }
+  .left-panel .catalog-section-copy small { font-size: 7px; }
+  .left-panel .catalog-section > b { font-size: 9px; }
+
+  .left-panel .filter-chip,
+  .left-panel .list-caption,
+  .left-panel .sort-button,
+  .left-panel .filter-count,
+  .left-panel .panel-foot { font-size: 10px; }
+  .left-panel .row-glyph { font-size: 10px; }
+  .left-panel .row-title { font-size: 12px; }
+  .left-panel .row-meta,
+  .left-panel .row-count { font-size: 10px; }
+}
