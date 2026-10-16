@@ -1,3 +1,9 @@
+## Ссылки в одном файле: links.js
+
+- Все внешние ссылки и переходы вынесены в `links.js`: `sectorPage` (переход с галактики на `sector.html`) и `sectorMapPreview` (ссылка на превью карты сектора). Меняются в одном месте.
+- Из `index.html` убраны `data-href="sector.html"`. Из `sector.html` убрана прямая ссылка на Drive. `galaxy.js` и `app.js` читают `window.SITE_LINKS`.
+- Пустая `sectorMapPreview` — превью не грузится, сайт работает. Скрипты: `galaxy-hs37`, `app.js?v=sector-links-1`.
+
 ## Сектор: превью карты по ссылке Google Drive (временно)
 
 - Галактика возвращена на `assets/galaxy-map.jpg` (ошибочная замена из PR #49 откатана).

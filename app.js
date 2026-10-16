@@ -722,10 +722,10 @@
         };
       }).sort(function (a, b) { return a.width - b.width; });
       state.rasterMode = 'tiles';
-    } else if (window.SECTOR_MAP_PREVIEW_URL || rasterExpected(meta)) {
+    } else if ((window.SITE_LINKS && SITE_LINKS.sectorMapPreview) || rasterExpected(meta)) {
       // манифеста нет, но растр собран — пробуем один предпросмотр
-      // (ссылка из sector.html имеет приоритет над meta.json)
-      var previewUrl = window.SECTOR_MAP_PREVIEW_URL || (meta && meta.assets && meta.assets.preview) || 'assets/map-preview.webp';
+      // (ссылка из links.js имеет приоритет над meta.json)
+      var previewUrl = (window.SITE_LINKS && SITE_LINKS.sectorMapPreview) || (meta && meta.assets && meta.assets.preview) || 'assets/map-preview.webp';
       loadPreview(previewUrl);
     }
   }

@@ -159,7 +159,7 @@
   if (!hotspot || !stage || !map || !layer) return;
 
   var sectorName = hotspot.getAttribute('data-name') || 'Сектор';
-  var defaultHref = hotspot.getAttribute('data-href') || 'sector.html';
+  var defaultHref = (window.SITE_LINKS && SITE_LINKS.sectorPage) || 'sector.html';
 
   // Параметры — как на странице сектора (app.js → CONFIG.view)
   var CONFIG = {
