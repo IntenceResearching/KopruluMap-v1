@@ -18,7 +18,7 @@
    Выбор другой цели — рамка переезжает к ней, не появляясь заново.
    Опция select({ instant: true }) сразу ставит рамку frame() на место, затем
    коротко анимирует импульс/линии прицела на месте (без наведения и роста рамки).
-   Снятие выбора — release(): линии втягиваются, рамка гаснет.
+   Снятие выбора — release(): контур выгружается обратно против часовой стрелки, импульсы уходят по каналам.
 
    Переход — start(); продолжает с удержания, без повторного появления:
      6. сужение — область фокуса сужается до цели, захват → onLock(0);
@@ -131,7 +131,7 @@
     error: 560,       // 'error': срыв захвата
     deny: 440,        // 'deny': вспышки отказа
     collapse: 280,    // 'error' / 'deny': линии втягиваются, рамка гаснет
-    release: 260,     // снятие выбора: то же, чуть быстрее
+    release: 420,     // снятие выбора: непрерывная выгрузка контура против часовой стрелки
     color: 400        // перетекание цвета при смене класса сцены
   };
 
@@ -483,7 +483,7 @@
     }
     ph.from = {
       x: r.pos.x, y: r.pos.y, w: r.box.w, h: r.box.h, ax: r.aim.x, ay: r.aim.y,
-      alpha: r.alpha, reach: r.reach, veil: r.veil, reveal: r.reveal
+      alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, veil: r.veil, reveal: r.reveal
     };
     var cb = null;
     switch (ph.kind) {
@@ -541,6 +541,7 @@
     var C = center();
     var st = {
       x: f.x, y: f.y, w: f.w, h: f.h, ax: f.ax, ay: f.ay,
+      frameProgress: f.frameProgress == null ? 1 : f.frameProgress,
       reach: 1, alpha: 1, vis: 1, fill: 0, hot: 0
     };
     var lb, fr, e, k;
@@ -707,6 +708,17 @@
         st.reach = f.reach * (1 - e);
         st.alpha = f.alpha * (1 - smoothstep(0.4, 1, u));
         break;
+
+      case 'unload':
+        // Снятие выбора — тот же маршрут в обратную сторону: контур уходит
+        // против часовой стрелки, а энергия покидает область обратно к краям.
+        e = easeInOutCubic(u);
+        st.frameProgress = (f.frameProgress == null ? 1 : f.frameProgress) * (1 - e);
+        st.reach = lerp(f.reach, 1, e);
+        st.flowDirection = -1;
+        st.hot = 0.35 * pulse(u, 0, 1);
+        st.alpha = f.alpha * (1 - smoothstep(0.92, 1, u));
+        break;
     }
     st.veil = r.veil;
     st.reveal = r.reveal;
@@ -714,8 +726,8 @@
   }
 
   /* ---------- рисование ---------- */
-  // Геометрия каналов и рамки. Во время snap контур растёт от середины каждой стороны,
-  // а внешние лучи одновременно сходятся от краёв сцены к границам области.
+  // Геометрия каналов и рамки. Во время snap единый периметр строится по часовой
+  // стрелке от верхнего левого угла, а внешние лучи сходятся к границам области.
   function shapes(st, sw) {
     var l = st.x - st.w / 2, r = st.x + st.w / 2, t = st.y - st.h / 2, b = st.y + st.h / 2;
     var hs = sw / 2;
@@ -724,31 +736,45 @@
     var lines = [];
     var x1 = l * (1 - st.reach), x2 = r + (cw - r) * st.reach;
     var y1 = t * (1 - st.reach), y2 = b + (ch - b) * st.reach;
-    if (l > 0 && l - x1 > 0.5) lines.push({ x: x1, y: ay - hs, w: l - x1, h: sw, v: false, ex: l, ey: ay, dx: -1, dy: 0, len: l - x1 });
-    if (r < cw && x2 - r > 0.5) lines.push({ x: r, y: ay - hs, w: x2 - r, h: sw, v: false, ex: r, ey: ay, dx: 1, dy: 0, len: x2 - r });
-    if (t > 0 && t - y1 > 0.5) lines.push({ x: ax - hs, y: y1, w: sw, h: t - y1, v: true, ex: ax, ey: t, dx: 0, dy: -1, len: t - y1 });
-    if (b < ch && y2 - b > 0.5) lines.push({ x: ax - hs, y: b, w: sw, h: y2 - b, v: true, ex: ax, ey: b, dx: 0, dy: 1, len: y2 - b });
+    if (l > 0 && l - x1 > 0.5) lines.push({ x: x1, y: ay - hs, w: l - x1, h: sw, v: false, ex: l, ey: ay, dx: -1, dy: 0, len: l - x1, flow: -1 });
+    if (r < cw && x2 - r > 0.5) lines.push({ x: r, y: ay - hs, w: x2 - r, h: sw, v: false, ex: r, ey: ay, dx: 1, dy: 0, len: x2 - r, flow: -1 });
+    if (t > 0 && t - y1 > 0.5) lines.push({ x: ax - hs, y: y1, w: sw, h: t - y1, v: true, ex: ax, ey: t, dx: 0, dy: -1, len: t - y1, flow: -1 });
+    if (b < ch && y2 - b > 0.5) lines.push({ x: ax - hs, y: b, w: sw, h: y2 - b, v: true, ex: ax, ey: b, dx: 0, dy: 1, len: y2 - b, flow: -1 });
 
-    var bw = Math.max(sw, st.w), bh = Math.max(sw * 2, st.h);
+    var bw = Math.max(sw, st.w), bh = Math.max(sw, st.h);
     var p = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
-    var fw = bw * p, fh = bh * p;
-    var fx = st.x - fw / 2, fy = st.y - fh / 2;
+    var horizontal = Math.max(0, bw - sw);
+    var vertical = Math.max(0, bh - sw);
+    var perimeter = 2 * (horizontal + vertical);
+    var remaining = p * perimeter;
     var box = [];
     var tracks = [];
-    if (p > 0.01) {
-      box = [
-        { x: fx, y: t, w: fw, h: sw, v: false },
-        { x: fx, y: b - sw, w: fw, h: sw, v: false },
-        { x: l, y: fy, w: sw, h: fh, v: true },
-        { x: r - sw, y: fy, w: sw, h: fh, v: true }
-      ];
-      // Энергетические дорожки вдоль собранной части периметра.
-      tracks = [
-        { ex: fx, ey: t + hs, dx: 1, dy: 0, len: fw, v: false },
-        { ex: fx + fw, ey: b - hs, dx: -1, dy: 0, len: fw, v: false },
-        { ex: l + hs, ey: fy + fh, dx: 0, dy: -1, len: fh, v: true },
-        { ex: r - hs, ey: fy, dx: 0, dy: 1, len: fh, v: true }
-      ];
+
+    // Один непрерывный маршрут: верх → правая сторона → низ → левая сторона.
+    // Полосы слегка перекрывают углы, чтобы не появлялись пиксельные разрывы.
+    var topLen = Math.min(horizontal, remaining);
+    remaining -= topLen;
+    var rightLen = Math.min(vertical, remaining);
+    remaining -= rightLen;
+    var bottomLen = Math.min(horizontal, remaining);
+    remaining -= bottomLen;
+    var leftLen = Math.min(vertical, remaining);
+
+    if (topLen > 0) {
+      box.push({ x: l, y: t, w: sw + topLen, h: sw, v: false });
+      tracks.push({ ex: l + hs, ey: t + hs, dx: 1, dy: 0, len: topLen, v: false, flow: 1 });
+    }
+    if (rightLen > 0) {
+      box.push({ x: r - sw, y: t, w: sw, h: sw + rightLen, v: true });
+      tracks.push({ ex: r - hs, ey: t + hs, dx: 0, dy: 1, len: rightLen, v: true, flow: 1 });
+    }
+    if (bottomLen > 0) {
+      box.push({ x: r - sw - bottomLen, y: b - sw, w: sw + bottomLen, h: sw, v: false });
+      tracks.push({ ex: r - hs, ey: b - hs, dx: -1, dy: 0, len: bottomLen, v: false, flow: 1 });
+    }
+    if (leftLen > 0) {
+      box.push({ x: l, y: b - sw - leftLen, w: sw, h: sw + leftLen, v: true });
+      tracks.push({ ex: l + hs, ey: b - hs, dx: 0, dy: -1, len: leftLen, v: true, flow: 1 });
     }
     return { lines: lines, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
   }
@@ -762,7 +788,7 @@
 
   // Энергетические импульсы непрерывно бегут по внешним каналам и периметру.
   // Слоты распределяются по длине дорожек: одновременно на экране около 100 импульсов.
-  function drawGlints(paths, sw, a, pal, now) {
+  function drawGlints(paths, sw, a, pal, now, flowDirection) {
     var active = paths.filter(function (path) { return path.len > sw * 2; });
     var total = active.reduce(function (sum, path) { return sum + path.len; }, 0);
     if (!total) return;
@@ -783,7 +809,8 @@
         var seed = (j + 1) * 1009 + k * 37;
         var phase = hash(seed + 3) * path.len;
         var speed = G.glintSpeed * M * (0.58 + hash(seed + 7) * 1.28);
-        var d = mod(phase - (reduceMotion ? 0 : now * speed / 1000), path.len);
+        var direction = (path.flow == null ? -1 : path.flow) * (flowDirection || 1);
+        var d = mod(phase + (reduceMotion ? 0 : now * speed * direction / 1000), path.len);
         var fade = smoothstep(0, sw * 1.6, d) * smoothstep(0, sw * 1.6, path.len - d);
         if (fade <= 0.01) continue;
 
@@ -841,7 +868,7 @@
         else ctx.fillRect(s.x, s.y, s.w, hl);
       }
       // 5. непрерывные импульсы идут по лучам и уже собранным сторонам рамки
-      drawGlints(sh.lines.concat(sh.tracks), sw, a, pal, now);
+      drawGlints(sh.lines.concat(sh.tracks), sw, a, pal, now, st.flowDirection);
       // 6. вспышка захвата внутри рамки (только у рамки размером с захват:
       //    большую область фокуса заливка залила бы целиком)
       if (st.fill > 0.003) {
@@ -875,6 +902,7 @@
     r.aim = { x: st.ax, y: st.ay };
     r.alpha = st.alpha;
     r.reach = st.reach;
+    r.frameProgress = st.frameProgress;
   }
 
   function loop(now) {
@@ -923,6 +951,7 @@
       aim: from.aim,
       alpha: from.alpha,
       reach: from.reach,
+      frameProgress: from.frameProgress == null ? 1 : from.frameProgress,
       veil: 0,
       reveal: 0,
       fixed: null,
@@ -944,7 +973,7 @@
     if (!r || r.mode === 'go' || !canvas || stageEl !== stage) return null;
     if (r.raf) global.cancelAnimationFrame(r.raf);
     run = null;
-    return { pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach };
+    return { pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress };
   }
 
   // Прицел с нуля: маленькая рамка в центре сцены
@@ -953,7 +982,7 @@
     attach(stage);
     var mt = metrics();
     var c = center();
-    return { pos: c, box: { w: mt.rest.w, h: mt.rest.h }, aim: { x: c.x, y: c.y }, alpha: 1, reach: 0 };
+    return { pos: c, box: { w: mt.rest.w, h: mt.rest.h }, aim: { x: c.x, y: c.y }, alpha: 1, reach: 0, frameProgress: 1 };
   }
 
   function valid(opts) { return !!(opts && opts.stage && typeof opts.target === 'function'); }
@@ -985,7 +1014,7 @@
     if (!r) { stop(); if (done) done(); return; }
     var from = takeOver(stageEl);
     var o = { target: r.o.target, frame: null, onEnd: done || null };
-    begin(o, 'release', [{ kind: 'collapse', ms: reduceMotion ? 0 : T.release, follow: true }], from);
+    begin(o, 'release', [{ kind: 'unload', ms: reduceMotion ? 0 : T.release }], from);
   }
 
   function start(opts) {
