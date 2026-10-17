@@ -80,9 +80,12 @@
 
     <!-- Слой карты: масштабируется и двигается целиком, хотспот внутри него -->
     <div class="map-layer" id="mapLayer">
+      <!-- srcset: файл по размеру карты на экране. Карта — квадрат со стороной в меньшую
+           сторону окна, отсюда sizes; при приближении galaxy.js поднимает sizes под реальный
+           размер слоя, и браузер догружает файл крупнее (3000 px — исходник без ресайза) -->
       <img class="galaxy-map" id="galaxyMap" src="/assets/galaxy-map-2000.webp?v=0f419d0e"
-           srcset="/assets/galaxy-map-1200.webp?v=0f419d0e 1200w, /assets/galaxy-map-2000.webp?v=0f419d0e 2000w"
-           sizes="100vw" alt="Карта галактики" draggable="false" fetchpriority="high">
+           srcset="/assets/galaxy-map-1200.webp?v=0f419d0e 1200w, /assets/galaxy-map-2000.webp?v=0f419d0e 2000w, /assets/galaxy-map-3000.webp?v=0f419d0e 3000w"
+           sizes="min(100vw, 100vh)" alt="Карта галактики" draggable="false" fetchpriority="high">
 
       <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи -->
       <button class="sector-hotspot" id="sectorHotspot" type="button"
@@ -158,8 +161,8 @@
   </div>
 
   <script src="/shared/links.js?v=structure-1" defer></script>
-  <script src="galaxy-fx.js?v=structure-1" defer></script>
+  <script src="galaxy-fx.js?v=srcset-1" defer></script>
   <script src="galaxy-ping.js?v=reticle-1" defer></script>
-  <script src="galaxy.js?v=reticle-1" defer></script>
+  <script src="galaxy.js?v=srcset-1" defer></script>
 </body>
 </html>

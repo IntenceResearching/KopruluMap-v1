@@ -243,6 +243,20 @@
     return { l: x - w / 2, t: y - w / 2, r: x + w / 2, b: y + w / 2, cx: x, cy: y, w: w };
   }
 
+  /* Чёткость картинки при приближении. Карта подключена через srcset (1200 / 2000 / 3000 px),
+     sizes в разметке — сторона карты в покое (меньшая сторона окна): на первый кадр браузер
+     берёт файл по размеру экрана. При приближении слой становится во много раз больше окна,
+     поэтому sizes подтягивается под фактическую сторону слоя — браузер сам догружает файл
+     крупнее и показывает прежний, пока новый не готов. Только вверх и с запасом ×3: первое же
+     приближение сразу берёт самый крупный файл, без промежуточной загрузки, а на меньший файл
+     карта обратно не переключается (лишняя загрузка и мерцание). */
+  var mapSizes = Math.min(window.innerWidth, window.innerHeight) || 0;
+  function sharpenMap(side) {
+    if (!(side > mapSizes)) return;
+    mapSizes = Math.ceil(side * 3);
+    map.sizes = mapSizes + 'px';
+  }
+
   // Слой имеет реальный размер base·s (без CSS scale): картинка рисуется заново
   // в нужном разрешении и не растягивается растром, поэтому не «шакалится».
   // Двигаем только translate, округляя до целых px, чтобы край не мылился.
@@ -253,6 +267,7 @@
     layer.style.transform = 'translate(' + Math.round(view.tx) + 'px,' + Math.round(view.ty) + 'px)';
     layer.style.setProperty('--s', String(view.s));
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
+    sharpenMap(side);
     positionPreview();
     GalaxyPing.refresh();
     parallaxRequest();

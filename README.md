@@ -85,7 +85,7 @@ python3 tools/build_assets.py --check    # проверить свежесть, 
 | Исходник | Что получается |
 |---|---|
 | `src/koprulu-sector.jpg` (10 000²) | `tiles/<уровень>/<столбец>_<строка>.webp` — пирамида 512×512 на четырёх уровнях (1250 → 10 000), 534 файла; `tiles.json` — манифест; `map-preview.webp` (2500²) — подложка на первый кадр |
-| `src/galaxy-map.jpg` | `galaxy-map-1200.webp` и `galaxy-map-2000.webp` под `srcset` |
+| `src/galaxy-map.jpg` | `galaxy-map-1200.webp`, `galaxy-map-2000.webp` и `galaxy-map-3000.webp` под `srcset` (3000 — без ресайза, грузится при приближении) |
 | `src/timeline-project-logo.png` | `timeline-project-logo.webp` (600²) — логотип экрана загрузки |
 | `src/koprulu-macket.jpg`, `src/ozd-macket.png` | `koprulu-macket.webp`, `ozd-macket.webp` |
 

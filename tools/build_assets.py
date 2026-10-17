@@ -60,7 +60,7 @@ PREVIEW_QUALITY = 82
 
 # --- карта галактики ---------------------------------------------------------
 GALAXY_SOURCE = "galaxy-map.jpg"
-GALAXY_WIDTHS = [1200, 2000]           # под srcset по ширине экрана
+GALAXY_WIDTHS = [1200, 2000, 3000]     # под srcset; 3000 — исходник без ресайза, грузится при приближении
 GALAXY_QUALITY = 82
 
 # --- логотип и макеты --------------------------------------------------------
@@ -71,7 +71,7 @@ LOGO_QUALITY = 88                      # у логотипа прозрачно�
 # Ссылки на собранные картинки в разметке и скриптах: к ним добавляется ?v=,
 # чтобы после пересборки браузер не взял устаревшее из кэша Pages (10 минут).
 VERSIONED_REFS = {
-    "site/index.html": ["galaxy-map-1200.webp", "galaxy-map-2000.webp", "koprulu-macket.webp",
+    "site/index.html": ["galaxy-map-1200.webp", "galaxy-map-2000.webp", "galaxy-map-3000.webp", "koprulu-macket.webp",
                         "ozd-macket.webp", "timeline-project-logo.webp"],
     "site/sector/sector.html": ["timeline-project-logo.webp"],
     "site/minimal/minimal.html": ["timeline-project-logo.webp"],

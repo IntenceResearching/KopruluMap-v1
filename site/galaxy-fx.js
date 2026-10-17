@@ -9,9 +9,11 @@
    Работает поверх картинки: над #galaxyMap создаётся слой из N полос с той же картинкой.
    В покое слой скрыт. Хотспоты не трогаются (слой pointer-events: none).
 
-   Картинка: ссылка из links.js (galaxyMapImage) или атрибут src у #galaxyMap.
-   Файл может лежать на другом домене: используется только CSS background-image,
-   пиксели картинки не читаются. */
+   Картинка: тот же файл, что сейчас показывает #galaxyMap (currentSrc — выбор srcset:
+   1200 px на телефоне, 3000 px после приближения), чтобы полосы не догружали отдельный
+   файл и не были мутнее карты. Без srcset — ссылка из links.js (galaxyMapImage) или
+   атрибут src у #galaxyMap. Файл может лежать на другом домене: используется только
+   CSS background-image, пиксели картинки не читаются. */
 (function () {
   var stage = document.getElementById('galaxyStage');
   var map = document.getElementById('galaxyMap');
@@ -57,7 +59,6 @@
     band.className = 'map-fx-band';
     band.style.top = (i * 100 / N) + '%';
     band.style.height = (100 / N) + '%';
-    band.style.backgroundImage = 'url("' + src + '")';
     band.style.backgroundSize = '100% ' + (N * 100) + '%';
     band.style.backgroundPosition = '0 ' + (i * 100 / (N - 1)) + '%';
     fx.appendChild(band);
@@ -65,6 +66,17 @@
     tearDx.push(0);
   }
   map.insertAdjacentElement('afterend', fx);
+
+  // Картинка полос подставляется при запуске эффекта: в покое слой скрыт (display: none)
+  // и ничего не грузит, а к моменту эффекта srcset мог сменить файл карты
+  var bandSrc = '';
+  function syncBandSrc() {
+    var cur = map.currentSrc || src;
+    if (cur === bandSrc) return;
+    bandSrc = cur;
+    var css = 'url("' + cur.replace(/"/g, '%22') + '")';
+    for (var k = 0; k < N; k++) bands[k].style.backgroundImage = css;
+  }
 
   var burst = null;   // «лаги» или волна
   var sweeps = [];    // линии-преломления: [{ start }]
@@ -94,6 +106,7 @@
   }
 
   function run() {
+    syncBandSrc();
     fx.classList.add('is-on');
     if (!raf) raf = requestAnimationFrame(tick);
   }
