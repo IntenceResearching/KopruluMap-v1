@@ -743,14 +743,13 @@
       var rb = clamp(rayBuild, 0, 1);
       var cx = st.x, cy = st.y;
       var lx = l + hs, rx = r - hs, ty = t + hs, by = b - hs;
-      var leftEnd = lx * (1 - rb);
-      var rightEnd = rx + (cw - rx) * rb;
-      var topEnd = ty * (1 - rb);
-      var bottomEnd = by + (ch - by) * rb;
-      if (leftEnd > 0.5) lines.push({ x: 0, y: cy - hs, w: leftEnd, h: sw, v: false, ex: leftEnd, ey: cy, dx: -1, dy: 0, len: leftEnd, flow: -1 });
-      if (cw - rightEnd > 0.5) lines.push({ x: rightEnd, y: cy - hs, w: cw - rightEnd, h: sw, v: false, ex: rightEnd, ey: cy, dx: 1, dy: 0, len: cw - rightEnd, flow: -1 });
-      if (topEnd > 0.5) lines.push({ x: cx - hs, y: 0, w: sw, h: topEnd, v: true, ex: cx, ey: topEnd, dx: 0, dy: -1, len: topEnd, flow: -1 });
-      if (ch - bottomEnd > 0.5) lines.push({ x: cx - hs, y: bottomEnd, w: sw, h: ch - bottomEnd, v: true, ex: cx, ey: bottomEnd, dx: 0, dy: 1, len: ch - bottomEnd, flow: -1 });
+      // Keep each edge channel physically joined to its side midpoint while it fades.
+      // Retracting the endpoint here made a visible gap between the ray and its growing arc.
+      var channelAlpha = 1 - rb;
+      lines.push({ x: 0, y: cy - hs, w: lx, h: sw, v: false, ex: lx, ey: cy, dx: -1, dy: 0, len: lx, flow: -1, alpha: channelAlpha });
+      lines.push({ x: rx, y: cy - hs, w: cw - rx, h: sw, v: false, ex: rx, ey: cy, dx: 1, dy: 0, len: cw - rx, flow: -1, alpha: channelAlpha });
+      lines.push({ x: cx - hs, y: 0, w: sw, h: ty, v: true, ex: cx, ey: ty, dx: 0, dy: -1, len: ty, flow: -1, alpha: channelAlpha });
+      lines.push({ x: cx - hs, y: by, w: sw, h: ch - by, v: true, ex: cx, ey: by, dx: 0, dy: 1, len: ch - by, flow: -1, alpha: channelAlpha });
     } else {
       var ax = clamp(st.ax, l + hs, r - hs);
       var ay = clamp(st.ay, t + hs, b - hs);
@@ -799,16 +798,19 @@
   }
 
   function fillRects(list, dx, dy) {
+    var baseAlpha = ctx.globalAlpha;
     for (var i = 0; i < list.length; i++) {
       var s = list[i];
-      ctx.fillRect(s.x + dx, s.y + dy, s.w, s.h);
+      ctx.globalAlpha = baseAlpha * (s.alpha == null ? 1 : s.alpha);
+      if (ctx.globalAlpha > 0.003) ctx.fillRect(s.x + dx, s.y + dy, s.w, s.h);
     }
+    ctx.globalAlpha = baseAlpha;
   }
 
   // Энергетические импульсы непрерывно бегут по внешним каналам и периметру.
   // Слоты распределяются по длине дорожек: одновременно на экране около 100 импульсов.
   function drawGlints(paths, sw, a, pal, now, flowDirection) {
-    var active = paths.filter(function (path) { return path.len > sw * 2; });
+    var active = paths.filter(function (path) { return path.len > sw * 2 && (path.alpha == null || path.alpha > 0.003); });
     var total = active.reduce(function (sum, path) { return sum + path.len; }, 0);
     if (!total) return;
 
@@ -837,7 +839,8 @@
         var length = sw * (1.8 + hash(seed + 11) * 2.4);
         var thickness = Math.max(1, sw * (0.38 + hash(seed + 13) * 0.24));
         var flicker = reduceMotion ? 1 : 0.46 + 0.54 * (0.5 + 0.5 * Math.sin(now * 0.0025 * (0.7 + hash(seed + 17)) + hash(seed + 19) * Math.PI * 2));
-        var intensity = (0.28 + 0.72 * hash(seed + 23)) * flicker * fade;
+        var pathAlpha = path.alpha == null ? 1 : path.alpha;
+        var intensity = (0.28 + 0.72 * hash(seed + 23)) * flicker * fade * pathAlpha;
         var gradient;
         if (path.v) gradient = ctx.createLinearGradient(0, cy - length / 2, 0, cy + length / 2);
         else gradient = ctx.createLinearGradient(cx - length / 2, 0, cx + length / 2, 0);
@@ -882,10 +885,12 @@
       var hl = Math.max(1, sw * 0.2);
       for (var i = 0; i < all.length; i++) {
         var s = all[i];
+        ctx.globalAlpha = s.alpha == null ? 1 : s.alpha;
         ctx.fillStyle = rgba(pal.light, (i < sh.lines.length ? 0.28 : 0.48) * a);
         if (s.v) ctx.fillRect(s.x, s.y, hl, s.h);
         else ctx.fillRect(s.x, s.y, s.w, hl);
       }
+      ctx.globalAlpha = 1;
       // 5. непрерывные импульсы идут по лучам и уже собранным сторонам рамки
       drawGlints(sh.lines.concat(sh.tracks), sw, a, pal, now, st.flowDirection);
       // 6. вспышка захвата внутри рамки (только у рамки размером с захват:
