@@ -180,8 +180,6 @@
     animateMs: 340,
     fitInset: 1,
     panMargin: 0.25,     // край карты может уйти внутрь экрана на эту долю размера сцены
-    dive: 2.6,           // финальный «прыжок» к сектору
-    diveMs: 950,
     focusStrength: 1,   // первый клик: доля пути до центра видимой области (1 — точно в центр)
     focusAnchorX: 0.4, // первый клик: где по горизонтали ставится квадрат в видимой области (0 — у левого края, 0.5 — по центру, 1 — у правого). Меньше — карта правее, справа видно больше
     focusMs: 520,
@@ -727,54 +725,123 @@
   });
 
 
-  /* ---------- переход: квадрат из 9 сегментов ----------
-     Рамка (уголки, внешний контур, затемнение) живёт в galaxy-ping.js:
-     9 одинаковых этапов сужения от границ карты к маркеру, затем захват.
-     Здесь — логика перехода: захват, приближение и навигация.                */
-  var LOCK_AT = 1500;   // захват маркера, мс
-  var DIVE_AT = 1500;   // старт приближения, мс (совпадает с захватом)
+  /* ---------- переход: прицел в духе брифингов StarCraft II ----------
+     Прицел (перекрестие, рамка, вспышки, затемнение) живёт в galaxy-ping.js:
+     наведение → захват → рамка раскрывается и карта приближается → снова.
+     Здесь — логика: что делать при захвате, как приближать карту на каждом
+     шаге и чем всё кончается. Всё считается от текущего вида (view): переход
+     начинается с того зума и положения карты, какие есть в момент клика.      */
+  var DIVE = {
+    steps: 2,             // «нырков» к Копрулу перед переходом (в брифинге — два)
+    sizes: [0.17, 0.42],  // экранный размер квадрата после шага, доля меньшей стороны сцены
+    minK: 1.35,           // за шаг приближаем не меньше чем во столько раз…
+    maxK: 6,              // …и не больше (если перед переходом карту сильно отдалили)
+    maxS: 20,             // предел масштаба на время перехода (дальше — уход на страницу)
+    lag: 0.12,            // промежуточный шаг: квадрат не доезжает до центра (доля смещения)…
+    lagMin: 0.045         // …и остаётся от центра хотя бы на этой доле меньшей стороны
+  };
+  var viewBeforeTransition = null;   // вид до перехода — вернуть, если пришли «Назад»
 
-  function startBox() {
-    var side = view.s * base;
-    return { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
+  function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+  // Шаг приближения: квадрат вырастает до DIVE.sizes[i] и едет к центру сцены
+  // (на промежуточном шаге — чуть не доезжая, чтобы прицелу было куда довестись,
+  // как в брифинге). Масштаб растёт геометрически, точка маркера идёт по прямой:
+  // карта и раскрывающаяся рамка прицела движутся синхронно. Ограничения вида на
+  // время шага сняты, потолок масштаба — capS.
+  function diveStep(el, i, ms, last, capS) {
+    var sz = sceneSize();
+    var m = Math.min(sz.w, sz.h);
+    var c = boxOf(el);
+    var want = DIVE.sizes[Math.min(i, DIVE.sizes.length - 1)] * m;
+    var s0 = view.s;
+    var s1 = clamp(s0 * clamp(want / Math.max(1, c.w), DIVE.minK, DIVE.maxK), s0, Math.max(s0, capS));
+    var ex = sz.w / 2, ey = sz.h / 2;
+    if (!last) {
+      var ox = (c.cx - ex) * DIVE.lag, oy = (c.cy - ey) * DIVE.lag;
+      var len = Math.hypot(ox, oy), min = DIVE.lagMin * m;
+      if (len < 0.5) { ox = 0.6; oy = 0.8; len = 1; }   // маркер уже в центре — уводим вниз-вправо
+      if (len < min) { ox *= min / len; oy *= min / len; }
+      ex += ox;
+      ey += oy;
+    }
+    var side0 = s0 * base;
+    var fx = (c.cx - view.tx) / side0, fy = (c.cy - view.ty) / side0;   // точка маркера в долях карты
+    var x0 = c.cx, y0 = c.cy;
+    var token = {};
+    var t0 = performance.now();
+    anim = token;
+    function step(now) {
+      if (anim !== token) return;
+      var u = clamp((now - t0) / ms, 0, 1);
+      var e = easeInOutCubic(u);
+      var s = s0 * Math.pow(s1 / s0, e);
+      view.s = s;
+      view.tx = x0 + (ex - x0) * e - fx * s * base;
+      view.ty = y0 + (ey - y0) * e - fy * s * base;
+      applyView();
+      if (u < 1) { window.requestAnimationFrame(step); return; }
+      anim = null;
+    }
+    window.requestAnimationFrame(step);
   }
 
-  // Приближение к маркеру с фиксацией его точки на экране
-  function diveInto(el) {
+  // Маркер должен быть на экране: если карту увели после первого клика и он за
+  // краем, сначала мягко подводим его к центру (масштаб не трогаем), потом прицел.
+  function withTargetInView(el, then) {
+    var sz = sceneSize();
     var c = boxOf(el);
-    var nextS = clamp(view.s * CONFIG.dive, CONFIG.minFactor, CONFIG.maxFactor);
-    var k = nextS / view.s;
-    animateTo(nextS,
-      c.cx - (c.cx - view.tx) * k,
-      c.cy - (c.cy - view.ty) * k,
-      CONFIG.diveMs);
+    var pad = 0.08 * Math.min(sz.w, sz.h);
+    if (c.cx >= pad && c.cx <= sz.w - pad && c.cy >= pad && c.cy <= sz.h - pad) { then(); return; }
+    animateTo(view.s, view.tx + sz.w / 2 - c.cx, view.ty + sz.h / 2 - c.cy, CONFIG.focusMs, then);
+  }
+
+  function beginTransition() {
+    busy = true;
+    cancelAnim();
+    viewBeforeTransition = { s: view.s, tx: view.tx, ty: view.ty };
+  }
+
+  // Конец перехода без ухода со страницы (Зерус, ОЗД): прицел снят, вид в рамках
+  function finishTransition() {
+    busy = false;
+    cancelAnim();
+    GalaxyPing.stop();
+    viewBeforeTransition = null;
+    clampView();
+    applyView();
   }
 
   function resetTransition() {
     busy = false;
     cancelAnim();
     GalaxyPing.stop();
-    hotspot.classList.remove('is-locked');
+    [hotspot, zerus, odz].forEach(function (x) { if (x) x.classList.remove('is-locked'); });
+    stage.classList.remove('is-red-target', 'is-odz-ping');
+    if (viewBeforeTransition) {
+      view.s = viewBeforeTransition.s;
+      view.tx = viewBeforeTransition.tx;
+      view.ty = viewBeforeTransition.ty;
+      viewBeforeTransition = null;
+    }
   }
 
+  // Копрулу: наведение, захват, два «нырка» и уход в темноту, затем переход
   function runTransition(el, href) {
     if (busy) return;
-    busy = true;
-    cancelAnim();
+    beginTransition();
     hidePanel();
     hidePreview();
-    var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
-    GalaxyPing.start({
-      stage: stage,
-      from: startBox(),
-      to: function () { return boxOf(el); },
-      lockAt: LOCK_AT,
-      endAt: NAV_AT,
-      onLock: function () {
-        hotspot.classList.add('is-locked');
-        diveInto(el);
-      },
-      onEnd: function () { window.location.href = href; }
+    withTargetInView(el, function () {
+      GalaxyPing.start({
+        stage: stage,
+        target: function () { return boxOf(el); },
+        steps: DIVE.steps,
+        ending: 'dive',
+        onLock: function () { el.classList.add('is-locked'); },
+        onZoom: function (i, ms) { diveStep(el, i, ms, i === DIVE.steps - 1, DIVE.maxS); },
+        onEnd: function () { window.location.href = href; }
+      });
     });
   }
 
@@ -849,8 +916,9 @@
 
   /* ---------- Зерус: красная область без страницы ----------
      Первый клик — приближение к квадрату (как у Копрулу, без панели).
-     Второй клик — красный переход из 4 уголков, приближение, затем сообщение
-     «Ошибка. Нет данных»: печатается по буквам, точка в конце моргает. */
+     Второй клик — красный прицел: наведение, захват, приближение, срыв захвата,
+     затем сообщение «Ошибка. Нет данных»: печатается по буквам, точка в конце
+     моргает. */
   var zerus = document.getElementById('zerusHotspot');
   var zerusMsg = document.getElementById('galaxyError');
   var zerusText = document.getElementById('galaxyErrorText');
@@ -916,30 +984,28 @@
     }, 45);
   }
 
+  // Зерус: красный прицел, захват, один «нырок» (в пределах обычного зума),
+  // затем захват срывается и печатается сообщение об ошибке
   function runZerusTransition(el) {
     if (busy) return;
-    busy = true;
-    cancelAnim();
+    beginTransition();
+    hidePreview();
     stage.classList.add('is-red-target');
-    var NAV_AT = DIVE_AT + CONFIG.diveMs + 150;
-    GalaxyPing.start({
-      stage: stage,
-      from: startBox(),
-      to: function () { return boxOf(el); },
-      lockAt: LOCK_AT,
-      endAt: NAV_AT,
-      onLock: function () {
-        el.classList.add('is-locked');
-        diveInto(el);
-      },
-      onEnd: function () {
-        // вместо перехода — сообщение об ошибке
-        busy = false;
-        cancelAnim();
-        GalaxyPing.stop();
-        stage.classList.remove('is-red-target');
-        showZerusError();
-      }
+    withTargetInView(el, function () {
+      GalaxyPing.start({
+        stage: stage,
+        target: function () { return boxOf(el); },
+        steps: 1,
+        ending: 'error',
+        onLock: function () { el.classList.add('is-locked'); },
+        onZoom: function (i, ms) { diveStep(el, i, ms, true, CONFIG.maxFactor); },
+        onEnd: function () {
+          // вместо перехода — сообщение об ошибке
+          finishTransition();
+          stage.classList.remove('is-red-target');
+          showZerusError();
+        }
+      });
     });
   }
 
@@ -963,8 +1029,9 @@
 
   /* ---------- Пространство Директората (ОЗД) ----------
      Как Копрулу: первый клик — панель и приближение, второй — переход.
-     Переход: рамка сходится к квадрату, квадрат и блик краснеют, камера отдаляется
-     до 100 %, затем печатаются 12 строк «ОТКАЗ ДОСТУПА.» … «Файл заблокирован.».
+     Переход: синий прицел наводится и захватывает квадрат, затем отказ — прицел,
+     квадрат и блик краснеют, камера отдаляется до 100 %, прицел гаснет, затем
+     печатаются 12 строк «ОТКАЗ ДОСТУПА.» … «Файл заблокирован.».
      Строки гаснут через 5 с, после этого кнопка неактивна. Перезагрузка сбрасывает всё. */
   var odz = document.getElementById('odzHotspot');
   var odzMsg = document.getElementById('odzMessage');
@@ -1034,35 +1101,34 @@
     odzHideTimer = window.setTimeout(hideOdzMessages, ODZ_SHOW_MS);
   }
 
+  // ОЗД: синий прицел наводится и захватывает квадрат, затем отказ — прицел и
+  // квадрат краснеют, камера отъезжает до 100 %, прицел гаснет, печатаются строки
   function runOdzTransition(el) {
     odzDone = true;
-    busy = true;
-    cancelAnim();
+    beginTransition();
     hidePanel();
-    // Пинг синий на всём сужении; красным становится только в самом конце (LOCK_AT)
+    hidePreview();
     stage.classList.add('is-odz-ping');
-    var MSG_AT = LOCK_AT + CONFIG.animateMs + 150;
-    GalaxyPing.start({
-      stage: stage,
-      from: startBox(),
-      to: function () { return boxOf(el); },
-      lockAt: LOCK_AT,
-      endAt: MSG_AT,
-      onLock: function () {
-        el.classList.add('is-odz-red');      // квадрат и рамка плавно краснеют (CSS transition)
-        stage.classList.remove('is-odz-ping');
-        stage.classList.add('is-red-target');
-        el.classList.add('is-locked');
-        var sz = sceneSize();
-        animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
-      },
-      onEnd: function () {
-        busy = false;
-        cancelAnim();
-        GalaxyPing.stop();
-        stage.classList.remove('is-red-target', 'is-odz-ping');
-        showOdzMessages();
-      }
+    withTargetInView(el, function () {
+      GalaxyPing.start({
+        stage: stage,
+        target: function () { return boxOf(el); },
+        steps: 0,
+        ending: 'deny',
+        onLock: function () { el.classList.add('is-locked'); },
+        onDeny: function () {
+          el.classList.add('is-odz-red');      // квадрат плавно краснеет (CSS transition), прицел — следом
+          stage.classList.remove('is-odz-ping');
+          stage.classList.add('is-red-target');
+          var sz = sceneSize();
+          animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
+        },
+        onEnd: function () {
+          finishTransition();
+          stage.classList.remove('is-red-target', 'is-odz-ping');
+          showOdzMessages();
+        }
+      });
     });
   }
 
