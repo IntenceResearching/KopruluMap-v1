@@ -582,8 +582,8 @@
         break;
 
       case 'snap':
-        // Четыре луча входят из-за краёв сцены к серединам сторон; после их прихода
-        // четыре симметричных дуги продолжают путь по часовой стрелке.
+        // Четыре луча входят из-за краёв сцены к серединам сторон; каждый сразу
+        // продолжает свой непрерывный путь по часовой стрелке вдоль рамки.
         lb = lockBox(r, tg, mt);
         fr = frameOf(r);
         st.x = fr ? fr.x : tg.cx;
@@ -591,11 +591,12 @@
         st.ax = tg.cx; st.ay = tg.cy;
         st.w = fr ? fr.w : lb.w;
         st.h = fr ? fr.h : lb.h;
-        var rayU = easeInOutCubic(clamp(u / 0.42, 0, 1));
-        var frameU = easeInOutCubic(clamp((u - 0.42) / 0.58, 0, 1));
-        st.rayBuild = rayU;
-        st.reach = 1 - rayU;
-        st.frameProgress = frameU;
+        // Единый линейный прогресс по длине траектории: скорость не меняется
+        // в точке, где входящий луч переходит в дугу рамки.
+        var routeU = clamp(u, 0, 1);
+        st.rayBuild = routeU;
+        st.reach = 1 - routeU;
+        st.frameProgress = routeU;
         st.hot = 0.72 * pulse(u, 0, 1);
         break;
 
@@ -736,39 +737,61 @@
   function shapes(st, sw) {
     var l = st.x - st.w / 2, r = st.x + st.w / 2, t = st.y - st.h / 2, b = st.y + st.h / 2;
     var hs = sw / 2;
-    var lines = [];
-    var guide = [];
     var bw = Math.max(sw, st.w), bh = Math.max(sw, st.h);
+    var p = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
+    var lines = [];
+    var box = [];
+    var tracks = [];
     var rayBuild = st.rayBuild;
 
+    function addSegment(target, x, y, dx, dy, length, alpha) {
+      if (length <= 0.01) return;
+      var shape;
+      if (dx > 0) shape = { x: x - hs, y: y - hs, w: length + sw, h: sw, v: false };
+      else if (dx < 0) shape = { x: x - length - hs, y: y - hs, w: length + sw, h: sw, v: false };
+      else if (dy > 0) shape = { x: x - hs, y: y - hs, w: sw, h: length + sw, v: true };
+      else shape = { x: x - hs, y: y - length - hs, w: sw, h: length + sw, v: true };
+      if (alpha != null) shape.alpha = alpha;
+      if (target === lines) {
+        shape.ex = x; shape.ey = y; shape.dx = dx; shape.dy = dy;
+        shape.len = length; shape.flow = 1;
+        lines.push(shape);
+      } else {
+        box.push(shape);
+        tracks.push({ ex: x, ey: y, dx: dx, dy: dy, len: length, v: !!dy, flow: 1 });
+      }
+    }
+
     if (rayBuild != null) {
-      var rb = clamp(rayBuild, 0, 1);
+      // One distance clock per route: each ray enters from beyond the canvas,
+      // reaches its side midpoint, and continues around the corner without pausing.
       var cx = st.x, cy = st.y;
       var lx = l + hs, rx = r - hs, ty = t + hs, by = b - hs;
-      var leftTip = -hs + (lx + hs) * rb;
-      var rightTip = cw + hs - (cw + hs - rx) * rb;
-      var topTip = -hs + (ty + hs) * rb;
-      var bottomTip = ch + hs - (ch + hs - by) * rb;
-      // Лучи начинаются за краями холста и растут внутрь. Они приглушаются,
-      // когда контур принимает их, но после сборки остаются едва заметными.
-      var frameP = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
-      var channelAlpha = Math.max(0.32, 1 - 0.68 * frameP);
-      var guideWeight = st.flowDirection === -1 ? smoothstep(0.02, 0.18, rb) : smoothstep(0.9, 1, rb);
-      var guideAlpha = 0.24 * guideWeight * (1 - frameP);
-      if (guideAlpha > 0.003) {
-        guide.push({ x: l, y: t, w: bw, h: sw, v: false, alpha: guideAlpha });
-        guide.push({ x: r - sw, y: t, w: sw, h: bh, v: true, alpha: guideAlpha });
-        guide.push({ x: l, y: b - sw, w: bw, h: sw, v: false, alpha: guideAlpha });
-        guide.push({ x: l, y: t, w: sw, h: bh, v: true, alpha: guideAlpha });
+      var halfW = Math.max(0, (bw - sw) / 2);
+      var halfH = Math.max(0, (bh - sw) / 2);
+      var alpha = Math.max(0.32, 1 - 0.68 * p);
+
+      function traceRoute(x, y, rayDx, rayDy, rayLen, dx1, dy1, len1, dx2, dy2, len2) {
+        var distance = p * (rayLen + len1 + len2);
+        var amount = Math.min(rayLen, distance);
+        addSegment(lines, x, y, rayDx, rayDy, amount, alpha);
+        distance -= amount;
+        if (amount < rayLen) return;
+        x += rayDx * rayLen; y += rayDy * rayLen;
+        amount = Math.min(len1, distance);
+        addSegment(box, x, y, dx1, dy1, amount);
+        distance -= amount;
+        x += dx1 * amount; y += dy1 * amount;
+        if (amount < len1) return;
+        amount = Math.min(len2, distance);
+        addSegment(box, x, y, dx2, dy2, amount);
       }
-      var leftLen = Math.max(0, leftTip + hs);
-      var rightLen = Math.max(0, cw + hs - rightTip);
-      var topLen = Math.max(0, topTip + hs);
-      var bottomLen = Math.max(0, ch + hs - bottomTip);
-      if (leftLen > 0.5) lines.push({ x: -hs, y: cy - hs, w: leftLen, h: sw, v: false, ex: leftTip, ey: cy, dx: -1, dy: 0, len: leftLen, flow: -1, alpha: channelAlpha });
-      if (rightLen > 0.5) lines.push({ x: rightTip, y: cy - hs, w: rightLen, h: sw, v: false, ex: rightTip, ey: cy, dx: 1, dy: 0, len: rightLen, flow: -1, alpha: channelAlpha });
-      if (topLen > 0.5) lines.push({ x: cx - hs, y: -hs, w: sw, h: topLen, v: true, ex: cx, ey: topTip, dx: 0, dy: -1, len: topLen, flow: -1, alpha: channelAlpha });
-      if (bottomLen > 0.5) lines.push({ x: cx - hs, y: bottomTip, w: sw, h: bottomLen, v: true, ex: cx, ey: bottomTip, dx: 0, dy: 1, len: bottomLen, flow: -1, alpha: channelAlpha });
+
+      // Входящий луч и продолжение по периметру — одна непрерывная траектория.
+      traceRoute(cx, -hs, 0, 1, ty + hs, 1, 0, halfW, 0, 1, halfH);       // верх → право
+      traceRoute(cw + hs, cy, -1, 0, cw + hs - rx, 0, 1, halfH, -1, 0, halfW); // право → низ
+      traceRoute(cx, ch + hs, 0, -1, ch + hs - by, -1, 0, halfW, 0, -1, halfH); // низ → лево
+      traceRoute(-hs, cy, 1, 0, lx + hs, 0, -1, halfH, 1, 0, halfW);       // лево → верх
     } else {
       var ax = clamp(st.ax, l + hs, r - hs);
       var ay = clamp(st.ay, t + hs, b - hs);
@@ -778,41 +801,25 @@
       if (r - hs < cw && x2 - (r - hs) > 0.5) lines.push({ x: r - hs, y: ay - hs, w: x2 - (r - hs), h: sw, v: false, ex: r - hs, ey: ay, dx: 1, dy: 0, len: x2 - (r - hs), flow: -1 });
       if (t + hs > 0 && t + hs - y1 > 0.5) lines.push({ x: ax - hs, y: y1, w: sw, h: t + hs - y1, v: true, ex: ax, ey: t + hs, dx: 0, dy: -1, len: t + hs - y1, flow: -1 });
       if (b - hs < ch && y2 - (b - hs) > 0.5) lines.push({ x: ax - hs, y: b - hs, w: sw, h: y2 - (b - hs), v: true, ex: ax, ey: b - hs, dx: 0, dy: 1, len: y2 - (b - hs), flow: -1 });
+
+      var perimeterHalfW = Math.max(0, (bw - sw) / 2);
+      var perimeterHalfH = Math.max(0, (bh - sw) / 2);
+      function addArc(x, y, dx1, dy1, len1, dx2, dy2, len2) {
+        var remaining = p * (2 * (perimeterHalfW + perimeterHalfH));
+        var first = Math.min(len1, remaining);
+        addSegment(box, x, y, dx1, dy1, first);
+        x += dx1 * first; y += dy1 * first;
+        remaining -= first;
+        var second = Math.min(len2, remaining);
+        addSegment(box, x, y, dx2, dy2, second);
+      }
+      addArc(st.x, t + hs, 1, 0, perimeterHalfW, 0, 1, perimeterHalfH);
+      addArc(r - hs, st.y, 0, 1, perimeterHalfH, -1, 0, perimeterHalfW);
+      addArc(st.x, b - hs, -1, 0, perimeterHalfW, 0, -1, perimeterHalfH);
+      addArc(l + hs, st.y, 0, -1, perimeterHalfH, 1, 0, perimeterHalfW);
     }
 
-    var p = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
-    var halfW = Math.max(0, (bw - sw) / 2);
-    var halfH = Math.max(0, (bh - sw) / 2);
-    var routeLength = halfW + halfH;
-    var box = [];
-    var tracks = [];
-
-    function addSegment(x, y, dx, dy, length) {
-      if (length <= 0.01) return;
-      if (dx > 0) box.push({ x: x - hs, y: y - hs, w: length + sw, h: sw, v: false });
-      else if (dx < 0) box.push({ x: x - length - hs, y: y - hs, w: length + sw, h: sw, v: false });
-      else if (dy > 0) box.push({ x: x - hs, y: y - hs, w: sw, h: length + sw, v: true });
-      else box.push({ x: x - hs, y: y - length - hs, w: sw, h: length + sw, v: true });
-      tracks.push({ ex: x, ey: y, dx: dx, dy: dy, len: length, v: !!dy, flow: 1 });
-    }
-
-    function addArc(x, y, dx1, dy1, len1, dx2, dy2, len2) {
-      var remaining = p * routeLength;
-      var first = Math.min(len1, remaining);
-      addSegment(x, y, dx1, dy1, first);
-      x += dx1 * first; y += dy1 * first;
-      remaining -= first;
-      var second = Math.min(len2, remaining);
-      addSegment(x, y, dx2, dy2, second);
-    }
-
-    // Четыре одинаковых маршрута: верх→право, право→низ, низ→лево, лево→верх.
-    addArc(st.x, t + hs, 1, 0, halfW, 0, 1, halfH);
-    addArc(r - hs, st.y, 0, 1, halfH, -1, 0, halfW);
-    addArc(st.x, b - hs, -1, 0, halfW, 0, -1, halfH);
-    addArc(l + hs, st.y, 0, -1, halfH, 1, 0, halfW);
-
-    return { lines: lines, guide: guide, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
+    return { lines: lines, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
   }
 
   function fillRects(list, dx, dy) {
@@ -883,7 +890,7 @@
       var pal = currentPalette(now);
       var core = mix(pal.core, pal.light, clamp(st.hot, 0, 1) * 0.72);
       var sh = shapes(st, sw);
-      var all = sh.lines.concat(sh.guide || [], sh.box);
+      var all = sh.lines.concat(sh.box);
       var edge = Math.max(1, sw * 0.16);
 
       // 1. свечение
@@ -895,8 +902,7 @@
       ctx.restore();
       // 2. Тёмную кромку оставляем только у внешнего контура, а не на торцах
       // незавершённых сегментов. Так активный конец луча не выглядит отдельной рамкой.
-      var edgeShapes = sh.guide ? sh.guide.slice() : [];
-      if (st.frameProgress == null || st.frameProgress >= 0.999) edgeShapes = edgeShapes.concat(sh.box);
+      var edgeShapes = st.frameProgress == null || st.frameProgress >= 0.999 ? sh.box : [];
       ctx.fillStyle = rgba(pal.shadow, 0.9 * a);
       fillRects(edgeShapes, edge, edge);
       // 3. основной цвет
