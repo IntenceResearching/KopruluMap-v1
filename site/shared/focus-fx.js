@@ -743,9 +743,9 @@
       var rb = clamp(rayBuild, 0, 1);
       var cx = st.x, cy = st.y;
       var lx = l + hs, rx = r - hs, ty = t + hs, by = b - hs;
-      // Keep each edge channel physically joined to its side midpoint while it fades.
-      // Retracting the endpoint here made a visible gap between the ray and its growing arc.
-      var channelAlpha = 1 - rb;
+      // Keep channels anchored to their side midpoints and retain a faint live trace
+      // after the border is complete; retracting them created gaps and made them vanish.
+      var channelAlpha = Math.max(0.32, 1 - rb);
       lines.push({ x: 0, y: cy - hs, w: lx, h: sw, v: false, ex: lx, ey: cy, dx: -1, dy: 0, len: lx, flow: -1, alpha: channelAlpha });
       lines.push({ x: rx, y: cy - hs, w: cw - rx, h: sw, v: false, ex: rx, ey: cy, dx: 1, dy: 0, len: cw - rx, flow: -1, alpha: channelAlpha });
       lines.push({ x: cx - hs, y: 0, w: sw, h: ty, v: true, ex: cx, ey: ty, dx: 0, dy: -1, len: ty, flow: -1, alpha: channelAlpha });

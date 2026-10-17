@@ -195,7 +195,7 @@
     wheelStep: 0.0016,
     animateMs: 340,
     fitInset: 1,
-    panMargin: 0.25,     // край карты может уйти внутрь экрана на эту долю размера сцены
+    panMargin: 0.26,     // небольшой запас для кадрирования data-frame у края карты
     focusStrength: 1,   // первый клик (телефон): доля пути до точки focusAnchorX (1 — точно)
     focusAnchorX: 0.4, // первый клик (телефон): где по горизонтали ставится квадрат в видимой области (0 — у левого края, 0.5 — по центру, 1 — у правого)
     focusMs: 520,
@@ -223,13 +223,18 @@
   function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 
   // Края карты не упираются жёстко в экран: запас CONFIG.panMargin от размера сцены.
-  function clampAxis(t, side, size) {
-    var m = size * CONFIG.panMargin;
+  function panRange(side, size) {
+    var margin = size * CONFIG.panMargin;
     if (side <= size) {
-      var c = (size - side) / 2;
-      return clamp(t, c - m, c + m);
+      var center = (size - side) / 2;
+      return { min: center - margin, max: center + margin };
     }
-    return clamp(t, size - side - m, m);
+    return { min: size - side - margin, max: margin };
+  }
+
+  function clampAxis(t, side, size) {
+    var range = panRange(side, size);
+    return clamp(t, range.min, range.max);
   }
 
   function clampState(st) {
@@ -269,6 +274,9 @@
   function frameData(el) {
     var v = String(el.getAttribute('data-frame') || '').trim().split(/\s+/).map(parseFloat);
     if (v.length !== 4 || v.some(function (n) { return !isFinite(n); })) return null;
+    // Координаты рамки ограничены реальной картой, а не могут выводить прицел за её край.
+    v = v.map(function (n) { return clamp(n, 0, 100); });
+    if (!(v[2] > v[0]) || !(v[3] > v[1])) return null;
     return { l: v[0], t: v[1], r: v[2], b: v[3] };
   }
 
@@ -956,11 +964,45 @@
     if (f && visibleW >= sz.w * CONFIG.frameMinVisible) {
       var fw = (f.r - f.l) / 100 * base, fh = (f.b - f.t) / 100 * base;   // рамка при s = 1
       var fit = Math.min(visibleW * (1 - 2 * CONFIG.framePad) / fw, sz.h * (1 - 2 * CONFIG.framePad) / fh);
-      // Не раздуваем масштаб сверх рассчитанного fit: иначе рамка выйдет за видимую область.
+      // Учитываем не только размер рамки, но и допустимый пан карты: иначе clampState
+      // после расчёта мог сдвинуть её за край сцены.
       ns = clamp(Math.min(want, fit), CONFIG.minFactor, CONFIG.maxFactor);
-      var fside = ns * base;
-      nx = visibleW / 2 - (f.l + f.r) / 200 * fside;
-      ny = sz.h / 2 - (f.t + f.b) / 200 * fside;
+
+      function placeFrame(scale) {
+        var side = scale * base;
+        var frameLeft = side * f.l / 100;
+        var frameRight = side * f.r / 100;
+        var frameTop = side * f.t / 100;
+        var frameBottom = side * f.b / 100;
+        var xPan = panRange(side, sz.w);
+        var yPan = panRange(side, sz.h);
+        var xMin = Math.max(xPan.min, visibleW * CONFIG.framePad - frameLeft);
+        var xMax = Math.min(xPan.max, visibleW * (1 - CONFIG.framePad) - frameRight);
+        var yMin = Math.max(yPan.min, sz.h * CONFIG.framePad - frameTop);
+        var yMax = Math.min(yPan.max, sz.h * (1 - CONFIG.framePad) - frameBottom);
+        if (xMin > xMax + 0.5 || yMin > yMax + 0.5) return null;
+        if (xMin > xMax) xMin = xMax = (xMin + xMax) / 2;
+        if (yMin > yMax) yMin = yMax = (yMin + yMax) / 2;
+        return {
+          x: clamp(visibleW / 2 - (f.l + f.r) / 200 * side, xMin, xMax),
+          y: clamp(sz.h / 2 - (f.t + f.b) / 200 * side, yMin, yMax)
+        };
+      }
+
+      var placement = placeFrame(ns);
+      // Панорамирование может не позволить разместить рамку на рассчитанном масштабе.
+      // Плавно уменьшаем зум до первого допустимого размера, не меняя границы карты.
+      while (!placement && ns > CONFIG.minFactor) {
+        ns = Math.max(CONFIG.minFactor, ns - 0.01);
+        placement = placeFrame(ns);
+      }
+      if (placement) {
+        nx = placement.x; ny = placement.y;
+      } else {
+        var fside = ns * base;
+        nx = visibleW / 2 - (f.l + f.r) / 200 * fside;
+        ny = sz.h / 2 - (f.t + f.b) / 200 * fside;
+      }
       ms = Math.abs(ns - view.s) > 0.01 ? CONFIG.focusZoomMs : CONFIG.focusMs;
     } else if (view.s < CONFIG.focusZoomBelow) {
       ns = CONFIG.focusZoom;

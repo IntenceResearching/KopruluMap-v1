@@ -367,10 +367,15 @@ def check_fresh():
             )
             if missing:
                 problems.append(f"не хватает {missing} тайлов")
-    for name, path in [("карта галактики", ASSETS / f"galaxy-map-{GALAXY_WIDTHS[-1]}.webp"),
-                       ("логотип", ASSETS / "timeline-project-logo.webp")]:
+    required = [
+        ASSETS / "map-preview.webp",
+        *(ASSETS / f"galaxy-map-{width}.webp" for width in GALAXY_WIDTHS),
+        ASSETS / "timeline-project-logo.webp",
+        *(ASSETS / f"{name}.webp" for name in MACKETS),
+    ]
+    for path in required:
         if not path.exists():
-            problems.append(f"нет {path.name} ({name})")
+            problems.append(f"нет {path.relative_to(ROOT)}")
     return problems
 
 
@@ -378,10 +383,24 @@ def main():
     parser = argparse.ArgumentParser(description="Сборка картинок сайта из assets/src/")
     parser.add_argument("--force", action="store_true", help="пересобрать всё, игнорируя свежесть")
     parser.add_argument("--check", action="store_true", help="проверить свежесть, ничего не собирая")
+    parser.add_argument("--sync-only", action="store_true", help="обновить версии ссылок и meta.json по уже собранным картинкам")
     args = parser.parse_args()
 
     if not SRC.exists():
         sys.exit(f"Нет папки с исходниками: {SRC}")
+
+    if args.sync_only:
+        problems = check_fresh()
+        if problems:
+            print("Кэш изображений неполный:")
+            for item in problems:
+                print(f"  - {item}")
+            sys.exit(1)
+        print("Синхронизация версий и meta.json по кэшированным изображениям")
+        sync_versions(False)
+        update_meta(False)
+        print("Готово.")
+        return
 
     if args.check:
         problems = check_fresh()
