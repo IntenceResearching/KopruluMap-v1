@@ -691,6 +691,9 @@
     levels: [],
     tileSize: 512,
     dir: CONFIG.tiles.dir,
+    // ?v= от сборки: Pages держит файлы 10 минут, а после пересборки тайлов
+    // их адреса не меняются. Версия из манифеста заставляет браузер взять свежие.
+    version: '',
     preview: null,
     cache: {},
     loading: {},
@@ -708,6 +711,7 @@
   function configureTiles(manifest, meta) {
     tiles.levels = [];
     tiles.preview = null;
+    tiles.version = (manifest && manifest.version) ? ('?v=' + encodeURIComponent(manifest.version)) : tiles.version;
     tiles.cache = {}; tiles.loading = {}; tiles.failed = {};
 
     if (manifest && manifest.levels && manifest.levels.length) {
@@ -715,6 +719,7 @@
       tiles.tileSize = manifest.tileSize || 512;
       tiles.dir = (manifest.dir || CONFIG.tiles.dir).replace(/\/$/, '');
       tiles.preview = manifest.preview || null;
+      tiles.version = manifest.version ? ('?v=' + encodeURIComponent(manifest.version)) : '';
       tiles.levels = manifest.levels.map(function (level, index) {
         var width = level.width || level.size || (meta.levels && meta.levels[index]) || size;
         return {
@@ -730,7 +735,7 @@
       // манифеста нет, но растр собран — пробуем один предпросмотр
       // (ссылка из links.js имеет приоритет над meta.json)
       var previewUrl = (window.SITE_LINKS && SITE_LINKS.sectorMapPreview) || (meta && meta.assets && meta.assets.preview) || '/assets/map-preview.webp';
-      loadPreview(previewUrl);
+      loadPreview(previewUrl + (manifest && manifest.version ? '?v=' + encodeURIComponent(manifest.version) : ''));
     }
   }
 
@@ -787,7 +792,7 @@
         requestRender();
       }
     };
-    image.src = tiles.dir + '/' + level.index + '/' + col + '_' + row + '.webp';
+    image.src = tiles.dir + '/' + level.index + '/' + col + '_' + row + '.webp' + tiles.version;
   }
 
   function evictTiles() {

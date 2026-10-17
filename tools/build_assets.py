@@ -12,6 +12,9 @@
   4. Макеты секторов → assets/<имя>.webp.
   5. data/meta.json получает mapSize и assets.hasRaster — по этому флагу
      app.js решает, запрашивать ли манифест тайлов.
+  6. К ссылкам на собранные картинки дописывается ?v=: Pages кэширует файлы на
+     10 минут, а после пересборки адреса не меняются — без версии часть
+     посетителей увидит старые тайлы.
 
 Запуск:
 
@@ -27,6 +30,7 @@ import argparse
 import hashlib
 import io
 import json
+import re
 import shutil
 import sys
 import time
@@ -63,6 +67,17 @@ GALAXY_QUALITY = 82
 LOGO_SOURCE = "timeline-project-logo.png"
 LOGO_EDGE = 600                        # показывается 278 px, запас на 2×
 LOGO_QUALITY = 88                      # у логотипа прозрачность, качество выше
+
+# Ссылки на собранные картинки в разметке и скриптах: к ним добавляется ?v=,
+# чтобы после пересборки браузер не взял устаревшее из кэша Pages (10 минут).
+VERSIONED_REFS = {
+    "site/index.html": ["galaxy-map-1200.webp", "galaxy-map-2000.webp", "koprulu-macket.webp",
+                        "ozd-macket.webp", "timeline-project-logo.webp"],
+    "site/sector/sector.html": ["timeline-project-logo.webp"],
+    "site/minimal/minimal.html": ["timeline-project-logo.webp"],
+    "site/shared/links.js": ["galaxy-map-2000.webp"],
+    "site/shared/timeline-loader.js": ["timeline-project-logo.webp"],
+}
 
 MACKETS = {
     "koprulu-macket": ("koprulu-macket.jpg", 300, 84),
@@ -187,6 +202,7 @@ def build_tiles(force):
         "levels": levels,
         "tiles": count,
         "preview": "/assets/map-preview.webp",
+        "version": source_sha[:8],
         "source": {"file": SECTOR_SOURCE, "sha256": source_sha},
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
@@ -256,6 +272,39 @@ def build_mackets(force):
     return total
 
 
+def image_version():
+    """Общая версия всех собранных картинок: меняется при замене любого исходника."""
+    digest = hashlib.sha256()
+    for path in sorted(p for p in SRC.iterdir() if p.is_file()):
+        digest.update(path.name.encode("utf-8"))
+        digest.update(sha256(path).encode("ascii"))
+    return digest.hexdigest()[:8]
+
+
+def sync_versions(force):
+    """Проставляет ?v= в ссылки на собранные картинки."""
+    version = image_version()
+    touched = []
+    for rel, names in VERSIONED_REFS.items():
+        path = ROOT / rel
+        if not path.exists():
+            print(f"  ! нет файла {rel} — пропуск")
+            continue
+        text = path.read_text(encoding="utf-8")
+        updated = text
+        for name in names:
+            updated = re.sub(re.escape(name) + r'(\?v=[^"\'\s)]*)?', name + "?v=" + version, updated)
+        if updated != text:
+            path.write_text(updated, encoding="utf-8")
+            touched.append(rel)
+    if touched:
+        joined = ", ".join(touched)
+        print(f"  + ?v={version} проставлен в: {joined}")
+    else:
+        print(f"  = ссылки уже несут ?v={version}")
+    return version
+
+
 def update_meta(force):
     """meta.json: размер карты и флаг растра — по нему app.js берёт тайлы."""
     manifest_path = ASSETS / "tiles.json"
@@ -272,6 +321,8 @@ def update_meta(force):
         "hasRaster": True,
         "preview": manifest.get("preview"),
         "tiles": "/assets/tiles.json",
+        "version": manifest.get("version"),
+        "imageVersion": image_version(),
     }
     if not force and meta.get("mapSize") == manifest["mapSize"] and all(
         assets.get(k) == v for k, v in wanted.items()
@@ -292,6 +343,7 @@ STEPS = [
     ("Карта галактики", build_galaxy),
     ("Логотип прелоадера", build_logo),
     ("Макеты секторов", build_mackets),
+    ("Версии в ссылках", sync_versions),
     ("meta.json", update_meta),
 ]
 
