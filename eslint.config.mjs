@@ -17,7 +17,8 @@ export default [
       globals: {
         ...globals.browser,
         // общие объекты между файлами сайта
-        GalaxyPing: 'readonly',   // galaxy-ping.js → galaxy.js
+        FocusFx: 'readonly',      // shared/focus-fx.js → galaxy.js
+        LagFx: 'readonly',        // shared/lag-fx.js → galaxy.js
         SITE_LINKS: 'readonly'    // shared/links.js → остальные
       }
     },

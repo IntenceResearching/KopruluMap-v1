@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/shared/styles.css?v=structure-1">
   <link rel="stylesheet" href="/shared/timeline-skin.css?v=structure-1">
   <link rel="stylesheet" href="/shared/catalog-typography.css?v=structure-1">
-  <link rel="stylesheet" href="galaxy.css?v=reticle-1">
+  <link rel="stylesheet" href="galaxy.css?v=frame-1">
 </head>
 <body>
   <script src="/shared/timeline-loader.js"></script>
@@ -87,15 +87,19 @@
            srcset="/assets/galaxy-map-1200.webp?v=0f419d0e 1200w, /assets/galaxy-map-2000.webp?v=0f419d0e 2000w, /assets/galaxy-map-3000.webp?v=0f419d0e 3000w"
            sizes="min(100vw, 100vh)" alt="Карта галактики" draggable="false" fetchpriority="high">
 
-      <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи -->
+      <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи.
+           data-frame — рамка выделения при выборе: «левый верх правый низ» в % карты, вокруг
+           блока области на карте (квадрат, картинки CAM, надписи) с полем ≈ 0.9 % -->
       <button class="sector-hotspot" id="sectorHotspot" type="button"
               data-cx="73.8167" data-cy="32.3167" data-size="1.8667" data-name="Сектор Копрулу" data-macket="/assets/koprulu-macket.webp?v=0f419d0e"
+              data-frame="59.6 21.35 97.35 40.7"
               aria-label="Сектор Копрулу"></button>
 
       <!-- Зерус: красная область без страницы (только анимация и сообщение) -->
       <button class="sector-hotspot sector-hotspot--zerus" id="zerusHotspot" type="button"
               style="left: 55.45%; top: 52.63%;"
               data-cx="55.45" data-cy="52.63" data-size="1.8667" data-name="Зерус"
+              data-frame="43.1 41.0 76.85 58.45"
               aria-label="Зерус"></button>
 
       <!-- Пространство Директората (ОЗД): квадрат на метке UED SPACE -->
@@ -103,6 +107,7 @@
               style="left: 49.1667%; top: 70.0%;"
               data-cx="49.1667" data-cy="70.0" data-size="1.8667"
               data-name="Пространство Директората" data-macket="/assets/ozd-macket.webp?v=0f419d0e"
+              data-frame="35.45 62.0 74.35 80.25"
               aria-label="Пространство Директората"></button>
     </div>
 
@@ -161,8 +166,8 @@
   </div>
 
   <script src="/shared/links.js?v=structure-1" defer></script>
-  <script src="galaxy-fx.js?v=srcset-1" defer></script>
-  <script src="galaxy-ping.js?v=select-1" defer></script>
-  <script src="galaxy.js?v=select-1" defer></script>
+  <script src="/shared/lag-fx.js?v=frame-1" defer></script>
+  <script src="/shared/focus-fx.js?v=frame-1" defer></script>
+  <script src="galaxy.js?v=frame-1" defer></script>
 </body>
 </html>

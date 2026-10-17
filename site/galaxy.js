@@ -169,6 +169,22 @@
 
   if (!hotspot || !stage || !map || !layer) return;
 
+  // Картинка карты из links.js (если задана) — запасной src; при srcset браузер берёт файл оттуда
+  var links = window.SITE_LINKS || {};
+  if (links.galaxyMapImage) map.setAttribute('src', links.galaxyMapImage);
+
+  /* «Лаги» карты (/shared/lag-fx.js): полосы съезжают, волна, линии-преломления.
+     На время перехода — тишина: пока идёт прицел перехода и пока его финальный кадр
+     ждёт ухода со страницы. Поверх картинки, под хотспотами (слой идёт сразу после <img>). */
+  if (window.LagFx) {
+    LagFx.attach(map, {
+      busy: function () {
+        var fx = window.FocusFx ? FocusFx.active() : null;
+        return busy || fx === 'go' || fx === 'idle';
+      }
+    });
+  }
+
   var sectorName = hotspot.getAttribute('data-name') || 'Сектор';
   var defaultHref = (window.SITE_LINKS && SITE_LINKS.sectorPage) || '/sector/sector.html';
 
@@ -180,12 +196,18 @@
     animateMs: 340,
     fitInset: 1,
     panMargin: 0.25,     // край карты может уйти внутрь экрана на эту долю размера сцены
-    focusStrength: 1,   // первый клик: доля пути до центра видимой области (1 — точно в центр)
-    focusAnchorX: 0.4, // первый клик: где по горизонтали ставится квадрат в видимой области (0 — у левого края, 0.5 — по центру, 1 — у правого). Меньше — карта правее, справа видно больше
+    focusStrength: 1,   // первый клик (телефон): доля пути до точки focusAnchorX (1 — точно)
+    focusAnchorX: 0.4, // первый клик (телефон): где по горизонтали ставится квадрат в видимой области (0 — у левого края, 0.5 — по центру, 1 — у правого)
     focusMs: 520,
     focusZoom: 4.1,       // первый клик: зум до 410% (диапазон 400–420%)
     focusZoomBelow: 4.0,  // зум подтягиваем только если текущий меньше 400%
-    focusZoomMs: 650
+    focusZoomMs: 650,
+    framePad: 0.06,       // первый клик: рамка выделения (data-frame) — по центру видимой области, с полями
+                          // по 6 %; если на focusZoom она не помещается — зум меньше…
+    focusZoomMin: 2.5,    // …но не меньше 250 %
+    frameMinVisible: 0.5, // видимая область уже половины сцены (телефон, панель на всю ширину) —
+                          // рамку не вписываем, квадрат ставим по focusAnchorX
+    diveZooms: [12, 20]   // переход в Копрулу: приближение до 1200 %, затем до 2000 %
   };
 
   /* ---------- вид карты ----------
@@ -243,6 +265,25 @@
     return { l: x - w / 2, t: y - w / 2, r: x + w / 2, b: y + w / 2, cx: x, cy: y, w: w };
   }
 
+  // Рамка выделения области: data-frame="левый верх правый низ" в процентах карты (блок
+  // области на карте — квадрат, картинки CAM, надписи). null — у элемента рамки нет.
+  function frameData(el) {
+    var v = String(el.getAttribute('data-frame') || '').trim().split(/\s+/).map(parseFloat);
+    if (v.length !== 4 || v.some(function (n) { return !isFinite(n); })) return null;
+    return { l: v[0], t: v[1], r: v[2], b: v[3] };
+  }
+
+  // Та же рамка в координатах сцены при текущем виде
+  function frameOf(el) {
+    var f = frameData(el);
+    if (!f) return null;
+    var side = view.s * base;
+    return {
+      l: view.tx + side * f.l / 100, t: view.ty + side * f.t / 100,
+      r: view.tx + side * f.r / 100, b: view.ty + side * f.b / 100
+    };
+  }
+
   /* Чёткость картинки при приближении. Карта подключена через srcset (1200 / 2000 / 3000 px),
      sizes в разметке — сторона карты в покое (меньшая сторона окна): на первый кадр браузер
      берёт файл по размеру экрана. При приближении слой становится во много раз больше окна,
@@ -269,7 +310,7 @@
     zoomPercent.textContent = Math.round(view.s * 100) + '%';
     sharpenMap(side);
     positionPreview();
-    GalaxyPing.refresh();
+    if (window.FocusFx) FocusFx.refresh();
     parallaxRequest();
   }
 
@@ -661,21 +702,23 @@
   // Снять выбор (крестик панели, Esc, клик по пустому месту): прицел гаснет
   function hidePanel() {
     clearAreas();
-    GalaxyPing.release(function () {
+    FocusFx.release(function () {
       stage.classList.remove('is-red-target', 'is-odz-ping');
     });
   }
 
-  /* Прицел при выборе: появляется, наводится на квадрат, пока карта к нему едет,
-     захватывает и держит его, пока выбор не снимут (galaxy-ping.js). Цвет — по
-     области: Копрулу зелёный, Зерус красный, ОЗД синий. Подсветка захвата у
-     квадрата (is-locked) включается в момент захвата прицелом. */
+  /* Прицел при выборе (/shared/focus-fx.js): появляется, наводится на квадрат, пока
+     карта к нему едет, захватывает его, затем рамка раскрывается до блока области
+     на карте (data-frame: квадрат, картинки, надписи) и держит его, пока выбор не
+     снимут. Цвет — по области: Копрулу зелёный, Зерус красный, ОЗД синий. Подсветка
+     захвата у квадрата (is-locked) включается в момент захвата прицелом. */
   function selectArea(el) {
     stage.classList.toggle('is-red-target', el === zerus);
     stage.classList.toggle('is-odz-ping', el === odz);
-    GalaxyPing.select({
+    FocusFx.select({
       stage: stage,
       target: function () { return boxOf(el); },
+      frame: function () { return frameOf(el); },
       onLock: function () { if (panelArea === el) el.classList.add('is-locked'); }
     });
   }
@@ -743,75 +786,25 @@
 
 
   /* ---------- переход: прицел в духе брифингов StarCraft II ----------
-     Прицел (перекрестие, рамка, вспышки, затемнение) живёт в galaxy-ping.js:
-     наведение → захват → рамка раскрывается и карта приближается → снова.
-     Здесь — логика: что делать при захвате, как приближать карту на каждом
-     шаге и чем всё кончается. Всё считается от текущего вида (view): переход
+     Вся анимация — в /shared/focus-fx.js: рамка выделения сужается до квадрата,
+     квадрат едет в центр сцены, камера приближается (Копрулу — до 1200 %, затем
+     до 2000 %), в квадрате проявляется превью из панели, вокруг — темнота. Камеру
+     модуль ведёт сам через camera (get / set вида), размер прицела — от экрана.
+     Здесь — логика: что делать при захвате и чем всё кончается. Переход
      начинается с того зума и положения карты, какие есть в момент клика.      */
-  var DIVE = {
-    steps: 2,             // «нырков» к Копрулу перед переходом (в брифинге — два)
-    sizes: [0.17, 0.42],  // экранный размер квадрата после шага, доля меньшей стороны сцены
-    minK: 1.35,           // за шаг приближаем не меньше чем во столько раз…
-    maxK: 6,              // …и не больше (если перед переходом карту сильно отдалили)
-    maxS: 20,             // предел масштаба на время перехода (дальше — уход на страницу)
-    lag: 0.12,            // промежуточный шаг: квадрат не доезжает до центра (доля смещения)…
-    lagMin: 0.045         // …и остаётся от центра хотя бы на этой доле меньшей стороны
-  };
   var viewBeforeTransition = null;   // вид до перехода — вернуть, если пришли «Назад»
 
-  function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
-
-  // Шаг приближения: квадрат вырастает до DIVE.sizes[i] и едет к центру сцены
-  // (на промежуточном шаге — чуть не доезжая, чтобы прицелу было куда довестись,
-  // как в брифинге). Масштаб растёт геометрически, точка маркера идёт по прямой:
-  // карта и раскрывающаяся рамка прицела движутся синхронно. Ограничения вида на
-  // время шага сняты, потолок масштаба — capS.
-  function diveStep(el, i, ms, last, capS) {
-    var sz = sceneSize();
-    var m = Math.min(sz.w, sz.h);
-    var c = boxOf(el);
-    var want = DIVE.sizes[Math.min(i, DIVE.sizes.length - 1)] * m;
-    var s0 = view.s;
-    var s1 = clamp(s0 * clamp(want / Math.max(1, c.w), DIVE.minK, DIVE.maxK), s0, Math.max(s0, capS));
-    var ex = sz.w / 2, ey = sz.h / 2;
-    if (!last) {
-      var ox = (c.cx - ex) * DIVE.lag, oy = (c.cy - ey) * DIVE.lag;
-      var len = Math.hypot(ox, oy), min = DIVE.lagMin * m;
-      if (len < 0.5) { ox = 0.6; oy = 0.8; len = 1; }   // маркер уже в центре — уводим вниз-вправо
-      if (len < min) { ox *= min / len; oy *= min / len; }
-      ex += ox;
-      ey += oy;
-    }
-    var side0 = s0 * base;
-    var fx = (c.cx - view.tx) / side0, fy = (c.cy - view.ty) / side0;   // точка маркера в долях карты
-    var x0 = c.cx, y0 = c.cy;
-    var token = {};
-    var t0 = performance.now();
-    anim = token;
-    function step(now) {
-      if (anim !== token) return;
-      var u = clamp((now - t0) / ms, 0, 1);
-      var e = easeInOutCubic(u);
-      var s = s0 * Math.pow(s1 / s0, e);
-      view.s = s;
-      view.tx = x0 + (ex - x0) * e - fx * s * base;
-      view.ty = y0 + (ey - y0) * e - fy * s * base;
+  // Камера для FocusFx: точка карты p (px при s = 1) видна на экране в t + p · s.
+  // Ограничения вида на время перехода сняты (зум до 2000 % — дальше обычного предела).
+  var camera = {
+    get: function () { return { s: view.s, tx: view.tx, ty: view.ty }; },
+    set: function (v) {
+      view.s = v.s;
+      view.tx = v.tx;
+      view.ty = v.ty;
       applyView();
-      if (u < 1) { window.requestAnimationFrame(step); return; }
-      anim = null;
     }
-    window.requestAnimationFrame(step);
-  }
-
-  // Перед приближением квадрат едет в центр сцены (масштаб не меняется), прицел —
-  // вместе с ним. Длительность задаёт galaxy-ping.js: от расстояния до центра.
-  function centerOn(el) {
-    return function (ms) {
-      var sz = sceneSize();
-      var c = boxOf(el);
-      animateTo(view.s, view.tx + sz.w / 2 - c.cx, view.ty + sz.h / 2 - c.cy, ms);
-    };
-  }
+  };
 
   function beginTransition() {
     busy = true;
@@ -824,7 +817,7 @@
   function finishTransition() {
     busy = false;
     cancelAnim();
-    GalaxyPing.stop();
+    FocusFx.stop();
     clearAreas();
     viewBeforeTransition = null;
     clampView();
@@ -834,7 +827,7 @@
   function resetTransition() {
     busy = false;
     cancelAnim();
-    GalaxyPing.stop();
+    FocusFx.stop();
     clearAreas();
     stage.classList.remove('is-red-target', 'is-odz-ping');
     if (viewBeforeTransition) {
@@ -845,21 +838,23 @@
     }
   }
 
-  // Копрулу: квадрат в центр, захват, два «нырка» и уход в темноту, затем переход
+  // Копрулу: рамка сужается до квадрата, квадрат в центр, приближение 1200 % → 2000 %,
+  // в квадрате проявляется превью из панели, вокруг темнеет — затем переход
   function runTransition(el, href) {
     if (busy) return;
     beginTransition();
     closePanel();
     hidePreview();
     stage.classList.remove('is-red-target', 'is-odz-ping');
-    GalaxyPing.start({
+    FocusFx.start({
       stage: stage,
       target: function () { return boxOf(el); },
-      steps: DIVE.steps,
-      ending: 'dive',
-      onCenter: centerOn(el),
+      frame: function () { return frameOf(el); },
+      camera: camera,
+      zooms: CONFIG.diveZooms,
+      ending: 'reveal',
+      preview: el.getAttribute('data-macket') || (iconImg && iconImg.getAttribute('src')) || '',
       onLock: function () { el.classList.add('is-locked'); },
-      onZoom: function (i, ms) { diveStep(el, i, ms, i === DIVE.steps - 1, DIVE.maxS); },
       onEnd: function () { window.location.href = href; }
     });
   }
@@ -945,16 +940,28 @@
   var ZERUS_MESSAGE = 'Ошибка. Нет данных';
   var zerusTimer = null;
 
-  // Первый клик по области (Копрулу, Зерус, ОЗД): карта подводит квадрат к центру
-  // видимой области (левее открытой панели). Если зум меньше focusZoomBelow —
-  // доводим до focusZoom и ставим квадрат точно; если уже приближено — мягкий
-  // сдвиг на focusStrength пути, масштаб не меняем.
+  // Первый клик по области (Копрулу, Зерус, ОЗД): карта ставит рамку выделения
+  // (data-frame — блок области на карте) по центру видимой области, левее открытой
+  // панели. Зум — focusZoom (если текущий меньше focusZoomBelow, иначе текущий), но
+  // не больше, чем позволяет рамка с полями framePad, и не меньше focusZoomMin.
+  // На узком экране (видимая область уже frameMinVisible сцены) рамку не вписываем:
+  // квадрат ставится по focusAnchorX, как раньше.
   function focusArea(el) {
     var sz = sceneSize();
     var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
     var c = boxOf(el);
+    var f = frameData(el);
+    var want = view.s < CONFIG.focusZoomBelow ? CONFIG.focusZoom : view.s;
     var nx, ny, ns, ms;
-    if (view.s < CONFIG.focusZoomBelow) {
+    if (f && visibleW >= sz.w * CONFIG.frameMinVisible) {
+      var fw = (f.r - f.l) / 100 * base, fh = (f.b - f.t) / 100 * base;   // рамка при s = 1
+      var fit = Math.min(visibleW * (1 - 2 * CONFIG.framePad) / fw, sz.h * (1 - 2 * CONFIG.framePad) / fh);
+      ns = clamp(Math.min(want, fit), CONFIG.focusZoomMin, CONFIG.maxFactor);
+      var fside = ns * base;
+      nx = visibleW / 2 - (f.l + f.r) / 200 * fside;
+      ny = sz.h / 2 - (f.t + f.b) / 200 * fside;
+      ms = Math.abs(ns - view.s) > 0.01 ? CONFIG.focusZoomMs : CONFIG.focusMs;
+    } else if (view.s < CONFIG.focusZoomBelow) {
       ns = CONFIG.focusZoom;
       var side = ns * base;
       var px = parseFloat(el.getAttribute('data-cx')) / 100 * side;
@@ -1016,14 +1023,14 @@
     hidePreview();
     stage.classList.remove('is-odz-ping');
     stage.classList.add('is-red-target');
-    GalaxyPing.start({
+    FocusFx.start({
       stage: stage,
       target: function () { return boxOf(el); },
-      steps: 1,
+      frame: function () { return frameOf(el); },
+      camera: camera,
+      zooms: [CONFIG.maxFactor],
       ending: 'error',
-      onCenter: centerOn(el),
       onLock: function () { el.classList.add('is-locked'); },
-      onZoom: function (i, ms) { diveStep(el, i, ms, true, CONFIG.maxFactor); },
       onEnd: function () {
         // вместо перехода — сообщение об ошибке
         finishTransition();
@@ -1135,12 +1142,12 @@
     hidePreview();
     stage.classList.remove('is-red-target');
     stage.classList.add('is-odz-ping');
-    GalaxyPing.start({
+    FocusFx.start({
       stage: stage,
       target: function () { return boxOf(el); },
-      steps: 0,
+      frame: function () { return frameOf(el); },
+      camera: camera,
       ending: 'deny',
-      onCenter: centerOn(el),
       onLock: function () { el.classList.add('is-locked'); },
       onDeny: function () {
         el.classList.add('is-odz-red');      // квадрат плавно краснеет (CSS transition), прицел — следом
