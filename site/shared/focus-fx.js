@@ -118,7 +118,7 @@
     lock: 320,        // первый захват: поджатие и две вспышки
     relock: 240,      // повторный захват (после сброса, после сужения, при смене цели) — короче
     expand: 420,      // выделение: рамка раскрывается от цели до области фокуса
-    snap: 440,        // галактика: рамка сразу на месте, линии прицела расходятся наружу
+    snap: 680,        // галактика: каналы сходятся от краёв и собирают рамку на месте
     narrow: 380,      // переход: область фокуса сужается до цели
     centerMin: 320,   // центрирование: не короче…
     centerMax: 640,   // …и не длиннее
@@ -151,8 +151,8 @@
     frameOver: 1.06,  // раскрытая при приближении рамка уходит чуть за края сцены
     lag: 0.12,        // промежуточное приближение: цель не доезжает до центра (доля смещения)…
     lagMin: 0.045,    // …и остаётся от центра хотя бы на этой доле (прицелу есть куда довестись)
-    glintSpeed: 0.16, // блики бегут по линиям к рамке: доля большей стороны сцены в секунду
-    glintGap: 0.3,    // средний шаг бликов, доля большей стороны сцены
+    glintSpeed: 0.38, // средняя скорость энергетических импульсов, доля большей стороны сцены в секунду
+    glintCount: 100,  // одновременно движущиеся энергетические импульсы на всех каналах
     veil: [1, 6, 5],  // цвет ухода в темноту (фон страниц)
     revealVeil: 0.86, // 'reveal': насколько темнеет всё вокруг превью
     lockScreen: true, // переход: рамка захвата весь переход того размера, какой была при клике
@@ -579,8 +579,8 @@
         break;
 
       case 'snap':
-        // Галактика: границы области видны сразу на месте; только прицельные линии
-        // и короткий световой импульс анимируются, сама рамка не перемещается и не растёт.
+        // Галактика: энергоканалы идут от краёв к области и собирают её границу.
+        // Центр и итоговый размер рамки неизменны — меняются только reach и прогресс контура.
         lb = lockBox(r, tg, mt);
         fr = frameOf(r);
         st.x = fr ? fr.x : tg.cx;
@@ -588,7 +588,9 @@
         st.ax = tg.cx; st.ay = tg.cy;
         st.w = fr ? fr.w : lb.w;
         st.h = fr ? fr.h : lb.h;
-        st.reach = easeOutCubic(u);
+        e = easeInOutCubic(u);
+        st.reach = 1 - e;
+        st.frameProgress = e;
         st.hot = 0.72 * pulse(u, 0, 1);
         break;
 
@@ -712,30 +714,43 @@
   }
 
   /* ---------- рисование ---------- */
-  // Прямоугольники прицела: до 4 отрезков линий (от рамки к краям, по осям цели)
-  // и 4 стороны рамки
+  // Геометрия каналов и рамки. Во время snap контур растёт от середины каждой стороны,
+  // а внешние лучи одновременно сходятся от краёв сцены к границам области.
   function shapes(st, sw) {
     var l = st.x - st.w / 2, r = st.x + st.w / 2, t = st.y - st.h / 2, b = st.y + st.h / 2;
     var hs = sw / 2;
-    // оси цели — внутри рамки; у маленькой рамки совпадают с её центром
     var ax = r - l > sw * 3 ? clamp(st.ax, l + sw, r - sw) : st.x;
     var ay = b - t > sw * 3 ? clamp(st.ay, t + sw, b - sw) : st.y;
     var lines = [];
     var x1 = l * (1 - st.reach), x2 = r + (cw - r) * st.reach;
     var y1 = t * (1 - st.reach), y2 = b + (ch - b) * st.reach;
-    // { x, y, w, h, v (вертикальный), ex, ey (точка у рамки), dx, dy (наружу), len }
     if (l > 0 && l - x1 > 0.5) lines.push({ x: x1, y: ay - hs, w: l - x1, h: sw, v: false, ex: l, ey: ay, dx: -1, dy: 0, len: l - x1 });
     if (r < cw && x2 - r > 0.5) lines.push({ x: r, y: ay - hs, w: x2 - r, h: sw, v: false, ex: r, ey: ay, dx: 1, dy: 0, len: x2 - r });
     if (t > 0 && t - y1 > 0.5) lines.push({ x: ax - hs, y: y1, w: sw, h: t - y1, v: true, ex: ax, ey: t, dx: 0, dy: -1, len: t - y1 });
     if (b < ch && y2 - b > 0.5) lines.push({ x: ax - hs, y: b, w: sw, h: y2 - b, v: true, ex: ax, ey: b, dx: 0, dy: 1, len: y2 - b });
+
     var bw = Math.max(sw, st.w), bh = Math.max(sw * 2, st.h);
-    var box = [
-      { x: l, y: t, w: bw, h: sw, v: false },
-      { x: l, y: t + bh - sw, w: bw, h: sw, v: false },
-      { x: l, y: t + sw, w: sw, h: bh - sw * 2, v: true },
-      { x: l + bw - sw, y: t + sw, w: sw, h: bh - sw * 2, v: true }
-    ];
-    return { lines: lines, box: box, l: l, t: t, w: bw, h: bh };
+    var p = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
+    var fw = bw * p, fh = bh * p;
+    var fx = st.x - fw / 2, fy = st.y - fh / 2;
+    var box = [];
+    var tracks = [];
+    if (p > 0.01) {
+      box = [
+        { x: fx, y: t, w: fw, h: sw, v: false },
+        { x: fx, y: b - sw, w: fw, h: sw, v: false },
+        { x: l, y: fy, w: sw, h: fh, v: true },
+        { x: r - sw, y: fy, w: sw, h: fh, v: true }
+      ];
+      // Энергетические дорожки вдоль собранной части периметра.
+      tracks = [
+        { ex: fx, ey: t + hs, dx: 1, dy: 0, len: fw, v: false },
+        { ex: fx + fw, ey: b - hs, dx: -1, dy: 0, len: fw, v: false },
+        { ex: l + hs, ey: fy + fh, dx: 0, dy: -1, len: fh, v: true },
+        { ex: r - hs, ey: fy, dx: 0, dy: 1, len: fh, v: true }
+      ];
+    }
+    return { lines: lines, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
   }
 
   function fillRects(list, dx, dy) {
@@ -745,32 +760,47 @@
     }
   }
 
-  // Блики-«бусины»: короткие светлые штрихи бегут по линиям к рамке, разброс неровный
-  function drawGlints(lines, sw, a, pal, now) {
+  // Энергетические импульсы непрерывно бегут по внешним каналам и периметру.
+  // Слоты распределяются по длине дорожек: одновременно на экране около 100 импульсов.
+  function drawGlints(paths, sw, a, pal, now) {
+    var active = paths.filter(function (path) { return path.len > sw * 2; });
+    var total = active.reduce(function (sum, path) { return sum + path.len; }, 0);
+    if (!total) return;
+
+    var count = G.glintCount;
+    var slots = active.map(function (path) { return Math.floor(count * path.len / total); });
+    var used = slots.reduce(function (sum, value) { return sum + value; }, 0);
+    var fractions = active.map(function (path, i) {
+      return { index: i, remainder: count * path.len / total - slots[i] };
+    }).sort(function (x, y) { return y.remainder - x.remainder; });
+    for (var extra = 0; extra < count - used; extra++) slots[fractions[extra].index]++;
+
     var M = Math.max(cw, ch);
-    var P = G.glintGap * M;
-    var K = Math.ceil(M / P) + 1;
-    var span = K * P;
-    var shift = (reduceMotion ? 0 : now) * G.glintSpeed * M / 1000;
-    var len = sw * 2.8, th = Math.max(1, sw * 0.46);
-    for (var j = 0; j < lines.length; j++) {
-      var s = lines[j];
-      var seed = (s.dx + 2) * 10 + (s.dy + 2);   // своя раскладка у каждого направления
-      for (var k = 0; k < K; k++) {
-        var d = mod((k + 0.7 * (hash(seed * 31 + k) - 0.5)) * P + hash(seed) * P - shift, span);
-        if (d > s.len) continue;
-        var fade = smoothstep(0, sw * 2, d) * smoothstep(0, sw * 2, s.len - d);
+    for (var j = 0; j < active.length; j++) {
+      var path = active[j];
+      var n = slots[j];
+      for (var k = 0; k < n; k++) {
+        var seed = (j + 1) * 1009 + k * 37;
+        var phase = hash(seed + 3) * path.len;
+        var speed = G.glintSpeed * M * (0.58 + hash(seed + 7) * 1.28);
+        var d = mod(phase - (reduceMotion ? 0 : now * speed / 1000), path.len);
+        var fade = smoothstep(0, sw * 1.6, d) * smoothstep(0, sw * 1.6, path.len - d);
         if (fade <= 0.01) continue;
-        var cx = s.ex + s.dx * d, cy = s.ey + s.dy * d;
-        var g;
-        if (s.v) g = ctx.createLinearGradient(0, cy - len / 2, 0, cy + len / 2);
-        else g = ctx.createLinearGradient(cx - len / 2, 0, cx + len / 2, 0);
-        g.addColorStop(0, rgba(pal.light, 0));
-        g.addColorStop(0.5, rgba(pal.light, 0.62 * a * fade));
-        g.addColorStop(1, rgba(pal.light, 0));
-        ctx.fillStyle = g;
-        if (s.v) ctx.fillRect(cx - th / 2, cy - len / 2, th, len);
-        else ctx.fillRect(cx - len / 2, cy - th / 2, len, th);
+
+        var cx = path.ex + path.dx * d, cy = path.ey + path.dy * d;
+        var length = sw * (1.8 + hash(seed + 11) * 2.4);
+        var thickness = Math.max(1, sw * (0.38 + hash(seed + 13) * 0.24));
+        var flicker = reduceMotion ? 1 : 0.46 + 0.54 * (0.5 + 0.5 * Math.sin(now * 0.0025 * (0.7 + hash(seed + 17)) + hash(seed + 19) * Math.PI * 2));
+        var intensity = (0.28 + 0.72 * hash(seed + 23)) * flicker * fade;
+        var gradient;
+        if (path.v) gradient = ctx.createLinearGradient(0, cy - length / 2, 0, cy + length / 2);
+        else gradient = ctx.createLinearGradient(cx - length / 2, 0, cx + length / 2, 0);
+        gradient.addColorStop(0, rgba(pal.light, 0));
+        gradient.addColorStop(0.5, rgba(pal.light, 0.88 * a * intensity));
+        gradient.addColorStop(1, rgba(pal.light, 0));
+        ctx.fillStyle = gradient;
+        if (path.v) ctx.fillRect(cx - thickness / 2, cy - length / 2, thickness, length);
+        else ctx.fillRect(cx - length / 2, cy - thickness / 2, length, thickness);
       }
     }
   }
@@ -810,8 +840,8 @@
         if (s.v) ctx.fillRect(s.x, s.y, hl, s.h);
         else ctx.fillRect(s.x, s.y, s.w, hl);
       }
-      // 5. блики, бегущие к рамке
-      drawGlints(sh.lines, sw, a, pal, now);
+      // 5. непрерывные импульсы идут по лучам и уже собранным сторонам рамки
+      drawGlints(sh.lines.concat(sh.tracks), sw, a, pal, now);
       // 6. вспышка захвата внутри рамки (только у рамки размером с захват:
       //    большую область фокуса заливка залила бы целиком)
       if (st.fill > 0.003) {
