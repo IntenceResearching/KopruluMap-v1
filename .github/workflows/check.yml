@@ -1,0 +1,66 @@
+name: Проверка сборки
+
+# Каждый PR собирается так же, как при деплое (pages.yml), но ничего не публикуется.
+# Матрица образов: Ubuntu 24.04 (сейчас это ubuntu-latest) и Ubuntu 26.04 — на неё GitHub
+# переводит ubuntu-latest с 19.10 по 19.11.2026 (actions/runner-images#14748), поэтому
+# переезд деплоя проверяется заранее. Шаги сборки повторяют pages.yml: меняя одно,
+# поправьте и другое.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Сборка на ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Синтаксис скриптов Python
+        run: python -m py_compile tools/build_assets.py tools/sync.py
+      - name: Собрать картинки
+        run: |
+          python -m pip install --quiet --disable-pip-version-check -r tools/requirements.txt
+          python tools/build_assets.py
+          python tools/build_assets.py --check
+      - name: Собрать публикацию
+        run: |
+          rm -rf .publish
+          mkdir -p .publish
+          cp -R site/. .publish/
+          for dir in data assets; do
+            if [ -d "$dir" ]; then cp -R "$dir" .publish/; fi
+          done
+          rm -rf .publish/assets/src
+          du -sh .publish/* | sort -h
+          # страницы и то, на что они ссылаются, на месте
+          for f in index.html sector/sector.html minimal/minimal.html galaxy.js shared/app.js \
+                   assets/tiles.json assets/galaxy-map-3000.webp data/systems.csv data/places.csv; do
+            test -s ".publish/$f" || { echo "нет файла: $f"; exit 1; }
+          done
+
+  scripts:
+    name: Скрипты сайта
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      # node --check ловит синтаксис, eslint (no-undef) — обращения к необъявленным
+      # переменным: такая ошибка после чистки кода сломала перетаскивание карты сектора.
+      # Настройки — eslint.config.mjs в корне репозитория.
+      - name: Синтаксис и необъявленные переменные
+        run: |
+          for f in site/*.js site/shared/*.js; do node --check "$f"; done
+          npm install --no-save --no-package-lock --no-audit --no-fund eslint@10 globals@17
+          npx eslint site

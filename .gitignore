@@ -18,6 +18,7 @@ dist/
 .publish/
 
 # Служебное
+node_modules/
 __pycache__/
 *.pyc
 *.pyo

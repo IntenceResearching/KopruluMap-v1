@@ -19,10 +19,17 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    # ubuntu-latest с 19.10 по 19.11.2026 переезжает на Ubuntu 26.04 (actions/runner-images#14748).
+    # Сборка от системы не зависит: Python ставит setup-python, Pillow — из tools/requirements.txt,
+    # а check.yml гоняет те же шаги на 24.04 и 26.04 в каждом PR. Если что-то всё же сломается —
+    # вернуть прежний образ одной строкой: runs-on: ubuntu-24.04
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v4
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
       # Публикуется содержимое site/ — это корень сайта.
       # В Settings → Pages → Source должен стоять «GitHub Actions», иначе воркфлоу
       # не публикует: Pages будет отдавать корень репозитория через Jekyll.
@@ -32,8 +39,8 @@ jobs:
       # перед загрузкой копируются рядом с содержимым site/.
       - name: Собрать картинки
         run: |
-          pip install --quiet pillow
-          python3 tools/build_assets.py
+          python -m pip install --quiet --disable-pip-version-check -r tools/requirements.txt
+          python tools/build_assets.py
       - name: Собрать публикацию
         run: |
           rm -rf .publish
@@ -45,8 +52,8 @@ jobs:
           # исходники картинок в веб не отдаются: только собранные тайлы и webp
           rm -rf .publish/assets/src
           du -sh .publish/* | sort -h
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: ./.publish
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
