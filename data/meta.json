@@ -6,5 +6,11 @@
   "sources": [
     "systems-sheet",
     "places-sheet"
-  ]
+  ],
+  "mapSize": 10000,
+  "assets": {
+    "hasRaster": true,
+    "preview": "/assets/map-preview.webp",
+    "tiles": "/assets/tiles.json"
+  }
 }

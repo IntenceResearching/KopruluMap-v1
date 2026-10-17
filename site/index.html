@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#03110f">
   <meta name="description" content="Карта галактики: переход к карте сектора.">
   <title>Timeline Project — Galaxy Map</title>
+  <!-- логотип экрана загрузки: первым в стеке, чтобы загрузка не появлялась пустой -->
+  <link rel="preload" as="image" href="/assets/timeline-project-logo.webp" fetchpriority="high">
   <link rel="stylesheet" href="/shared/styles.css?v=structure-1">
   <link rel="stylesheet" href="/shared/timeline-skin.css?v=structure-1">
   <link rel="stylesheet" href="/shared/catalog-typography.css?v=structure-1">
@@ -48,7 +50,7 @@
                 data-cx="73.8167" data-cy="32.3167" data-size="1.8667"
                 data-name="Сектор Копрулу">
           <span class="sector-list-thumb">
-            <img src="/assets/koprulu-macket.jpg" alt="" width="48" height="48">
+            <img src="/assets/koprulu-macket.webp" alt="" width="48" height="48">
           </span>
           <span class="sector-list-name">Сектор Копрулу</span>
         </button>
@@ -64,7 +66,7 @@
         <button class="sector-list-item sector-list-item--odz" type="button"
                 data-odz="1" data-name="Пространство Директората">
           <span class="sector-list-thumb">
-            <img src="/assets/ozd-macket.png" alt="" width="48" height="48">
+            <img src="/assets/ozd-macket.webp" alt="" width="48" height="48">
           </span>
           <span class="sector-list-name">Пространство Директората</span>
         </button>
@@ -78,11 +80,13 @@
 
     <!-- Слой карты: масштабируется и двигается целиком, хотспот внутри него -->
     <div class="map-layer" id="mapLayer">
-      <img class="galaxy-map" id="galaxyMap" src="/assets/galaxy-map.jpg" alt="Карта галактики" draggable="false" fetchpriority="high">
+      <img class="galaxy-map" id="galaxyMap" src="/assets/galaxy-map-2000.webp"
+           srcset="/assets/galaxy-map-1200.webp 1200w, /assets/galaxy-map-2000.webp 2000w"
+           sizes="100vw" alt="Карта галактики" draggable="false" fetchpriority="high">
 
       <!-- Квадрат сектора: центр и размер в % карты (≈ 56 px на исходнике 3000 px), без подписи -->
       <button class="sector-hotspot" id="sectorHotspot" type="button"
-              data-cx="73.8167" data-cy="32.3167" data-size="1.8667" data-name="Сектор Копрулу" data-macket="/assets/koprulu-macket.jpg"
+              data-cx="73.8167" data-cy="32.3167" data-size="1.8667" data-name="Сектор Копрулу" data-macket="/assets/koprulu-macket.webp"
               aria-label="Сектор Копрулу"></button>
 
       <!-- Зерус: красная область без страницы (только анимация и сообщение) -->
@@ -95,7 +99,7 @@
       <button class="sector-hotspot sector-hotspot--odz" id="odzHotspot" type="button"
               style="left: 49.1667%; top: 70.0%;"
               data-cx="49.1667" data-cy="70.0" data-size="1.8667"
-              data-name="Пространство Директората" data-macket="/assets/ozd-macket.png"
+              data-name="Пространство Директората" data-macket="/assets/ozd-macket.webp"
               aria-label="Пространство Директората"></button>
     </div>
 
@@ -110,7 +114,7 @@
     <!-- Превью при ховере на хотспот: макет 300×300 (тот же, что в панели сектора) -->
     <div class="sector-preview" id="sectorPreview" aria-hidden="true">
       <span class="preview-caption">Предварительное изображение</span>
-      <img src="/assets/koprulu-macket.jpg" alt="" width="300" height="300">
+      <img src="/assets/koprulu-macket.webp" alt="" width="300" height="300">
     </div>
 
     <!-- Управление картой: как на странице сектора -->
@@ -137,7 +141,7 @@
           <span class="preview-caption">Предварительное изображение</span>
           <button class="sector-icon-button" id="sectorIconButton" type="button"
                   aria-label="Открыть карту сектора">
-            <img src="/assets/koprulu-macket.jpg" alt="Карта сектора" width="300" height="300">
+            <img src="/assets/koprulu-macket.webp" alt="Карта сектора" width="300" height="300">
             <span class="sector-icon-caption">ОТКРЫТЬ КАРТУ</span>
           </button>
           <div class="sector-nodata-box" id="sectorNoData" hidden>no-data available</div>
