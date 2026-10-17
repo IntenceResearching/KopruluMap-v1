@@ -483,7 +483,7 @@
     }
     ph.from = {
       x: r.pos.x, y: r.pos.y, w: r.box.w, h: r.box.h, ax: r.aim.x, ay: r.aim.y,
-      alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, veil: r.veil, reveal: r.reveal
+      alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, rayBuild: r.rayBuild, veil: r.veil, reveal: r.reveal
     };
     var cb = null;
     switch (ph.kind) {
@@ -542,7 +542,9 @@
     var st = {
       x: f.x, y: f.y, w: f.w, h: f.h, ax: f.ax, ay: f.ay,
       frameProgress: f.frameProgress == null ? 1 : f.frameProgress,
-      reach: 1, alpha: 1, vis: 1, fill: 0, hot: 0
+      rayBuild: f.rayBuild,
+      reach: f.reach == null ? 1 : f.reach,
+      alpha: 1, vis: 1, fill: 0, hot: 0
     };
     var lb, fr, e, k;
     switch (ph.kind) {
@@ -581,7 +583,8 @@
 
       case 'snap':
         // Галактика: энергоканалы идут от краёв к области и собирают её границу.
-        // Центр и итоговый размер рамки неизменны — меняются только reach и прогресс контура.
+        // Центр и размер рамки неизменны: четыре луча отступают, пока симметрично
+        // растут четыре маршрута по периметру.
         lb = lockBox(r, tg, mt);
         fr = frameOf(r);
         st.x = fr ? fr.x : tg.cx;
@@ -590,6 +593,7 @@
         st.w = fr ? fr.w : lb.w;
         st.h = fr ? fr.h : lb.h;
         e = easeInOutCubic(u);
+        st.rayBuild = e;
         st.reach = 1 - e;
         st.frameProgress = e;
         st.hot = 0.72 * pulse(u, 0, 1);
@@ -714,6 +718,7 @@
         // против часовой стрелки, а энергия покидает область обратно к краям.
         e = easeInOutCubic(u);
         st.frameProgress = (f.frameProgress == null ? 1 : f.frameProgress) * (1 - e);
+        st.rayBuild = lerp(f.rayBuild == null ? 1 : f.rayBuild, 0, e);
         st.reach = lerp(f.reach, 1, e);
         st.flowDirection = -1;
         st.hot = 0.35 * pulse(u, 0, 1);
@@ -726,56 +731,70 @@
   }
 
   /* ---------- рисование ---------- */
-  // Геометрия каналов и рамки. Во время snap единый периметр строится по часовой
-  // стрелке от верхнего левого угла, а внешние лучи сходятся к границам области.
+  // Геометрия четырёх каналов. Каждый луч с края сцены входит в середину стороны,
+  // проходит по часовой стрелке половину стороны, угол и половину следующей стороны.
   function shapes(st, sw) {
     var l = st.x - st.w / 2, r = st.x + st.w / 2, t = st.y - st.h / 2, b = st.y + st.h / 2;
     var hs = sw / 2;
-    var ax = r - l > sw * 3 ? clamp(st.ax, l + sw, r - sw) : st.x;
-    var ay = b - t > sw * 3 ? clamp(st.ay, t + sw, b - sw) : st.y;
     var lines = [];
-    var x1 = l * (1 - st.reach), x2 = r + (cw - r) * st.reach;
-    var y1 = t * (1 - st.reach), y2 = b + (ch - b) * st.reach;
-    if (l > 0 && l - x1 > 0.5) lines.push({ x: x1, y: ay - hs, w: l - x1, h: sw, v: false, ex: l, ey: ay, dx: -1, dy: 0, len: l - x1, flow: -1 });
-    if (r < cw && x2 - r > 0.5) lines.push({ x: r, y: ay - hs, w: x2 - r, h: sw, v: false, ex: r, ey: ay, dx: 1, dy: 0, len: x2 - r, flow: -1 });
-    if (t > 0 && t - y1 > 0.5) lines.push({ x: ax - hs, y: y1, w: sw, h: t - y1, v: true, ex: ax, ey: t, dx: 0, dy: -1, len: t - y1, flow: -1 });
-    if (b < ch && y2 - b > 0.5) lines.push({ x: ax - hs, y: b, w: sw, h: y2 - b, v: true, ex: ax, ey: b, dx: 0, dy: 1, len: y2 - b, flow: -1 });
+    var rayBuild = st.rayBuild;
+
+    if (rayBuild != null) {
+      var rb = clamp(rayBuild, 0, 1);
+      var cx = st.x, cy = st.y;
+      var lx = l + hs, rx = r - hs, ty = t + hs, by = b - hs;
+      var leftEnd = lx * (1 - rb);
+      var rightEnd = rx + (cw - rx) * rb;
+      var topEnd = ty * (1 - rb);
+      var bottomEnd = by + (ch - by) * rb;
+      if (leftEnd > 0.5) lines.push({ x: 0, y: cy - hs, w: leftEnd, h: sw, v: false, ex: leftEnd, ey: cy, dx: -1, dy: 0, len: leftEnd, flow: -1 });
+      if (cw - rightEnd > 0.5) lines.push({ x: rightEnd, y: cy - hs, w: cw - rightEnd, h: sw, v: false, ex: rightEnd, ey: cy, dx: 1, dy: 0, len: cw - rightEnd, flow: -1 });
+      if (topEnd > 0.5) lines.push({ x: cx - hs, y: 0, w: sw, h: topEnd, v: true, ex: cx, ey: topEnd, dx: 0, dy: -1, len: topEnd, flow: -1 });
+      if (ch - bottomEnd > 0.5) lines.push({ x: cx - hs, y: bottomEnd, w: sw, h: ch - bottomEnd, v: true, ex: cx, ey: bottomEnd, dx: 0, dy: 1, len: ch - bottomEnd, flow: -1 });
+    } else {
+      var ax = clamp(st.ax, l + hs, r - hs);
+      var ay = clamp(st.ay, t + hs, b - hs);
+      var x1 = l + hs * (1 - st.reach), x2 = r - hs + (cw - (r - hs)) * st.reach;
+      var y1 = t + hs * (1 - st.reach), y2 = b - hs + (ch - (b - hs)) * st.reach;
+      if (l + hs > 0 && l + hs - x1 > 0.5) lines.push({ x: x1, y: ay - hs, w: l + hs - x1, h: sw, v: false, ex: l + hs, ey: ay, dx: -1, dy: 0, len: l + hs - x1, flow: -1 });
+      if (r - hs < cw && x2 - (r - hs) > 0.5) lines.push({ x: r - hs, y: ay - hs, w: x2 - (r - hs), h: sw, v: false, ex: r - hs, ey: ay, dx: 1, dy: 0, len: x2 - (r - hs), flow: -1 });
+      if (t + hs > 0 && t + hs - y1 > 0.5) lines.push({ x: ax - hs, y: y1, w: sw, h: t + hs - y1, v: true, ex: ax, ey: t + hs, dx: 0, dy: -1, len: t + hs - y1, flow: -1 });
+      if (b - hs < ch && y2 - (b - hs) > 0.5) lines.push({ x: ax - hs, y: b - hs, w: sw, h: y2 - (b - hs), v: true, ex: ax, ey: b - hs, dx: 0, dy: 1, len: y2 - (b - hs), flow: -1 });
+    }
 
     var bw = Math.max(sw, st.w), bh = Math.max(sw, st.h);
     var p = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
-    var horizontal = Math.max(0, bw - sw);
-    var vertical = Math.max(0, bh - sw);
-    var perimeter = 2 * (horizontal + vertical);
-    var remaining = p * perimeter;
+    var halfW = Math.max(0, (bw - sw) / 2);
+    var halfH = Math.max(0, (bh - sw) / 2);
+    var routeLength = halfW + halfH;
     var box = [];
     var tracks = [];
 
-    // Один непрерывный маршрут: верх → правая сторона → низ → левая сторона.
-    // Полосы слегка перекрывают углы, чтобы не появлялись пиксельные разрывы.
-    var topLen = Math.min(horizontal, remaining);
-    remaining -= topLen;
-    var rightLen = Math.min(vertical, remaining);
-    remaining -= rightLen;
-    var bottomLen = Math.min(horizontal, remaining);
-    remaining -= bottomLen;
-    var leftLen = Math.min(vertical, remaining);
+    function addSegment(x, y, dx, dy, length) {
+      if (length <= 0.01) return;
+      if (dx > 0) box.push({ x: x - hs, y: y - hs, w: length + sw, h: sw, v: false });
+      else if (dx < 0) box.push({ x: x - length - hs, y: y - hs, w: length + sw, h: sw, v: false });
+      else if (dy > 0) box.push({ x: x - hs, y: y - hs, w: sw, h: length + sw, v: true });
+      else box.push({ x: x - hs, y: y - length - hs, w: sw, h: length + sw, v: true });
+      tracks.push({ ex: x, ey: y, dx: dx, dy: dy, len: length, v: !!dy, flow: 1 });
+    }
 
-    if (topLen > 0) {
-      box.push({ x: l, y: t, w: sw + topLen, h: sw, v: false });
-      tracks.push({ ex: l + hs, ey: t + hs, dx: 1, dy: 0, len: topLen, v: false, flow: 1 });
+    function addArc(x, y, dx1, dy1, len1, dx2, dy2, len2) {
+      var remaining = p * routeLength;
+      var first = Math.min(len1, remaining);
+      addSegment(x, y, dx1, dy1, first);
+      x += dx1 * first; y += dy1 * first;
+      remaining -= first;
+      var second = Math.min(len2, remaining);
+      addSegment(x, y, dx2, dy2, second);
     }
-    if (rightLen > 0) {
-      box.push({ x: r - sw, y: t, w: sw, h: sw + rightLen, v: true });
-      tracks.push({ ex: r - hs, ey: t + hs, dx: 0, dy: 1, len: rightLen, v: true, flow: 1 });
-    }
-    if (bottomLen > 0) {
-      box.push({ x: r - sw - bottomLen, y: b - sw, w: sw + bottomLen, h: sw, v: false });
-      tracks.push({ ex: r - hs, ey: b - hs, dx: -1, dy: 0, len: bottomLen, v: false, flow: 1 });
-    }
-    if (leftLen > 0) {
-      box.push({ x: l, y: b - sw - leftLen, w: sw, h: sw + leftLen, v: true });
-      tracks.push({ ex: l + hs, ey: b - hs, dx: 0, dy: -1, len: leftLen, v: true, flow: 1 });
-    }
+
+    // Четыре одинаковых маршрута: верх→право, право→низ, низ→лево, лево→верх.
+    addArc(st.x, t + hs, 1, 0, halfW, 0, 1, halfH);
+    addArc(r - hs, st.y, 0, 1, halfH, -1, 0, halfW);
+    addArc(st.x, b - hs, -1, 0, halfW, 0, -1, halfH);
+    addArc(l + hs, st.y, 0, -1, halfH, 1, 0, halfW);
+
     return { lines: lines, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
   }
 
@@ -903,6 +922,7 @@
     r.alpha = st.alpha;
     r.reach = st.reach;
     r.frameProgress = st.frameProgress;
+    r.rayBuild = st.rayBuild;
   }
 
   function loop(now) {
@@ -952,6 +972,7 @@
       alpha: from.alpha,
       reach: from.reach,
       frameProgress: from.frameProgress == null ? 1 : from.frameProgress,
+      rayBuild: from.rayBuild,
       veil: 0,
       reveal: 0,
       fixed: null,
@@ -973,7 +994,7 @@
     if (!r || r.mode === 'go' || !canvas || stageEl !== stage) return null;
     if (r.raf) global.cancelAnimationFrame(r.raf);
     run = null;
-    return { pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress };
+    return { pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, rayBuild: r.rayBuild };
   }
 
   // Прицел с нуля: маленькая рамка в центре сцены
