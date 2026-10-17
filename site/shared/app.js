@@ -274,6 +274,8 @@
       id: row.system_id || row.id || row.name,
       name: row.name || '',
       nameEn: row.name || '',
+      // Systems use a dedicated classification tag; blank values mean no highlight.
+      systemType: String(row.type || 'none').trim().toLowerCase(),
       coord: [isNaN(x) ? 0 : x, isNaN(y) ? 0 : y],
       coordSource: 'conditional',
       primaryFaction: row.faction || '',
@@ -1942,6 +1944,11 @@
       (system.confidence === 'pdf-linked' ? 'связь старого каталога' :
         (system.confidence === 'lore' ? 'по вики-лору' : 'картографическая группировка')),
       system.canonical ? 'pdf-linked' : '');
+    var systemType = String(system.systemType || 'none').trim().toLowerCase();
+    if (systemType !== 'none') {
+      var systemTypeLabels = { capital: 'Столица', unknown: 'Неизвестный тип', unknow: 'Неизвестный тип' };
+      html += badge(systemTypeLabels[systemType] || systemType, systemType === 'capital' ? 'custom' : '');
+    }
     if (system.mapVerified) html += badge('сверено с картой');
     if (system.needsReview) html += badge('требует проверки · Кегар', 'custom');
     html += '</div>';
