@@ -24,11 +24,11 @@
      6. сужение — область фокуса сужается до цели, захват → onLock(0);
      7. центрирование — камера везёт цель в центр сцены, прицел едет вместе с ней;
      8. приближение — камера приближается до zooms[0] (на карте галактики 1200 %),
-        рамка раскрывается до краёв сцены;
+        рамка раскрывается до краёв сцены, её углы связаны с целью диагональными лучами;
      9. сброс — маленькая рамка снова в центре, наведение и захват, приближение
-        до zooms[1] (2000 %) — и так по числу уровней;
-    10. финал — 'reveal': в квадрате цели проявляется превью (preview), всё вокруг
-        уходит в темноту → onEnd() (обычно — переход на страницу).
+        до zooms[1] (2000 %) — и так по числу уровней; лучи остаются привязаны к цели.
+    10. финал — 'reveal': во время последнего, самого крупного приближения в квадрате
+        цели проявляется превью (preview), всё вокруг уходит в темноту → onEnd().
         Другие финалы: 'fade' — уход в темноту без превью; 'error' — срыв захвата;
         'deny' — отказ (вспышки на цели) сразу после захвата, без приближения.
    Если прицела на экране нет, переход начинается с появления.
@@ -125,7 +125,7 @@
     centerPerPx: 0.45, // + столько мс на пиксель пути цели до центра сцены
     zoom: 600,        // раскрытие рамки и приближение камеры
     reset: 160,       // сброс: маленькая рамка в центре
-    reveal: 520,      // 'reveal': проявление превью и уход в темноту вокруг
+    reveal: 520,      // 'reveal': окно параллельного проявления превью в последнем приближении
     still: 260,       // 'reveal': пауза на готовом кадре перед onEnd
     fade: 240,        // 'fade': уход в темноту после последнего приближения
     error: 560,       // 'error': срыв захвата
@@ -412,7 +412,7 @@
       p.push({ kind: 'error', ms: T.error });
       p.push({ kind: 'collapse', ms: T.collapse });
     } else if (o.ending === 'reveal') {
-      p.push({ kind: 'reveal', ms: T.reveal });
+      // Превью проявляется одновременно с последним, самым крупным приближением.
       p.push({ kind: 'still', ms: T.still });
     } else {
       p.push({ kind: 'fade', ms: T.fade });
@@ -483,7 +483,8 @@
     }
     ph.from = {
       x: r.pos.x, y: r.pos.y, w: r.box.w, h: r.box.h, ax: r.aim.x, ay: r.aim.y,
-      alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, rayBuild: r.rayBuild, veil: r.veil, reveal: r.reveal
+      alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, rayBuild: r.rayBuild,
+      tetherProgress: r.tetherProgress, veil: r.veil, reveal: r.reveal
     };
     var cb = null;
     switch (ph.kind) {
@@ -515,6 +516,9 @@
       case 'zoom':
         var level = r.o.zooms[Math.min(ph.step, r.o.zooms.length - 1)];
         var to = zoomDest(tg, mt, ph.last);
+        if (ph.last && r.o.ending === 'reveal') {
+          previewOn(r.o.preview, currentPalette(global.performance.now()));
+        }
         if (r.o.camera) ph.cam = cameraZoom(r.o.camera, tg, level, to);
         if (r.o.onZoom) cb = function () { r.o.onZoom(ph.step, ph.ms, level, to); };
         break;
@@ -543,6 +547,7 @@
       x: f.x, y: f.y, w: f.w, h: f.h, ax: f.ax, ay: f.ay,
       frameProgress: f.frameProgress == null ? 1 : f.frameProgress,
       rayBuild: f.rayBuild,
+      tetherProgress: f.tetherProgress || 0,
       reach: f.reach == null ? 1 : f.reach,
       alpha: 1, vis: 1, fill: 0, hot: 0
     };
@@ -652,9 +657,15 @@
         st.y = st.ay = lerp(f.y, C.y, e);
         st.w = lerp(f.w, cw * G.frameOver, e);
         st.h = lerp(f.h, ch * G.frameOver, e);
-        st.alpha = 1 - smoothstep(0.72, 1, u);
+        st.alpha = ph.last && r.o.ending === 'reveal' ? 1 : 1 - smoothstep(0.72, 1, u);
         st.hot = 0.45 * (1 - clamp(u / 0.3, 0, 1));
         if (ph.last && r.o.ending === 'fade') r.veil = Math.max(f.veil, 0.85 * smoothstep(0.45, 1, u));
+        if (ph.last && r.o.ending === 'reveal') {
+          var revealStart = Math.max(0, 1 - T.reveal / Math.max(1, ph.ms));
+          var revealU = clamp((u - revealStart) / (1 - revealStart), 0, 1);
+          r.reveal = lerp(f.reveal, 1, easeOutCubic(revealU));
+          r.veil = lerp(f.veil, G.revealVeil, easeInOutSine(revealU));
+        }
         break;
 
       case 'reveal':
@@ -725,6 +736,15 @@
         st.hot = 0.35 * pulse(u, 0, 1);
         st.alpha = f.alpha * (1 - smoothstep(0.92, 1, u));
         break;
+    }
+    // На переходе к превью лучи соединяют углы раскрывающейся рамки с углами цели.
+    // Рамка сужается к цели, затем раскрывается вместе с приближением — без второй,
+    // фоновой рамки и без осевых каналов, которые визуально рвали бы этот маршрут.
+    if (r.mode === 'go' && r.o.ending === 'reveal' && ['narrow', 'center', 'lock', 'reset', 'track', 'zoom'].indexOf(ph.kind) >= 0) {
+      st.rayBuild = null;
+      st.reach = 0;
+      st.frameProgress = 1;
+      st.tetherProgress = 1;
     }
     st.veil = r.veil;
     st.reveal = r.reveal;
@@ -866,17 +886,75 @@
         var flicker = reduceMotion ? 1 : 0.46 + 0.54 * (0.5 + 0.5 * Math.sin(now * 0.0025 * (0.7 + hash(seed + 17)) + hash(seed + 19) * Math.PI * 2));
         var pathAlpha = path.alpha == null ? 1 : path.alpha;
         var intensity = (0.28 + 0.72 * hash(seed + 23)) * flicker * fade * pathAlpha;
+        var diagonal = Math.abs(path.dx) > 0.001 && Math.abs(path.dy) > 0.001;
         var gradient;
-        if (path.v) gradient = ctx.createLinearGradient(0, cy - length / 2, 0, cy + length / 2);
+        if (diagonal) {
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(Math.atan2(path.dy, path.dx));
+          gradient = ctx.createLinearGradient(-length / 2, 0, length / 2, 0);
+        } else if (path.v) gradient = ctx.createLinearGradient(0, cy - length / 2, 0, cy + length / 2);
         else gradient = ctx.createLinearGradient(cx - length / 2, 0, cx + length / 2, 0);
         gradient.addColorStop(0, rgba(pal.light, 0));
         gradient.addColorStop(0.5, rgba(pal.light, 0.88 * a * intensity));
         gradient.addColorStop(1, rgba(pal.light, 0));
         ctx.fillStyle = gradient;
-        if (path.v) ctx.fillRect(cx - thickness / 2, cy - length / 2, thickness, length);
+        if (diagonal) {
+          ctx.fillRect(-length / 2, -thickness / 2, length, thickness);
+          ctx.restore();
+        } else if (path.v) ctx.fillRect(cx - thickness / 2, cy - length / 2, thickness, length);
         else ctx.fillRect(cx - length / 2, cy - thickness / 2, length, thickness);
       }
     }
+  }
+
+  function tetherPaths(r, st) {
+    if (!(st.tetherProgress > 0.001)) return [];
+    var target = r.o.target();
+    var l = st.x - st.w / 2, rgt = st.x + st.w / 2;
+    var t = st.y - st.h / 2, b = st.y + st.h / 2;
+    var starts = [
+      { x: l, y: t }, { x: rgt, y: t },
+      { x: rgt, y: b }, { x: l, y: b }
+    ];
+    var ends = [
+      { x: target.l, y: target.t }, { x: target.r, y: target.t },
+      { x: target.r, y: target.b }, { x: target.l, y: target.b }
+    ];
+    return starts.map(function (from, i) {
+      var dx = ends[i].x - from.x, dy = ends[i].y - from.y;
+      var len = Math.hypot(dx, dy);
+      return len > 0.01 ? {
+        ex: from.x, ey: from.y, dx: dx / len, dy: dy / len,
+        len: len, flow: 1, alpha: st.tetherProgress, v: false
+      } : null;
+    }).filter(Boolean);
+  }
+
+  function drawTethers(paths, sw, a, pal) {
+    if (!paths.length) return;
+    ctx.save();
+    ctx.lineCap = 'butt';
+    ctx.lineWidth = sw;
+    ctx.strokeStyle = rgba(pal.core, a);
+    ctx.shadowColor = rgba(pal.glow, 0.55 * a);
+    ctx.shadowBlur = sw * 1.1 * dpr;
+    paths.forEach(function (path) {
+      ctx.beginPath();
+      ctx.moveTo(path.ex, path.ey);
+      ctx.lineTo(path.ex + path.dx * path.len, path.ey + path.dy * path.len);
+      ctx.stroke();
+    });
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = Math.max(1, sw * 0.18);
+    ctx.strokeStyle = rgba(pal.light, 0.28 * a);
+    paths.forEach(function (path) {
+      ctx.beginPath();
+      ctx.moveTo(path.ex, path.ey);
+      ctx.lineTo(path.ex + path.dx * path.len, path.ey + path.dy * path.len);
+      ctx.stroke();
+    });
+    ctx.restore();
   }
 
   function draw(r, st, now) {
@@ -890,6 +968,7 @@
       var pal = currentPalette(now);
       var core = mix(pal.core, pal.light, clamp(st.hot, 0, 1) * 0.72);
       var sh = shapes(st, sw);
+      var tethers = tetherPaths(r, st);
       var all = sh.lines.concat(sh.box);
       var edge = Math.max(1, sw * 0.16);
 
@@ -908,6 +987,7 @@
       // 3. основной цвет
       ctx.fillStyle = rgba(core, a);
       fillRects(all, 0, 0);
+      drawTethers(tethers, sw, a, pal);
       // 4. светлая фаска по верхнему / левому краю; у рамки ярче, как в брифинге
       var hl = Math.max(1, sw * 0.2);
       for (var i = 0; i < all.length; i++) {
@@ -919,7 +999,7 @@
       }
       ctx.globalAlpha = 1;
       // 5. непрерывные импульсы идут по лучам и уже собранным сторонам рамки
-      drawGlints(sh.lines.concat(sh.tracks), sw, a, pal, now, st.flowDirection);
+      drawGlints(sh.lines.concat(sh.tracks, tethers), sw, a, pal, now, st.flowDirection);
       // 6. вспышка захвата внутри рамки (только у рамки размером с захват:
       //    большую область фокуса заливка залила бы целиком)
       if (st.fill > 0.003) {
@@ -955,6 +1035,7 @@
     r.reach = st.reach;
     r.frameProgress = st.frameProgress;
     r.rayBuild = st.rayBuild;
+    r.tetherProgress = st.tetherProgress;
   }
 
   function loop(now) {
@@ -1005,6 +1086,7 @@
       reach: from.reach,
       frameProgress: from.frameProgress == null ? 1 : from.frameProgress,
       rayBuild: from.rayBuild,
+      tetherProgress: from.tetherProgress || 0,
       veil: 0,
       reveal: 0,
       fixed: null,
@@ -1026,7 +1108,10 @@
     if (!r || r.mode === 'go' || !canvas || stageEl !== stage) return null;
     if (r.raf) global.cancelAnimationFrame(r.raf);
     run = null;
-    return { pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, rayBuild: r.rayBuild };
+    return {
+      pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach,
+      frameProgress: r.frameProgress, rayBuild: r.rayBuild, tetherProgress: r.tetherProgress
+    };
   }
 
   // Прицел с нуля: маленькая рамка в центре сцены
