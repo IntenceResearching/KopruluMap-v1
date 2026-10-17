@@ -1,45 +1,67 @@
-/* Прицел перехода к маркеру галактики — в духе брифингов StarCraft II
+/* Прицел карты галактики — в духе брифингов StarCraft II
    (Wings of Liberty, брифинг «Maw of the Void»).
 
    Перекрестие на всю сцену и полая рамка в точке пересечения; линии упираются
-   в рамку и внутрь не заходят. Сценарий перехода:
-     1. появление   — рамка мигает в центре сцены, линии выстреливают к краям;
-     2. наведение   — перекрестие едет к маркеру (оси чуть вразнобой, лёгкий перелёт);
-     3. захват      — рамка поджимается к маркеру и дважды вспыхивает  → onLock(step);
-     4. приближение — рамка раскрывается до краёв сцены, карта приближается
-                      к маркеру                                         → onZoom(step, ms);
-     5. сброс       — маленькая рамка снова в центре, шаги 2–4 повторяются;
-     6. финал       — 'dive': уход в темноту (дальше переход на страницу);
-                      'error': сбой захвата (Зерус); 'deny': отказ (ОЗД) → onEnd().
+   в рамку и внутрь не заходят.
 
-   Всё считается от текущего вида: положение и размер маркера читаются из
+   Выбор области (первый клик по квадрату или пункт в списке) — select():
+     1. появление — рамка мигает в центре сцены, линии выстреливают к краям;
+     2. наведение — перекрестие едет к квадрату (оси чуть вразнобой, лёгкий перелёт),
+                    пока galaxy.js подводит к нему карту;
+     3. захват    — рамка поджимается к квадрату и дважды вспыхивает   → onLock();
+     4. удержание — прицел держит квадрат, пока выбор не снимут, и едет вместе с ним
+                    при перетаскивании и зуме карты.
+   Выбор другой области — прицел переезжает к ней, не появляясь заново.
+   Снятие выбора — release(): линии втягиваются в рамку, рамка гаснет.
+
+   Переход (второй клик по квадрату или кнопка в панели) — start(); продолжает
+   с удержания, без повторного появления:
+     5. центрирование — карта везёт квадрат в центр сцены (onCenter → galaxy.js),
+                        прицел едет вместе с ним;
+     6. захват        — короткий повторный захват                    → onLock(0);
+     7. приближение   — рамка раскрывается до краёв сцены, карта приближается
+                        к квадрату                                   → onZoom(step, ms);
+     8. сброс         — маленькая рамка снова в центре, наведение, захват
+                        и приближение повторяются;
+     9. финал         — 'dive': уход в темноту (дальше переход на страницу);
+                        'error': сбой захвата (Зерус); 'deny': отказ (ОЗД) → onEnd().
+   Если прицела на экране нет, переход начинается с появления.
+
+   Всё считается от текущего вида: положение и размер квадрата читаются из
    opts.target() каждый кадр, поэтому прицел работает при любом зуме и панораме
-   и не отстаёт от маркера, пока карта движется. Сама карта двигается в galaxy.js
-   (колбэки onZoom / onDeny).
+   и не отстаёт от квадрата, пока карта движется. Саму карту двигает galaxy.js.
 
-   Рисуется на одном canvas (.target-reticle) поверх карты; рядом — затемнение
-   .target-dim (по нему galaxy-fx.js понимает, что идёт переход, и молчит).
-   Цвета — CSS-переменные .target-reticle в galaxy.css; при смене класса сцены
-   (is-red-target, is-odz-ping) цвет плавно перетекает.
+   Рисуется на одном canvas (.target-reticle) поверх карты. На время перехода под
+   ним — затемнение .target-dim (по нему galaxy-fx.js понимает, что идёт переход,
+   и молчит); при выборе затемнения нет. Цвета — CSS-переменные .target-reticle
+   в galaxy.css; при смене класса сцены (is-red-target, is-odz-ping) цвет плавно
+   перетекает.
 
-   prefers-reduced-motion: карта не двигается (без приближения), прицел сразу на
-   маркере, без мигания — захват и финал.
+   prefers-reduced-motion: прицел сразу на квадрате, без мигания; карта при переходе
+   не двигается (ни центрирования, ни приближения) — захват и финал.
 
    Подключение: <script src="galaxy-ping.js"></script> до galaxy.js.
 
    API: window.GalaxyPing
-     start({ stage, target, steps, ending, onLock, onZoom, onDeny, onEnd })
+     select({ stage, target, onLock }) — выбор: прицел наводится на квадрат и держит его
        stage  — элемент сцены (.galaxy-stage)
-       target — функция → текущий box маркера на сцене { l, t, r, b, cx, cy, w }
+       target — функция → текущий box квадрата на сцене { l, t, r, b, cx, cy, w }
+       onLock() — захват (galaxy.js подсвечивает квадрат)
+     release(done) — снять выбор: прицел гаснет, затем done(). Если до конца анимации
+                     выбрали снова, done не вызывается.
+     start({ stage, target, steps, ending, onCenter, onLock, onZoom, onDeny, onEnd }) — переход
        steps  — сколько раз приближаться после захвата (0 — без приближения)
        ending — 'dive' (по умолчанию) | 'error' | 'deny'
+       onCenter(ms)     — центрирование: карту двигает galaxy.js, ms — длительность
        onLock(step)     — захват на шаге step (0, 1, …)
-       onZoom(step, ms) — начало приближения: карту двигает galaxy.js, ms — длительность
+       onZoom(step, ms) — начало приближения
        onDeny(ms)       — только 'deny': отказ сразу после захвата, ms — до onEnd
        onEnd()          — конец: переход или сообщение. При 'dive' прицел и темнота
                           остаются на экране, пока страница не уйдёт (или до stop())
+     active()  — что на экране: 'select' | 'go' | 'release' | 'idle' (кадр после
+                 перехода) | null
      refresh() — вид изменился (совместимость: прицел и так читает target() каждый кадр)
-     stop()    — снять прицел и остановить анимацию */
+     stop()    — снять прицел сразу, без анимации */
 (function (global) {
   'use strict';
 
@@ -50,13 +72,17 @@
     trackMax: 700,    // …и не длиннее
     trackPerPx: 0.5,  // + столько мс на пиксель пути
     lock: 320,        // первый захват: поджатие и две вспышки
-    relock: 240,      // повторный захват после сброса — короче
+    relock: 240,      // повторный захват (после сброса, при смене цели, перед переходом) — короче
+    centerMin: 320,   // центрирование перед переходом: не короче…
+    centerMax: 680,   // …и не длиннее
+    centerPerPx: 0.5, // + столько мс на пиксель пути квадрата до центра сцены
     zoom: 560,        // раскрытие рамки и приближение карты
     reset: 160,       // сброс: маленькая рамка в центре
     fade: 240,        // 'dive': уход в темноту после последнего приближения
     error: 560,       // 'error': сбой захвата
     deny: 440,        // 'deny': вспышки отказа
     collapse: 280,    // 'error' / 'deny': линии втягиваются, рамка гаснет
+    release: 260,     // снятие выбора: то же, чуть быстрее
     color: 400        // перетекание цвета при смене класса сцены
   };
 
@@ -81,7 +107,7 @@
 
   var reduceMotion = !!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-  var run = null;          // текущий переход
+  var run = null;          // текущий сценарий: mode 'select' | 'go' | 'release'
   var stageEl = null;      // элемент сцены
   var dimEl = null;        // затемнение
   var canvas = null;
@@ -173,9 +199,6 @@
 
   function attach(stage) {
     stageEl = stage;
-    dimEl = document.createElement('div');
-    dimEl.className = 'target-dim';
-    stage.appendChild(dimEl);
     canvas = document.createElement('canvas');
     canvas.className = 'target-reticle';
     canvas.setAttribute('aria-hidden', 'true');
@@ -186,6 +209,14 @@
     palClass = stage.className;
     palFrom = palTo = readPalette();
     palT0 = 0;
+  }
+
+  // Затемнение — только на время перехода (при выборе карта не темнеет); под прицелом
+  function dimOn() {
+    if (dimEl || !stageEl) return;
+    dimEl = document.createElement('div');
+    dimEl.className = 'target-dim';
+    stageEl.insertBefore(dimEl, canvas);
     global.requestAnimationFrame(function () { if (dimEl) dimEl.classList.add('is-on'); });
   }
 
@@ -213,14 +244,26 @@
     return { w: w, h: w * G.boxH / G.boxW };
   }
 
-  /* ---------- сценарий ---------- */
-  function plan(o) {
-    var p = [{ kind: 'appear', ms: T.appear }];
+  /* ---------- сценарии ----------
+     fresh — прицела на экране ещё нет: начинаем с появления. Иначе сценарий
+     продолжает с того места, где прицел сейчас (смена цели, переход с удержания). */
+  // Выбор: наведение, захват и удержание (hold длится, пока выбор не снимут)
+  function planSelect(fresh) {
+    var p = fresh ? [{ kind: 'appear', ms: T.appear }] : [];
     p.push({ kind: 'track' });
-    p.push({ kind: 'lock', step: 0, ms: T.lock });
+    p.push({ kind: 'lock', step: 0, ms: fresh ? T.lock : T.relock });
+    p.push({ kind: 'hold', ms: Infinity });
+    return p;
+  }
+
+  // Переход: центрирование, захват, приближения и финал
+  function planGo(o, fresh) {
+    var p = fresh ? [{ kind: 'appear', ms: T.appear }] : [];
+    p.push({ kind: 'center' });
+    p.push({ kind: 'lock', step: 0, ms: fresh ? T.lock : T.relock });
     if (o.ending === 'deny') {
       p.push({ kind: 'deny', ms: T.deny });
-      p.push({ kind: 'collapse', ms: T.collapse });
+      p.push({ kind: 'collapse', ms: T.collapse, follow: true });
       return p;
     }
     for (var i = 0; i < o.steps; i++) {
@@ -253,14 +296,25 @@
       // без анимации движения прицел появляется сразу на маркере
       r.pos = reduceMotion ? { x: tg.cx, y: tg.cy } : c;
       r.box = reduceMotion ? { w: fb.w * G.loose, h: fb.h * G.loose } : { w: mt.rest.w, h: mt.rest.h };
+      r.alpha = 1;
+      r.reach = 0;
     }
-    ph.from = { x: r.pos.x, y: r.pos.y, w: r.box.w, h: r.box.h, alpha: r.alpha, veil: r.veil };
+    ph.from = { x: r.pos.x, y: r.pos.y, w: r.box.w, h: r.box.h, alpha: r.alpha, reach: r.reach, veil: r.veil };
     if (ph.kind === 'track') {
       var dist = Math.hypot(tg.cx - r.pos.x, tg.cy - r.pos.y);
       ph.ms = reduceMotion ? 0 : clamp(T.trackMin + dist * T.trackPerPx, T.trackMin, T.trackMax);
       ph.ov = dist > 1 ? Math.min(G.overshoot, G.overshootPx / dist) : 0;
     }
+    if (ph.kind === 'center') {
+      var C = center();
+      var away = Math.hypot(C.x - tg.cx, C.y - tg.cy);
+      ph.ms = reduceMotion ? 0 : clamp(T.centerMin + away * T.centerPerPx, T.centerMin, T.centerMax);
+    }
+    // смещение прицела от квадрата: при центрировании оно сходит на нет,
+    // при угасании сохраняется (прицел едет вместе с картой)
+    if (ph.kind === 'center' || ph.follow) ph.off = { x: r.pos.x - tg.cx, y: r.pos.y - tg.cy };
     var cb = null;
+    if (ph.kind === 'center' && r.o.onCenter && ph.ms > 0) cb = function () { r.o.onCenter(ph.ms); };
     if (ph.kind === 'lock' && r.o.onLock) cb = function () { r.o.onLock(ph.step); };
     if (ph.kind === 'zoom' && r.o.onZoom) cb = function () { r.o.onZoom(ph.step, ph.ms); };
     if (ph.kind === 'deny' && r.o.onDeny) cb = function () { r.o.onDeny(T.deny + T.collapse); };
@@ -291,6 +345,30 @@
         e = easeInOutCubic(u);
         st.w = lerp(f.w, fb.w * G.loose, e);
         st.h = lerp(f.h, fb.h * G.loose, e);
+        // если цель сменили, пока прицел угасал, — линии снова вытягиваются
+        st.reach = lerp(f.reach, 1, easeOutCubic(clamp(u * 2.5, 0, 1)));
+        st.alpha = lerp(f.alpha, 1, clamp(u * 3, 0, 1));
+        break;
+
+      case 'center':
+        // карту везёт galaxy.js; прицел держится на квадрате, а если был в стороне —
+        // плавно садится на него. Рамка чуть отпускает хватку перед повторным захватом.
+        e = easeInOutCubic(u);
+        fb = fitBox(tg.w, mt.m);
+        st.x = tg.cx + ph.off.x * (1 - e);
+        st.y = tg.cy + ph.off.y * (1 - e);
+        st.w = lerp(f.w, fb.w * G.loose, e);
+        st.h = lerp(f.h, fb.h * G.loose, e);
+        st.reach = lerp(f.reach, 1, easeOutCubic(clamp(u * 2.5, 0, 1)));
+        st.alpha = lerp(f.alpha, 1, clamp(u * 3, 0, 1));
+        st.hot = 0.55 * pulse(u, 0, 0.35);   // отклик на нажатие
+        break;
+
+      case 'hold':
+        // выбор: прицел держит квадрат, пока выбор не снимут
+        fb = fitBox(tg.w, mt.m);
+        st.x = tg.cx; st.y = tg.cy;
+        st.w = fb.w; st.h = fb.h;
         break;
 
       case 'lock':
@@ -349,10 +427,10 @@
       case 'collapse':
         // линии втягиваются в рамку, рамка сжимается и гаснет
         e = easeInCubic(clamp(u / 0.75, 0, 1));
-        if (r.o.ending === 'deny') { st.x = tg.cx; st.y = tg.cy; }
+        if (ph.follow) { st.x = tg.cx + ph.off.x; st.y = tg.cy + ph.off.y; }
         st.w = f.w * (1 - 0.25 * e);
         st.h = f.h * (1 - 0.25 * e);
-        st.reach = 1 - e;
+        st.reach = f.reach * (1 - e);
         st.alpha = f.alpha * (1 - smoothstep(0.4, 1, u));
         break;
     }
@@ -483,6 +561,7 @@
     r.pos = { x: st.x, y: st.y };
     r.box = { w: st.w, h: st.h };
     r.alpha = st.alpha;
+    r.reach = st.reach;
   }
 
   function loop(now) {
@@ -499,7 +578,8 @@
       remember(r, last);
       if (r.i === r.phases.length - 1) {
         draw(last, now);
-        run = null;                        // прицел остаётся на экране до stop()
+        run = null;                        // после перехода прицел остаётся на экране до stop()
+        if (r.mode === 'release') detach(); // выбор снят — холст убираем
         if (r.o.onEnd) r.o.onEnd();
         return;
       }
@@ -515,37 +595,90 @@
     r.raf = global.requestAnimationFrame(loop);
   }
 
-  function start(opts) {
-    stop();
-    if (!opts || !opts.stage || typeof opts.target !== 'function') return;
-    attach(opts.stage);
-    var o = {
-      target: opts.target,
-      steps: reduceMotion ? 0 : Math.max(0, opts.steps | 0),
-      ending: opts.ending === 'error' || opts.ending === 'deny' ? opts.ending : 'dive',
-      onLock: opts.onLock || null,
-      onZoom: opts.onZoom || null,
-      onDeny: opts.onDeny || null,
-      onEnd: opts.onEnd || null
-    };
-    var c = center();
-    var mt = metrics();
+  // Новый сценарий: первый кадр сразу, без пустого мига
+  function begin(o, mode, phases, from) {
     var r = {
       o: o,
-      phases: plan(o),
+      mode: mode,
+      phases: phases,
       i: 0,
       t0: global.performance.now(),
-      pos: c,
-      box: { w: mt.rest.w, h: mt.rest.h },
-      alpha: 1,
+      pos: from.pos,
+      box: from.box,
+      alpha: from.alpha,
+      reach: from.reach,
       veil: 0,
       raf: 0
     };
     run = r;
     if (!enter(r, r.phases[0])) return;
-    draw(stateAt(r, r.phases[0], 0), r.t0);   // первый кадр сразу, без пустого мига
+    draw(stateAt(r, r.phases[0], 0), r.t0);
     r.raf = global.requestAnimationFrame(loop);
   }
+
+  // Прицел уже на экране (выбор или его угасание): забираем его текущее состояние,
+  // чтобы новый сценарий продолжил с того же места, без скачка. null — прицела нет.
+  function takeOver(stage) {
+    var r = run;
+    if (!r || r.mode === 'go' || !canvas || stageEl !== stage) return null;
+    if (r.raf) global.cancelAnimationFrame(r.raf);
+    run = null;
+    return { pos: r.pos, box: r.box, alpha: r.alpha, reach: r.reach };
+  }
+
+  // Прицел с нуля: маленькая рамка в центре сцены
+  function fresh(stage) {
+    stop();
+    attach(stage);
+    var mt = metrics();
+    return { pos: center(), box: { w: mt.rest.w, h: mt.rest.h }, alpha: 1, reach: 0 };
+  }
+
+  function valid(opts) { return !!(opts && opts.stage && typeof opts.target === 'function'); }
+
+  function select(opts) {
+    if (!valid(opts) || (run && run.mode === 'go')) return;   // переход не прерываем
+    var from = takeOver(opts.stage);
+    var isNew = !from;
+    if (isNew) from = fresh(opts.stage);
+    var o = {
+      target: opts.target,
+      onLock: opts.onLock || null,
+      onEnd: null
+    };
+    begin(o, 'select', planSelect(isNew), from);
+  }
+
+  function release(done) {
+    var r = run;
+    if (r && r.mode === 'go') return;                          // переход доиграет сам
+    if (r && r.mode === 'release') { r.o.onEnd = done || null; return; }
+    if (!r) { stop(); if (done) done(); return; }
+    var from = takeOver(stageEl);
+    var o = { target: r.o.target, onEnd: done || null };
+    begin(o, 'release', [{ kind: 'collapse', ms: reduceMotion ? 0 : T.release, follow: true }], from);
+  }
+
+  function start(opts) {
+    if (!valid(opts)) return;
+    var from = takeOver(opts.stage);
+    var isNew = !from;
+    if (isNew) from = fresh(opts.stage);
+    dimOn();
+    var o = {
+      target: opts.target,
+      steps: reduceMotion ? 0 : Math.max(0, opts.steps | 0),
+      ending: opts.ending === 'error' || opts.ending === 'deny' ? opts.ending : 'dive',
+      onCenter: opts.onCenter || null,
+      onLock: opts.onLock || null,
+      onZoom: opts.onZoom || null,
+      onDeny: opts.onDeny || null,
+      onEnd: opts.onEnd || null
+    };
+    begin(o, 'go', planGo(o, isNew), from);
+  }
+
+  function active() { return run ? run.mode : (canvas ? 'idle' : null); }
 
   function refresh() {
     // прицел перерисовывается каждый кадр и сам читает положение маркера;
@@ -560,7 +693,10 @@
   }
 
   global.GalaxyPing = {
+    select: select,
+    release: release,
     start: start,
+    active: active,
     refresh: refresh,
     stop: stop
   };

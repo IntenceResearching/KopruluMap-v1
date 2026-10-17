@@ -639,44 +639,45 @@
       panel.hidden = false;
     }
     [hotspot, zerus, odz].forEach(function (x) {
-      if (x && x !== el) x.classList.remove('is-selected');
+      if (x && x !== el) x.classList.remove('is-selected', 'is-locked');
     });
     el.classList.add('is-selected');
   }
-  function hidePanel() {
+
+  // Только панель: при переходе она закрывается, а выбор и прицел остаются
+  function closePanel() {
     if (panel) panel.hidden = true;
     panelArea = null;
+  }
+
+  // Квадраты — в обычное состояние, панель закрыта (без анимации прицела)
+  function clearAreas() {
+    closePanel();
     [hotspot, zerus, odz].forEach(function (x) {
       if (x) x.classList.remove('is-selected', 'is-locked');
     });
   }
 
-  // Первый клик: мягко сдвигаем карту, чтобы квадрат оказался ближе к центру
-  // видимой области (левее открытой панели). Масштаб не меняем.
-  // Если зум меньше focusZoomBelow — доводим до focusZoom и центрируем точно;
-  // если уже приближено — только мягкий сдвиг, масштаб не меняем.
-  function focusSector() {
-    if (busy) return;
-    var sz = sceneSize();
-    var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
-    var c = boxOf(hotspot);
-    var nx, ny, ns, ms;
-    if (view.s < CONFIG.focusZoomBelow) {
-      ns = CONFIG.focusZoom;
-      var side = ns * base;
-      var px = parseFloat(hotspot.getAttribute('data-cx')) / 100 * side;
-      var py = parseFloat(hotspot.getAttribute('data-cy')) / 100 * side;
-      nx = visibleW * CONFIG.focusAnchorX - px;
-      ny = sz.h / 2 - py;
-      ms = CONFIG.focusZoomMs;
-    } else {
-      ns = view.s;
-      nx = view.tx + (visibleW * CONFIG.focusAnchorX - c.cx) * CONFIG.focusStrength;
-      ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
-      ms = CONFIG.focusMs;
-    }
-    hotspot.classList.add('is-locked');
-    animateTo(ns, nx, ny, ms);
+  // Снять выбор (крестик панели, Esc, клик по пустому месту): прицел гаснет
+  function hidePanel() {
+    clearAreas();
+    GalaxyPing.release(function () {
+      stage.classList.remove('is-red-target', 'is-odz-ping');
+    });
+  }
+
+  /* Прицел при выборе: появляется, наводится на квадрат, пока карта к нему едет,
+     захватывает и держит его, пока выбор не снимут (galaxy-ping.js). Цвет — по
+     области: Копрулу зелёный, Зерус красный, ОЗД синий. Подсветка захвата у
+     квадрата (is-locked) включается в момент захвата прицелом. */
+  function selectArea(el) {
+    stage.classList.toggle('is-red-target', el === zerus);
+    stage.classList.toggle('is-odz-ping', el === odz);
+    GalaxyPing.select({
+      stage: stage,
+      target: function () { return boxOf(el); },
+      onLock: function () { if (panelArea === el) el.classList.add('is-locked'); }
+    });
   }
 
   // Выбор Копрулу: первый вызов — панель + сдвиг; повторный по выбранному — переход.
@@ -688,7 +689,8 @@
       return;
     }
     showPanel();
-    focusSector();
+    focusArea(hotspot);
+    selectArea(hotspot);
   }
 
   hotspot.addEventListener('click', function (e) {
@@ -801,14 +803,14 @@
     window.requestAnimationFrame(step);
   }
 
-  // Маркер должен быть на экране: если карту увели после первого клика и он за
-  // краем, сначала мягко подводим его к центру (масштаб не трогаем), потом прицел.
-  function withTargetInView(el, then) {
-    var sz = sceneSize();
-    var c = boxOf(el);
-    var pad = 0.08 * Math.min(sz.w, sz.h);
-    if (c.cx >= pad && c.cx <= sz.w - pad && c.cy >= pad && c.cy <= sz.h - pad) { then(); return; }
-    animateTo(view.s, view.tx + sz.w / 2 - c.cx, view.ty + sz.h / 2 - c.cy, CONFIG.focusMs, then);
+  // Перед приближением квадрат едет в центр сцены (масштаб не меняется), прицел —
+  // вместе с ним. Длительность задаёт galaxy-ping.js: от расстояния до центра.
+  function centerOn(el) {
+    return function (ms) {
+      var sz = sceneSize();
+      var c = boxOf(el);
+      animateTo(view.s, view.tx + sz.w / 2 - c.cx, view.ty + sz.h / 2 - c.cy, ms);
+    };
   }
 
   function beginTransition() {
@@ -817,11 +819,13 @@
     viewBeforeTransition = { s: view.s, tx: view.tx, ty: view.ty };
   }
 
-  // Конец перехода без ухода со страницы (Зерус, ОЗД): прицел снят, вид в рамках
+  // Конец перехода без ухода со страницы (Зерус, ОЗД): прицел снят, выбор сброшен,
+  // вид в рамках. Следующий клик по квадрату снова первый.
   function finishTransition() {
     busy = false;
     cancelAnim();
     GalaxyPing.stop();
+    clearAreas();
     viewBeforeTransition = null;
     clampView();
     applyView();
@@ -831,7 +835,7 @@
     busy = false;
     cancelAnim();
     GalaxyPing.stop();
-    [hotspot, zerus, odz].forEach(function (x) { if (x) x.classList.remove('is-locked'); });
+    clearAreas();
     stage.classList.remove('is-red-target', 'is-odz-ping');
     if (viewBeforeTransition) {
       view.s = viewBeforeTransition.s;
@@ -841,22 +845,22 @@
     }
   }
 
-  // Копрулу: наведение, захват, два «нырка» и уход в темноту, затем переход
+  // Копрулу: квадрат в центр, захват, два «нырка» и уход в темноту, затем переход
   function runTransition(el, href) {
     if (busy) return;
     beginTransition();
-    hidePanel();
+    closePanel();
     hidePreview();
-    withTargetInView(el, function () {
-      GalaxyPing.start({
-        stage: stage,
-        target: function () { return boxOf(el); },
-        steps: DIVE.steps,
-        ending: 'dive',
-        onLock: function () { el.classList.add('is-locked'); },
-        onZoom: function (i, ms) { diveStep(el, i, ms, i === DIVE.steps - 1, DIVE.maxS); },
-        onEnd: function () { window.location.href = href; }
-      });
+    stage.classList.remove('is-red-target', 'is-odz-ping');
+    GalaxyPing.start({
+      stage: stage,
+      target: function () { return boxOf(el); },
+      steps: DIVE.steps,
+      ending: 'dive',
+      onCenter: centerOn(el),
+      onLock: function () { el.classList.add('is-locked'); },
+      onZoom: function (i, ms) { diveStep(el, i, ms, i === DIVE.steps - 1, DIVE.maxS); },
+      onEnd: function () { window.location.href = href; }
     });
   }
 
@@ -930,8 +934,9 @@
   }
 
   /* ---------- Зерус: красная область без страницы ----------
-     Первый клик — приближение к квадрату (как у Копрулу, без панели).
-     Второй клик — красный прицел: наведение, захват, приближение, срыв захвата,
+     Первый клик — как у Копрулу: панель («no-data available»), приближение
+     и красный прицел, который держит квадрат.
+     Второй клик — переход: квадрат в центр, захват, приближение, срыв захвата,
      затем сообщение «Ошибка. Нет данных»: печатается по буквам, точка в конце
      моргает. */
   var zerus = document.getElementById('zerusHotspot');
@@ -940,6 +945,10 @@
   var ZERUS_MESSAGE = 'Ошибка. Нет данных';
   var zerusTimer = null;
 
+  // Первый клик по области (Копрулу, Зерус, ОЗД): карта подводит квадрат к центру
+  // видимой области (левее открытой панели). Если зум меньше focusZoomBelow —
+  // доводим до focusZoom и ставим квадрат точно; если уже приближено — мягкий
+  // сдвиг на focusStrength пути, масштаб не меняем.
   function focusArea(el) {
     var sz = sceneSize();
     var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
@@ -959,7 +968,6 @@
       ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
       ms = CONFIG.focusMs;
     }
-    el.classList.add('is-locked');
     animateTo(ns, nx, ny, ms);
   }
 
@@ -999,28 +1007,29 @@
     }, 45);
   }
 
-  // Зерус: красный прицел, захват, один «нырок» (в пределах обычного зума),
-  // затем захват срывается и печатается сообщение об ошибке
+  // Зерус: красный прицел — квадрат в центр, захват, один «нырок» (в пределах
+  // обычного зума), затем захват срывается и печатается сообщение об ошибке
   function runZerusTransition(el) {
     if (busy) return;
     beginTransition();
+    closePanel();
     hidePreview();
+    stage.classList.remove('is-odz-ping');
     stage.classList.add('is-red-target');
-    withTargetInView(el, function () {
-      GalaxyPing.start({
-        stage: stage,
-        target: function () { return boxOf(el); },
-        steps: 1,
-        ending: 'error',
-        onLock: function () { el.classList.add('is-locked'); },
-        onZoom: function (i, ms) { diveStep(el, i, ms, true, CONFIG.maxFactor); },
-        onEnd: function () {
-          // вместо перехода — сообщение об ошибке
-          finishTransition();
-          stage.classList.remove('is-red-target');
-          showZerusError();
-        }
-      });
+    GalaxyPing.start({
+      stage: stage,
+      target: function () { return boxOf(el); },
+      steps: 1,
+      ending: 'error',
+      onCenter: centerOn(el),
+      onLock: function () { el.classList.add('is-locked'); },
+      onZoom: function (i, ms) { diveStep(el, i, ms, true, CONFIG.maxFactor); },
+      onEnd: function () {
+        // вместо перехода — сообщение об ошибке
+        finishTransition();
+        stage.classList.remove('is-red-target');
+        showZerusError();
+      }
     });
   }
 
@@ -1033,6 +1042,7 @@
     }
     showPanel(zerus);
     focusArea(zerus);
+    selectArea(zerus);
   }
 
   if (zerus) {
@@ -1043,8 +1053,8 @@
   }
 
   /* ---------- Пространство Директората (ОЗД) ----------
-     Как Копрулу: первый клик — панель и приближение, второй — переход.
-     Переход: синий прицел наводится и захватывает квадрат, затем отказ — прицел,
+     Как Копрулу: первый клик — панель, приближение и синий прицел, второй — переход.
+     Переход: квадрат в центр, синий прицел снова захватывает его, затем отказ — прицел,
      квадрат и блик краснеют, камера отдаляется до 100 %, прицел гаснет, затем
      печатаются 12 строк «ОТКАЗ ДОСТУПА.» … «Файл заблокирован.».
      Строки гаснут через 5 с, после этого кнопка неактивна. Перезагрузка сбрасывает всё. */
@@ -1116,34 +1126,34 @@
     odzHideTimer = window.setTimeout(hideOdzMessages, ODZ_SHOW_MS);
   }
 
-  // ОЗД: синий прицел наводится и захватывает квадрат, затем отказ — прицел и
-  // квадрат краснеют, камера отъезжает до 100 %, прицел гаснет, печатаются строки
+  // ОЗД: синий прицел — квадрат в центр, захват, затем отказ: прицел и квадрат
+  // краснеют, камера отъезжает до 100 %, прицел гаснет, печатаются строки
   function runOdzTransition(el) {
     odzDone = true;
     beginTransition();
-    hidePanel();
+    closePanel();
     hidePreview();
+    stage.classList.remove('is-red-target');
     stage.classList.add('is-odz-ping');
-    withTargetInView(el, function () {
-      GalaxyPing.start({
-        stage: stage,
-        target: function () { return boxOf(el); },
-        steps: 0,
-        ending: 'deny',
-        onLock: function () { el.classList.add('is-locked'); },
-        onDeny: function () {
-          el.classList.add('is-odz-red');      // квадрат плавно краснеет (CSS transition), прицел — следом
-          stage.classList.remove('is-odz-ping');
-          stage.classList.add('is-red-target');
-          var sz = sceneSize();
-          animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
-        },
-        onEnd: function () {
-          finishTransition();
-          stage.classList.remove('is-red-target', 'is-odz-ping');
-          showOdzMessages();
-        }
-      });
+    GalaxyPing.start({
+      stage: stage,
+      target: function () { return boxOf(el); },
+      steps: 0,
+      ending: 'deny',
+      onCenter: centerOn(el),
+      onLock: function () { el.classList.add('is-locked'); },
+      onDeny: function () {
+        el.classList.add('is-odz-red');      // квадрат плавно краснеет (CSS transition), прицел — следом
+        stage.classList.remove('is-odz-ping');
+        stage.classList.add('is-red-target');
+        var sz = sceneSize();
+        animateTo(1, (sz.w - base) / 2, (sz.h - base) / 2, CONFIG.animateMs);
+      },
+      onEnd: function () {
+        finishTransition();
+        stage.classList.remove('is-red-target', 'is-odz-ping');
+        showOdzMessages();
+      }
     });
   }
 
@@ -1160,6 +1170,7 @@
     }
     showPanel(odz);
     focusArea(odz);
+    selectArea(odz);
   }
 
   if (odz) {
