@@ -95,6 +95,24 @@ def image_dimensions(data):
     fail("unknown image format")
 
 
+def looks_like_html(data, headers):
+    """Отличает CSV от HTML-страницы.
+
+    Если таблицу перестали публиковать в интернете, Google вместо CSV отдаёт
+    страницу входа. Раньше она спокойно записывалась в data/*.csv и ломала сайт —
+    теперь синк падает, а не портит данные.
+    """
+    ctype = ""
+    try:
+        ctype = (headers.get("Content-Type") or "").lower()
+    except Exception:
+        pass
+    head = data[:512].lstrip().lower()
+    if "text/html" in ctype or "application/xhtml" in ctype:
+        return True
+    return head.startswith(b"<!doctype") or head.startswith(b"<html")
+
+
 def transform_csv(text, transform, img_w, img_h):
     reader = csv.DictReader(io.StringIO(text))
     rows = list(reader)
@@ -194,6 +212,12 @@ def main():
                 fail(f"source {sid}: download failed: {e}")
             if len(data) == 0:
                 fail(f"source {sid}: empty response")
+            if looks_like_html(data, headers):
+                fail(
+                    f"source {sid}: вместо CSV пришёл HTML — таблица не опубликована в интернете. "
+                    f"Откройте таблицу → Файл → Поделиться → Опубликовать в интернете, "
+                    f"выберите нужный лист и формат CSV, затем обновите url в data/sources.json"
+                )
             # sha = hash of content (for change detection)
             import hashlib
             sha = hashlib.sha256(data).hexdigest()
@@ -207,6 +231,9 @@ def main():
                 text = data.decode("utf-8-sig")
             except UnicodeDecodeError:
                 text = data.decode("cp1251")
+            first_line = next((ln for ln in text.splitlines() if ln.strip()), "")
+            if "," not in first_line and ";" not in first_line and "\t" not in first_line:
+                fail(f"source {sid}: ответ не похож на CSV — первая строка «{first_line[:60]}»")
             # transform (no image dims for sheet)
             transformed_text, rows, fieldnames = transform_csv(text, src.get("transform", {}), None, None)
             # basic validation: unique id if present
