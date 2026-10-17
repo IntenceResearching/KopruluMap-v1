@@ -185,12 +185,12 @@ body {
   --focus-glow: 255, 72, 72;
 }
 
-/* ОЗД до отказа — синий прицел */
+/* ОЗД до отказа — зелёный прицел, как у Копрулу */
 .galaxy-stage.is-odz-ping {
-  --focus-core: 40, 112, 220;
-  --focus-light: 196, 228, 255;
-  --focus-shadow: 0, 12, 42;
-  --focus-glow: 90, 170, 255;
+  --focus-core: 34, 150, 58;
+  --focus-light: 176, 255, 186;
+  --focus-shadow: 0, 30, 6;
+  --focus-glow: 56, 224, 96;
 }
 
 /* Плашка сверху по центру — тот же .brand-lockup, что в шапке сектора */
@@ -666,7 +666,7 @@ body {
 }
 
 /* --- Пространство Директората (ОЗД) ------------------------------------------
-   Синяя рамка и блик плавно краснеют при переходе; после блокировки кнопка неактивна. */
+   Зелёная рамка и блик плавно краснеют при отказе; после блокировки кнопка неактивна. */
 .sector-hotspot--odz {
   transition: background-color 1.4s ease, border-color 1.4s ease, box-shadow 1.4s ease;
 }
@@ -674,13 +674,22 @@ body {
 .sector-hotspot--odz::after {
   background: linear-gradient(110deg,
     transparent 38%,
-    rgba(255, 60, 60, 0.10) 44%,
-    rgba(255, 90, 90, 0.70) 50%,
-    rgba(255, 60, 60, 0.10) 56%,
+    rgba(60, 160, 70, 0.10) 44%,
+    rgba(140, 255, 150, 0.70) 50%,
+    rgba(60, 160, 70, 0.10) 56%,
     transparent 62%);
   background-size: 250% 100%;
   background-repeat: no-repeat;
   mix-blend-mode: screen;
+}
+
+.sector-hotspot--odz.is-odz-red::after {
+  background: linear-gradient(110deg,
+    transparent 38%,
+    rgba(255, 60, 60, 0.10) 44%,
+    rgba(255, 90, 90, 0.70) 50%,
+    rgba(255, 60, 60, 0.10) 56%,
+    transparent 62%);
 }
 
 .sector-hotspot--odz.is-odz-red {
