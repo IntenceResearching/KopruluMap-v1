@@ -737,6 +737,8 @@
     var l = st.x - st.w / 2, r = st.x + st.w / 2, t = st.y - st.h / 2, b = st.y + st.h / 2;
     var hs = sw / 2;
     var lines = [];
+    var guide = [];
+    var bw = Math.max(sw, st.w), bh = Math.max(sw, st.h);
     var rayBuild = st.rayBuild;
 
     if (rayBuild != null) {
@@ -747,9 +749,18 @@
       var rightTip = cw + hs - (cw + hs - rx) * rb;
       var topTip = -hs + (ty + hs) * rb;
       var bottomTip = ch + hs - (ch + hs - by) * rb;
-      // Rays begin just outside the viewport and grow inward. Fade only as the
-      // perimeter takes over, leaving a persistent faint channel after assembly.
-      var channelAlpha = Math.max(0.32, 1 - 0.68 * (st.frameProgress == null ? 0 : st.frameProgress));
+      // Лучи начинаются за краями холста и растут внутрь. Они приглушаются,
+      // когда контур принимает их, но после сборки остаются едва заметными.
+      var frameP = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
+      var channelAlpha = Math.max(0.32, 1 - 0.68 * frameP);
+      var guideWeight = st.flowDirection === -1 ? smoothstep(0.02, 0.18, rb) : smoothstep(0.9, 1, rb);
+      var guideAlpha = 0.24 * guideWeight * (1 - frameP);
+      if (guideAlpha > 0.003) {
+        guide.push({ x: l, y: t, w: bw, h: sw, v: false, alpha: guideAlpha });
+        guide.push({ x: r - sw, y: t, w: sw, h: bh, v: true, alpha: guideAlpha });
+        guide.push({ x: l, y: b - sw, w: bw, h: sw, v: false, alpha: guideAlpha });
+        guide.push({ x: l, y: t, w: sw, h: bh, v: true, alpha: guideAlpha });
+      }
       var leftLen = Math.max(0, leftTip + hs);
       var rightLen = Math.max(0, cw + hs - rightTip);
       var topLen = Math.max(0, topTip + hs);
@@ -769,7 +780,6 @@
       if (b - hs < ch && y2 - (b - hs) > 0.5) lines.push({ x: ax - hs, y: b - hs, w: sw, h: y2 - (b - hs), v: true, ex: ax, ey: b - hs, dx: 0, dy: 1, len: y2 - (b - hs), flow: -1 });
     }
 
-    var bw = Math.max(sw, st.w), bh = Math.max(sw, st.h);
     var p = st.frameProgress == null ? 1 : clamp(st.frameProgress, 0, 1);
     var halfW = Math.max(0, (bw - sw) / 2);
     var halfH = Math.max(0, (bh - sw) / 2);
@@ -802,7 +812,7 @@
     addArc(st.x, b - hs, -1, 0, halfW, 0, -1, halfH);
     addArc(l + hs, st.y, 0, -1, halfH, 1, 0, halfW);
 
-    return { lines: lines, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
+    return { lines: lines, guide: guide, box: box, tracks: tracks, l: l, t: t, w: bw, h: bh };
   }
 
   function fillRects(list, dx, dy) {
@@ -873,7 +883,7 @@
       var pal = currentPalette(now);
       var core = mix(pal.core, pal.light, clamp(st.hot, 0, 1) * 0.72);
       var sh = shapes(st, sw);
-      var all = sh.lines.concat(sh.box);
+      var all = sh.lines.concat(sh.guide || [], sh.box);
       var edge = Math.max(1, sw * 0.16);
 
       // 1. свечение
@@ -883,9 +893,12 @@
       ctx.fillStyle = rgba(core, a);
       fillRects(all, 0, 0);
       ctx.restore();
-      // 2. тёмная кромка снизу и справа, как в брифинге
+      // 2. Тёмную кромку оставляем только у внешнего контура, а не на торцах
+      // незавершённых сегментов. Так активный конец луча не выглядит отдельной рамкой.
+      var edgeShapes = sh.guide ? sh.guide.slice() : [];
+      if (st.frameProgress == null || st.frameProgress >= 0.999) edgeShapes = edgeShapes.concat(sh.box);
       ctx.fillStyle = rgba(pal.shadow, 0.9 * a);
-      fillRects(all, edge, edge);
+      fillRects(edgeShapes, edge, edge);
       // 3. основной цвет
       ctx.fillStyle = rgba(core, a);
       fillRects(all, 0, 0);
