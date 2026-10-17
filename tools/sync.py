@@ -16,6 +16,7 @@
 import json
 import os
 import sys
+import urllib.parse
 import urllib.request
 import urllib.error
 import csv
@@ -50,11 +51,19 @@ def save_json(path, obj):
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+# Токен GitHub уходит только на хосты GitHub. Источники типа url (Google Sheets и др.)
+# получают запрос без него: раньше токен добавлялся ко всем запросам, а при редиректе
+# (например, на страницу входа Google) urllib переносил его и дальше.
+TOKEN_HOSTS = {"api.github.com", "raw.githubusercontent.com"}
+
+
 def http_get(url, token=None):
     req = urllib.request.Request(url)
     req.add_header("User-Agent", "koprulu-sync/1.0")
-    if token:
-        req.add_header("Authorization", f"Bearer {token}")
+    parts = urllib.parse.urlsplit(url)
+    if token and parts.scheme == "https" and parts.hostname in TOKEN_HOSTS:
+        # unredirected: urllib не копирует такой заголовок в запрос после редиректа
+        req.add_unredirected_header("Authorization", f"Bearer {token}")
     with urllib.request.urlopen(req, timeout=60) as r:
         return r.read(), r.headers
 
@@ -207,7 +216,7 @@ def main():
                 fail(f"source {sid}: url not configured (still placeholder)")
             print(f"== source {sid} (url)")
             try:
-                data, headers = http_get(url, token)
+                data, headers = http_get(url)  # сторонний адрес — без токена
             except Exception as e:
                 fail(f"source {sid}: download failed: {e}")
             if len(data) == 0:
