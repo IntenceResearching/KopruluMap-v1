@@ -292,7 +292,9 @@
       id: row.ID || row.id || row.name,
       name: row.name || '',
       nameEn: row.name || '',
-      placeTypes: [row.type || 'other'],
+      // если в таблице нет колонки type, место считается просто местом (placeTypesOf
+      // подставит 'planet'); 'other' присваиваем только когда он указан явно
+      placeTypes: row.type ? [row.type] : [],
       systemId: row.system_id || null,
       system: row.system_id || null,
       coord: (row.x && row.y && !isNaN(x) && !isNaN(y)) ? [x, y] : null,
@@ -423,11 +425,15 @@
     buildFacets();
   }
 
+  // Перечень совпадает с docs/ADMIN_GUIDE.md; для каждого типа есть метка, чтобы
+  // в каталоге не показывалось сырое значение из таблицы.
   var PLACE_TYPES = {
     planet: { label: 'Планета', plural: 'планеты', glyph: 'П' },
     moon: { label: 'Луна', plural: 'луны', glyph: 'Л' },
     asteroid: { label: 'Астероид', plural: 'астероиды', glyph: 'А' },
-    station: { label: 'Станция / платформа', plural: 'станции / платформы', glyph: 'С' }
+    station: { label: 'Станция', plural: 'станции', glyph: 'С' },
+    platform: { label: 'Платформа', plural: 'платформы', glyph: 'Ф' },
+    other: { label: 'Иное место', plural: 'иные места', glyph: 'И' }
   };
 
   function placeTypesOf(place) {
@@ -1601,19 +1607,25 @@
     return categories.indexOf('space platforms') > -1 || name.indexOf('platform') > -1;
   }
 
+  // Полный перечень типов из docs/ADMIN_GUIDE.md: planet, moon, asteroid, station,
+  // platform, other. Каждый должен попадать ровно в одну вкладку, иначе место есть
+  // в данных, но не видно ни в одной.
   function matchesCatalogView(place, view) {
     var types = placeTypesOf(place);
     view = view || state.catalogView;
     if (!view || view === 'systems') return true;
     if (view === 'planet') return types.indexOf('planet') > -1;
-    if (view === 'platform') return isPlatformPlace(place);
+    if (view === 'platform') return types.indexOf('platform') > -1 || isPlatformPlace(place);
     if (view === 'station') return types.indexOf('station') > -1 && !isPlatformPlace(place);
-    if (view === 'other') return types.indexOf('moon') > -1 || types.indexOf('asteroid') > -1;
+    if (view === 'other') {
+      return types.indexOf('moon') > -1 || types.indexOf('asteroid') > -1 || types.indexOf('other') > -1;
+    }
     return true;
   }
 
   function catalogViewForPlace(place) {
     var types = placeTypesOf(place);
+    if (types.indexOf('platform') > -1) return 'platform';
     if (types.indexOf('station') > -1) return isPlatformPlace(place) ? 'platform' : 'station';
     if (types.indexOf('planet') > -1) return 'planet';
     return 'other';
@@ -1639,8 +1651,9 @@
       setTab('systems', { keepCatalogView: true });
     } else {
       if (view === 'planet') state.activeTypes = ['planet'];
-      else if (view === 'station' || view === 'platform') state.activeTypes = ['station'];
-      else if (view === 'other') state.activeTypes = ['moon', 'asteroid'];
+      else if (view === 'station') state.activeTypes = ['station'];
+      else if (view === 'platform') state.activeTypes = ['platform', 'station'];
+      else if (view === 'other') state.activeTypes = ['moon', 'asteroid', 'other'];
       setTab('planets', { keepCatalogView: true });
     }
     updateCatalogSectionState();
@@ -1734,7 +1747,7 @@
     var html = '<span class="filter-label">ТИП</span>' +
       '<button class="filter-chip' + (!state.activeTypes.length ? ' active' : '') +
       '" type="button" data-type="">Все типы <span>' + formatNumber(total) + '</span></button>';
-    ['planet', 'moon', 'asteroid', 'station'].forEach(function (type) {
+    ['planet', 'moon', 'asteroid', 'station', 'platform', 'other'].forEach(function (type) {
       if (!typeCounter[type]) return;
       var active = state.activeTypes.indexOf(type) > -1;
       var config = PLACE_TYPES[type] || { plural: type };
