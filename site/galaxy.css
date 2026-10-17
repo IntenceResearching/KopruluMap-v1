@@ -153,55 +153,35 @@ body {
   box-shadow: 0 0 calc(26px / var(--s, 1)) rgba(127, 255, 212, 0.95);
 }
 
-/* --- Переход: прицел в духе брифингов StarCraft II (рисует galaxy-ping.js) -------
-   Затемнение и прицел лежат над картой, но под интерфейсом сцены (подсказка,
-   кнопки масштаба, превью, панель) — как перекрестие брифинга под субтитрами.
-   По затемнению galaxy-fx.js понимает, что идёт переход. */
-.target-dim {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  background: rgba(2, 10, 9, 0.38);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.target-dim.is-on { opacity: 1; }
-
-/* Холст прицела: перекрестие на всю сцену и полая рамка.
-   Цвета — тройки «r, g, b» (их читает galaxy-ping.js):
-   core — линии и рамка, light — блик, бегущие блики и вспышка захвата,
-   shadow — тёмная кромка снизу/справа, glow — свечение.
-   При смене класса сцены цвет перетекает за 0.4 с. */
-.target-reticle {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;          /* в разметке идёт после .target-dim — рисуется поверх него */
-  pointer-events: none;
-  --reticle-core: 34, 150, 58;     /* зелёный брифинга (в кадре ≈ 29, 133, 50) */
-  --reticle-light: 176, 255, 186;
-  --reticle-shadow: 0, 30, 6;
-  --reticle-glow: 56, 224, 96;
+/* --- Прицел выбора и перехода в духе брифингов StarCraft II (/shared/focus-fx.js) ---
+   Модуль сам кладёт в сцену затемнение, холст прицела и превью (z-index 3: над картой,
+   но под интерфейсом сцены — подсказка, кнопки масштаба, превью, панель — как
+   перекрестие брифинга под субтитрами). Отсюда — только цвета: тройки «r, g, b»
+   (core — линии и рамка, light — фаска, блики и вспышки, shadow — тёмная кромка,
+   glow — свечение) и затемнение на время перехода. При смене класса сцены цвет
+   прицела перетекает за 0.4 с. */
+.galaxy-stage {
+  --focus-core: 34, 150, 58;     /* зелёный брифинга (в кадре ≈ 29, 133, 50) */
+  --focus-light: 176, 255, 186;
+  --focus-shadow: 0, 30, 6;
+  --focus-glow: 56, 224, 96;
+  --focus-dim: rgba(2, 10, 9, 0.38);
 }
 
 /* Зерус и отказ ОЗД — красный прицел */
-.galaxy-stage.is-red-target .target-reticle {
-  --reticle-core: 196, 44, 44;
-  --reticle-light: 255, 196, 186;
-  --reticle-shadow: 42, 0, 0;
-  --reticle-glow: 255, 72, 72;
+.galaxy-stage.is-red-target {
+  --focus-core: 196, 44, 44;
+  --focus-light: 255, 196, 186;
+  --focus-shadow: 42, 0, 0;
+  --focus-glow: 255, 72, 72;
 }
 
 /* ОЗД до отказа — синий прицел */
-.galaxy-stage.is-odz-ping .target-reticle {
-  --reticle-core: 40, 112, 220;
-  --reticle-light: 196, 228, 255;
-  --reticle-shadow: 0, 12, 42;
-  --reticle-glow: 90, 170, 255;
+.galaxy-stage.is-odz-ping {
+  --focus-core: 40, 112, 220;
+  --focus-light: 196, 228, 255;
+  --focus-shadow: 0, 12, 42;
+  --focus-glow: 90, 170, 255;
 }
 
 /* Плашка сверху по центру — тот же .brand-lockup, что в шапке сектора */
@@ -861,26 +841,4 @@ body {
 /* На телефоне подсказка «колесо мыши — масштаб» не нужна и закрывает карту */
 @media (pointer: coarse) {
   .map-hint { display: none; }
-}
-
-/* Эффекты карты (galaxy-fx.js): полосы поверх картинки, в покое скрыты */
-.map-fx {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  display: none;
-}
-
-.map-fx.is-on { display: block; }
-
-.map-fx-band {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  background-repeat: no-repeat;
-  pointer-events: none;
-  will-change: transform;
 }
