@@ -23,6 +23,7 @@ data/sectors.csv, data/objects.csv, data/system-overrides.csv  (рабочие)
 |---|---|---|
 | id | string (PK) | уникальный id, напр. `aiur-system` |
 | name | string | название |
+| type | enum | тег системы: `none` (без выделения), `capital` (столица), `unknow` (неизвестно; неизвестный тип); пустое/отсутствующее значение в старых данных трактуется как `none` |
 | x, y | number | координаты узла на карте (могут быть условными) |
 | faction | string | фракция |
 | description | string | описание |
@@ -61,7 +62,7 @@ data/sectors.csv, data/objects.csv, data/system-overrides.csv  (рабочие)
 Текущий лист содержит **две таблицы рядом в одном CSV** (блоки «Системы:» и «Места:»). Такой формат не парсится автоматически: заголовки дублируются, колонки сдвигаются, валидация невозможна.
 
 **Рекомендуется:** разделить на два листа (вкладки) в одной книге:
-- Вкладка `systems` (gid=0) — заголовок: `id,name,x,y,faction,description,source_url`
+- Вкладка `systems` (gid=0) — заголовок: `id,name,type,x,y,faction,description,source_url`; в уже существующей таблице можно сохранить `system_id` вместо `id` (фронтенд поддерживает оба заголовка). Для `type`: `none`, `capital` или `unknow`.
 - Вкладка `places` (gid=1) — заголовок: `id,name,type,system_id,x,y,faction,description,source_url`
 
 Каждая вкладка публикуется отдельно (File → Share → Publish to web → CSV для каждого gid). В `data/sources.json` тогда два источника типа `url` с разными `gid` и разными `target`.
