@@ -274,6 +274,8 @@
       id: row.system_id || row.id || row.name,
       name: row.name || '',
       nameEn: row.name || '',
+      // Systems use a dedicated classification tag; blank values mean no highlight.
+      systemType: String(row.type || 'none').trim().toLowerCase(),
       coord: [isNaN(x) ? 0 : x, isNaN(y) ? 0 : y],
       coordSource: 'conditional',
       primaryFaction: row.faction || '',
@@ -283,6 +285,28 @@
       worlds: [],
       planetIds: []
     };
+  }
+
+  function mergeSystemTypes(systems, rows) {
+    if (!systems || !systems.length || !rows || !rows.length) return systems;
+    var typesByKey = {};
+    rows.forEach(function (row) {
+      var type = String(row.type || 'none').trim().toLowerCase();
+      [row.system_id || row.id, row.name].forEach(function (key) {
+        var normalized = normalize(key);
+        if (normalized) typesByKey[normalized] = type;
+      });
+    });
+    return systems.map(function (system) {
+      var keys = [system.id, system.system_id, system.name];
+      for (var i = 0; i < keys.length; i++) {
+        var normalized = normalize(keys[i]);
+        if (normalized && Object.prototype.hasOwnProperty.call(typesByKey, normalized)) {
+          return Object.assign({}, system, { systemType: typesByKey[normalized] });
+        }
+      }
+      return system;
+    });
   }
 
   function mapPlaceRow(row) {
@@ -309,13 +333,15 @@
   function loadDataset() {
     var inline = window.__MAP_DATA__;
     if (inline && inline.systems) {
-      return Promise.resolve({
-        meta: inline.meta || {},
-        systems: inline.systems || [],
-        planets: inline.planets || [],
-        overrides: inline.overrides || { systems: {} },
-        labels: inline.labels || [],
-        tiles: null
+      return fetchCSV('/data/systems.csv').then(function (systemRows) {
+        return {
+          meta: inline.meta || {},
+          systems: mergeSystemTypes(inline.systems || [], systemRows),
+          planets: inline.planets || [],
+          overrides: inline.overrides || { systems: {} },
+          labels: inline.labels || [],
+          tiles: null
+        };
       });
     }
 
@@ -345,6 +371,7 @@
         if ((!planets || !planets.length) && parts[6] && parts[6].length) {
           planets = parts[6].map(mapPlaceRow);
         }
+        systems = mergeSystemTypes(systems, parts[5]);
         return {
           meta: meta, systems: systems, planets: planets,
           overrides: parts[2], labels: parts[3], tiles: parts[4]
@@ -1942,6 +1969,11 @@
       (system.confidence === 'pdf-linked' ? 'связь старого каталога' :
         (system.confidence === 'lore' ? 'по вики-лору' : 'картографическая группировка')),
       system.canonical ? 'pdf-linked' : '');
+    var systemType = String(system.systemType || 'none').trim().toLowerCase();
+    if (systemType !== 'none') {
+      var systemTypeLabels = { capital: 'Столица', unknown: 'Неизвестный тип', unknow: 'Неизвестный тип' };
+      html += badge(systemTypeLabels[systemType] || systemType, systemType === 'capital' ? 'custom' : '');
+    }
     if (system.mapVerified) html += badge('сверено с картой');
     if (system.needsReview) html += badge('требует проверки · Кегар', 'custom');
     html += '</div>';
