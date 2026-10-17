@@ -1,0 +1,5 @@
+# Зависимости сборки картинок (tools/build_assets.py).
+# Ставятся в воркфлоу pages.yml, assets.yml и check.yml, локально — так же:
+#   python3 -m pip install -r tools/requirements.txt
+# Мажорная версия зафиксирована: новый Pillow не сломает деплой без предупреждения.
+pillow>=13,<14
