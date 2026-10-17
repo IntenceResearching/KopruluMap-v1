@@ -27,9 +27,26 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: actions/configure-pages@v6
+      # Кэш производных изображений: основной расход времени — пирамида из 534 тайлов.
+      # Ключ учитывает все исходники и логику сборки; при промахе workflow пересобирает и сохраняет их.
+      - name: Восстановить кэш изображений
+        id: image-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            assets/tiles
+            assets/tiles.json
+            assets/map-preview.webp
+            assets/galaxy-map-*.webp
+            assets/timeline-project-logo.webp
+            assets/koprulu-macket.webp
+            assets/ozd-macket.webp
+          key: pages-images-${{ runner.os }}-${{ hashFiles('assets/src/**', 'tools/build_assets.py', 'tools/requirements.txt') }}
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
       # Публикуется содержимое site/ — это корень сайта.
       # В Settings → Pages → Source должен стоять «GitHub Actions», иначе воркфлоу
       # не публикует: Pages будет отдавать корень репозитория через Jekyll.
@@ -40,7 +57,26 @@ jobs:
       - name: Собрать картинки
         run: |
           python -m pip install --quiet --disable-pip-version-check -r tools/requirements.txt
-          python tools/build_assets.py
+          if [ "${{ steps.image-cache.outputs.cache-hit }}" = "true" ]; then
+            echo "Кэш найден: пересборку растров пропускаем"
+            python tools/build_assets.py --sync-only
+          else
+            echo "Кэша нет: собираем изображения"
+            time python tools/build_assets.py
+          fi
+      - name: Сохранить кэш изображений
+        if: steps.image-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            assets/tiles
+            assets/tiles.json
+            assets/map-preview.webp
+            assets/galaxy-map-*.webp
+            assets/timeline-project-logo.webp
+            assets/koprulu-macket.webp
+            assets/ozd-macket.webp
+          key: pages-images-${{ runner.os }}-${{ hashFiles('assets/src/**', 'tools/build_assets.py', 'tools/requirements.txt') }}
       - name: Собрать публикацию
         run: |
           rm -rf .publish

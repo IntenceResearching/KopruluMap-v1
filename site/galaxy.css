@@ -153,6 +153,15 @@ body {
   box-shadow: 0 0 calc(26px / var(--s, 1)) rgba(127, 255, 212, 0.95);
 }
 
+/* Видимую рамку при выборе рисует FocusFx. Скрываем отдельную CSS-обводку маркера,
+   чтобы две немного различающиеся границы не накладывались друг на друга. */
+.sector-hotspot.is-selected,
+.sector-hotspot.is-locked {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
 /* --- Прицел выбора и перехода в духе брифингов StarCraft II (/shared/focus-fx.js) ---
    Модуль сам кладёт в сцену затемнение, холст прицела и превью (z-index 3: над картой,
    но под интерфейсом сцены — подсказка, кнопки масштаба, превью, панель — как

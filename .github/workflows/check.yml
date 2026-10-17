@@ -32,6 +32,8 @@ jobs:
           python -m pip install --quiet --disable-pip-version-check -r tools/requirements.txt
           python tools/build_assets.py
           python tools/build_assets.py --check
+          python tools/build_assets.py --sync-only
+          python tools/build_assets.py --check
       - name: Собрать публикацию
         run: |
           rm -rf .publish
