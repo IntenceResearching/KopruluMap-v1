@@ -1378,7 +1378,8 @@
 
   function onPointerDown(event) {
     canvas.setPointerCapture(event.pointerId);
-    pointers[event.pointerId] = localPoint(event);
+    var point = localPoint(event);
+    pointers[event.pointerId] = point;
     pointerList = Object.keys(pointers);
 
     if (pointerList.length === 1) {
