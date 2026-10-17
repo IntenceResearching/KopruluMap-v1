@@ -65,24 +65,20 @@
   /* ------------------------------------------------------------------ утилиты */
 
   var doc = document;
-  var loaderStartedAt = (window.performance && performance.now) ? performance.now() : Date.now();
   var loaderDismissed = false;
 
+  // Экран загрузки уходит сразу, как страница готова: искусственной паузы нет.
+  // Вызывается после первой отрисовки canvas (см. boot) и по таймауту-страховке.
   function dismissTimelineLoader() {
     if (loaderDismissed) return;
     var loader = doc.getElementById('timelineLoader');
     if (!loader) { loaderDismissed = true; return; }
-    var now = (window.performance && performance.now) ? performance.now() : Date.now();
-    var wait = Math.max(0, 1900 - (now - loaderStartedAt));
+    loaderDismissed = true;
+    loader.classList.add('is-leaving');
     window.setTimeout(function () {
-      if (loaderDismissed) return;
-      loaderDismissed = true;
-      loader.classList.add('is-leaving');
-      window.setTimeout(function () {
-        loader.classList.add('is-hidden');
-        loader.setAttribute('aria-hidden', 'true');
-      }, 480);
-    }, wait);
+      loader.classList.add('is-hidden');
+      loader.setAttribute('aria-hidden', 'true');
+    }, 480);
   }
 
   function qs(selector, root) { return (root || doc).querySelector(selector); }

@@ -1,9 +1,14 @@
-# Карта приходит из публичного Google Drive только на временный GitHub runner.
-# Ни исходник, ни производные пиксели не должны попадать в Git.
+# В Git лежат только исходники картинок (assets/src/). Всё, что собирается из них
+# скриптом tools/build_assets.py, в репозиторий не попадает: тайлы и webp
+# создаются при деплое на раннере (pages.yml) и при ручном запуске Build image assets.
 assets/_source/
 assets/tiles/
 assets/tiles.json
 assets/map-preview.webp
+assets/galaxy-map-*.webp
+assets/timeline-project-logo.webp
+assets/koprulu-macket.webp
+assets/ozd-macket.webp
 assets/map-source.jpg
 assets/map-source.sha256
 

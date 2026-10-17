@@ -25,8 +25,15 @@ jobs:
       - uses: actions/configure-pages@v4
       # Публикуется содержимое site/ — это корень сайта.
       # В Settings → Pages → Source должен стоять «GitHub Actions», иначе воркфлоу
-      # не публикует: Pages будет отдавать корень репозитория через Jekyll. data/ и assets/ лежат в корне
-      # репозитория (их пишет sync.py), поэтому перед загрузкой копируются в артефакт.
+      # не публикует: Pages будет отдавать корень репозитория через Jekyll.
+      # Картинки собираются здесь из assets/src/: в Git лежат только исходники,
+      # производные пиксели попадают сразу в артефакт.
+      # data/ и assets/ живут в корне репозитория (data/ пишет sync.py), поэтому
+      # перед загрузкой копируются рядом с содержимым site/.
+      - name: Собрать картинки
+        run: |
+          pip install --quiet pillow
+          python3 tools/build_assets.py
       - name: Собрать публикацию
         run: |
           rm -rf .publish
@@ -35,7 +42,9 @@ jobs:
           for dir in data assets; do
             if [ -d "$dir" ]; then cp -R "$dir" .publish/; fi
           done
-          ls -la .publish
+          # исходники картинок в веб не отдаются: только собранные тайлы и webp
+          rm -rf .publish/assets/src
+          du -sh .publish/* | sort -h
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./.publish
