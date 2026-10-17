@@ -31,7 +31,7 @@ jobs:
       # Ключ учитывает все исходники и логику сборки; при промахе workflow пересобирает и сохраняет их.
       - name: Восстановить кэш изображений
         id: image-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6.1.0
         with:
           path: |
             assets/tiles
@@ -66,7 +66,7 @@ jobs:
           fi
       - name: Сохранить кэш изображений
         if: steps.image-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6.1.0
         with:
           path: |
             assets/tiles
