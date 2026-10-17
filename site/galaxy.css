@@ -153,11 +153,14 @@ body {
   box-shadow: 0 0 calc(26px / var(--s, 1)) rgba(127, 255, 212, 0.95);
 }
 
-/* --- Переход: квадрат из 4 угловых сегментов, сужающийся к маркеру за 9 этапов (логика в galaxy-ping.js) --- */
+/* --- Переход: прицел в духе брифингов StarCraft II (рисует galaxy-ping.js) -------
+   Затемнение и прицел лежат над картой, но под интерфейсом сцены (подсказка,
+   кнопки масштаба, превью, панель) — как перекрестие брифинга под субтитрами.
+   По затемнению galaxy-fx.js понимает, что идёт переход. */
 .target-dim {
   position: absolute;
   inset: 0;
-  z-index: 15;
+  z-index: 3;
   background: rgba(2, 10, 9, 0.38);
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -166,22 +169,40 @@ body {
 
 .target-dim.is-on { opacity: 1; }
 
-.target-corner {
+/* Холст прицела: перекрестие на всю сцену и полая рамка.
+   Цвета — тройки «r, g, b» (их читает galaxy-ping.js):
+   core — линии и рамка, light — блик, бегущие блики и вспышка захвата,
+   shadow — тёмная кромка снизу/справа, glow — свечение.
+   При смене класса сцены цвет перетекает за 0.4 с. */
+.target-reticle {
   position: absolute;
-  z-index: 21;
-  width: 0;
-  height: 0;
-  border: 0 solid rgba(127, 255, 212, 0.95);
-  filter: drop-shadow(0 0 6px rgba(127, 255, 212, 0.8));
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;          /* в разметке идёт после .target-dim — рисуется поверх него */
   pointer-events: none;
-  box-sizing: border-box;
-  transition: border-color 0.4s ease, filter 0.4s ease;
+  --reticle-core: 34, 150, 58;     /* зелёный брифинга (в кадре ≈ 29, 133, 50) */
+  --reticle-light: 176, 255, 186;
+  --reticle-shadow: 0, 30, 6;
+  --reticle-glow: 56, 224, 96;
 }
 
-.tc-tl { border-top-width: 2px; border-left-width: 2px; }
-.tc-tr { border-top-width: 2px; border-right-width: 2px; }
-.tc-bl { border-bottom-width: 2px; border-left-width: 2px; }
-.tc-br { border-bottom-width: 2px; border-right-width: 2px; }
+/* Зерус и отказ ОЗД — красный прицел */
+.galaxy-stage.is-red-target .target-reticle {
+  --reticle-core: 196, 44, 44;
+  --reticle-light: 255, 196, 186;
+  --reticle-shadow: 42, 0, 0;
+  --reticle-glow: 255, 72, 72;
+}
+
+/* ОЗД до отказа — синий прицел */
+.galaxy-stage.is-odz-ping .target-reticle {
+  --reticle-core: 40, 112, 220;
+  --reticle-light: 196, 228, 255;
+  --reticle-shadow: 0, 12, 42;
+  --reticle-glow: 90, 170, 255;
+}
 
 /* Плашка сверху по центру — тот же .brand-lockup, что в шапке сектора */
 
@@ -503,55 +524,6 @@ body {
     transparent 62%);
   background-size: 250% 100%;
   background-repeat: no-repeat;
-}
-
-/* Внешняя рамка: те же цвет, толщина и свечение, что у основных уголков */
-.target-outer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 21;
-  pointer-events: none;
-  overflow: visible;
-  filter: drop-shadow(0 0 6px rgba(127, 255, 212, 0.8));
-  transition: filter 0.4s ease;
-}
-
-.target-outer path {
-  fill: none;
-  stroke: rgba(127, 255, 212, 0.95);
-  stroke-width: 3px;
-  stroke-linecap: square;
-  transition: stroke 0.4s ease;
-}
-
-.galaxy-stage.is-red-target .target-outer {
-  filter: drop-shadow(0 0 6px rgba(255, 70, 70, 0.8));
-}
-
-.galaxy-stage.is-red-target .target-outer path {
-  stroke: rgba(255, 90, 90, 0.95);
-}
-
-.galaxy-stage.is-red-target .target-corner {
-  border-color: rgba(255, 90, 90, 0.95);
-  filter: drop-shadow(0 0 6px rgba(255, 70, 70, 0.8));
-}
-
-/* Пинг ОЗД: синий на всём сужении, красный только в самом конце (см. galaxy.js) */
-.galaxy-stage.is-odz-ping .target-corner {
-  border-color: rgba(90, 170, 255, 0.95);
-  filter: drop-shadow(0 0 6px rgba(90, 170, 255, 0.8));
-}
-
-.galaxy-stage.is-odz-ping .target-outer {
-  filter: drop-shadow(0 0 6px rgba(90, 170, 255, 0.8));
-}
-
-.galaxy-stage.is-odz-ping .target-outer path {
-  stroke: rgba(90, 170, 255, 0.95);
 }
 
 .galaxy-error {
