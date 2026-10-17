@@ -204,7 +204,6 @@
     focusZoomMs: 650,
     framePad: 0.06,       // первый клик: рамка выделения (data-frame) — по центру видимой области, с полями
                           // по 6 %; если на focusZoom она не помещается — зум меньше…
-    focusZoomMin: 2.5,    // …но не меньше 250 %
     frameMinVisible: 0.5, // видимая область уже половины сцены (телефон, панель на всю ширину) —
                           // рамку не вписываем, квадрат ставим по focusAnchorX
     diveZooms: [12, 20]   // переход в Копрулу: приближение до 1200 %, затем до 2000 %
@@ -707,11 +706,10 @@
     });
   }
 
-  /* Прицел при выборе (/shared/focus-fx.js): появляется, наводится на квадрат, пока
-     карта к нему едет, захватывает его, затем рамка раскрывается до блока области
-     на карте (data-frame: квадрат, картинки, надписи) и держит его, пока выбор не
-     снимут. Цвет — по области: Копрулу зелёный, Зерус красный, ОЗД синий. Подсветка
-     захвата у квадрата (is-locked) включается в момент захвата прицелом. */
+  /* Прицел при выборе (/shared/focus-fx.js): для галактики сразу ставится на
+     data-frame и остаётся привязан к области при зуме/панорамировании; наведения
+     из центра и раскрытия рамки нет. Размер области следует за текущим зумом.
+     Цвет — по области: Копрулу зелёный, Зерус красный, ОЗД синий. */
   function selectArea(el) {
     stage.classList.toggle('is-red-target', el === zerus);
     stage.classList.toggle('is-odz-ping', el === odz);
@@ -719,6 +717,7 @@
       stage: stage,
       target: function () { return boxOf(el); },
       frame: function () { return frameOf(el); },
+      instant: true,
       onLock: function () { if (panelArea === el) el.classList.add('is-locked'); }
     });
   }
@@ -851,6 +850,7 @@
       target: function () { return boxOf(el); },
       frame: function () { return frameOf(el); },
       camera: camera,
+      lockScreen: false,
       zooms: CONFIG.diveZooms,
       ending: 'reveal',
       preview: el.getAttribute('data-macket') || (iconImg && iconImg.getAttribute('src')) || '',
@@ -943,7 +943,7 @@
   // Первый клик по области (Копрулу, Зерус, ОЗД): карта ставит рамку выделения
   // (data-frame — блок области на карте) по центру видимой области, левее открытой
   // панели. Зум — focusZoom (если текущий меньше focusZoomBelow, иначе текущий), но
-  // не больше, чем позволяет рамка с полями framePad, и не меньше focusZoomMin.
+  // не больше, чем позволяет рамка с полями framePad: границы важнее желаемого зума.
   // На узком экране (видимая область уже frameMinVisible сцены) рамку не вписываем:
   // квадрат ставится по focusAnchorX, как раньше.
   function focusArea(el) {
@@ -956,7 +956,8 @@
     if (f && visibleW >= sz.w * CONFIG.frameMinVisible) {
       var fw = (f.r - f.l) / 100 * base, fh = (f.b - f.t) / 100 * base;   // рамка при s = 1
       var fit = Math.min(visibleW * (1 - 2 * CONFIG.framePad) / fw, sz.h * (1 - 2 * CONFIG.framePad) / fh);
-      ns = clamp(Math.min(want, fit), CONFIG.focusZoomMin, CONFIG.maxFactor);
+      // Не раздуваем масштаб сверх рассчитанного fit: иначе рамка выйдет за видимую область.
+      ns = clamp(Math.min(want, fit), CONFIG.minFactor, CONFIG.maxFactor);
       var fside = ns * base;
       nx = visibleW / 2 - (f.l + f.r) / 200 * fside;
       ny = sz.h / 2 - (f.t + f.b) / 200 * fside;

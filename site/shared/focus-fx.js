@@ -16,6 +16,8 @@
      5. удержание — рамка держит область, пока выбор не снимут, и едет вместе
         с ней при перетаскивании и зуме (область привязана к фону).
    Выбор другой цели — рамка переезжает к ней, не появляясь заново.
+   Опция select({ instant: true }) сразу ставит рамку frame() на место и удерживает
+   её без появления, наведения, захвата и раскрытия.
    Снятие выбора — release(): линии втягиваются, рамка гаснет.
 
    Переход — start(); продолжает с удержания, без повторного появления:
@@ -62,12 +64,14 @@
           stage:  stageEl,
           target: function () { return { l, t, r, b, cx, cy, w }; },  // квадрат цели
           frame:  function () { return { l, t, r, b }; },             // область фокуса или null
-          onLock: function () { … }                                   // цель захвачена
+          onLock: function () { … },                                 // цель захвачена
+          instant: true                                                // сразу удерживать рамку области без наведения/раскрытия
         });
         FocusFx.release(function () { … });                          // выбор снят, прицел погас
         FocusFx.start({
           stage: stageEl, target: …, frame: …,
           camera: camera,
+          lockScreen: false,             // false — размер захвата следует за зумом; иначе фиксируется на старте перехода
           zooms: [12, 20],               // уровни приближения по шагам (пусто — без приближения)
           ending: 'reveal',              // 'reveal' | 'fade' | 'error' | 'deny'
           preview: '/assets/…webp',      // для 'reveal'
@@ -879,7 +883,8 @@
       fixed: null,
       raf: 0
     };
-    if (mode === 'go' && G.lockScreen) r.fixed = fitBox(o.target().w, metrics().m);   // эффект перехода — в экранном размере
+    var lockScreen = typeof o.lockScreen === 'boolean' ? o.lockScreen : G.lockScreen;
+    if (mode === 'go' && lockScreen) r.fixed = fitBox(o.target().w, metrics().m);   // фиксируем размер только если этого просит сценарий
     run = r;
     if (!enter(r, r.phases[0])) return;
     applyCamera(r, r.phases[0], 0);
@@ -919,6 +924,12 @@
       onLock: opts.onLock || null,
       onEnd: null
     };
+    if (opts.instant) {
+      // Для выбора без наведения: сразу ставим рамку области на её место и удерживаем.
+      if (o.onLock) o.onLock(0);
+      begin(o, 'select', [{ kind: 'hold', ms: Infinity }], from);
+      return;
+    }
     begin(o, 'select', planSelect(o, isNew), from);
   }
 
@@ -948,6 +959,7 @@
       target: opts.target,
       frame: typeof opts.frame === 'function' ? opts.frame : null,
       camera: cam,
+      lockScreen: typeof opts.lockScreen === 'boolean' ? opts.lockScreen : null,
       zooms: zooms,
       ending: ending,
       preview: opts.preview || '',
