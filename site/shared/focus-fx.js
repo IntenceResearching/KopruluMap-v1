@@ -582,9 +582,8 @@
         break;
 
       case 'snap':
-        // Галактика: энергоканалы идут от краёв к области и собирают её границу.
-        // Центр и размер рамки неизменны: четыре луча отступают, пока симметрично
-        // растут четыре маршрута по периметру.
+        // Четыре луча входят из-за краёв сцены к серединам сторон; после их прихода
+        // четыре симметричных дуги продолжают путь по часовой стрелке.
         lb = lockBox(r, tg, mt);
         fr = frameOf(r);
         st.x = fr ? fr.x : tg.cx;
@@ -592,10 +591,11 @@
         st.ax = tg.cx; st.ay = tg.cy;
         st.w = fr ? fr.w : lb.w;
         st.h = fr ? fr.h : lb.h;
-        e = easeInOutCubic(u);
-        st.rayBuild = e;
-        st.reach = 1 - e;
-        st.frameProgress = e;
+        var rayU = easeInOutCubic(clamp(u / 0.42, 0, 1));
+        var frameU = easeInOutCubic(clamp((u - 0.42) / 0.58, 0, 1));
+        st.rayBuild = rayU;
+        st.reach = 1 - rayU;
+        st.frameProgress = frameU;
         st.hot = 0.72 * pulse(u, 0, 1);
         break;
 
@@ -743,13 +743,21 @@
       var rb = clamp(rayBuild, 0, 1);
       var cx = st.x, cy = st.y;
       var lx = l + hs, rx = r - hs, ty = t + hs, by = b - hs;
-      // Keep channels anchored to their side midpoints and retain a faint live trace
-      // after the border is complete; retracting them created gaps and made them vanish.
-      var channelAlpha = Math.max(0.32, 1 - rb);
-      lines.push({ x: 0, y: cy - hs, w: lx, h: sw, v: false, ex: lx, ey: cy, dx: -1, dy: 0, len: lx, flow: -1, alpha: channelAlpha });
-      lines.push({ x: rx, y: cy - hs, w: cw - rx, h: sw, v: false, ex: rx, ey: cy, dx: 1, dy: 0, len: cw - rx, flow: -1, alpha: channelAlpha });
-      lines.push({ x: cx - hs, y: 0, w: sw, h: ty, v: true, ex: cx, ey: ty, dx: 0, dy: -1, len: ty, flow: -1, alpha: channelAlpha });
-      lines.push({ x: cx - hs, y: by, w: sw, h: ch - by, v: true, ex: cx, ey: by, dx: 0, dy: 1, len: ch - by, flow: -1, alpha: channelAlpha });
+      var leftTip = -hs + (lx + hs) * rb;
+      var rightTip = cw + hs - (cw + hs - rx) * rb;
+      var topTip = -hs + (ty + hs) * rb;
+      var bottomTip = ch + hs - (ch + hs - by) * rb;
+      // Rays begin just outside the viewport and grow inward. Fade only as the
+      // perimeter takes over, leaving a persistent faint channel after assembly.
+      var channelAlpha = Math.max(0.32, 1 - 0.68 * (st.frameProgress == null ? 0 : st.frameProgress));
+      var leftLen = Math.max(0, leftTip + hs);
+      var rightLen = Math.max(0, cw + hs - rightTip);
+      var topLen = Math.max(0, topTip + hs);
+      var bottomLen = Math.max(0, ch + hs - bottomTip);
+      if (leftLen > 0.5) lines.push({ x: -hs, y: cy - hs, w: leftLen, h: sw, v: false, ex: leftTip, ey: cy, dx: -1, dy: 0, len: leftLen, flow: -1, alpha: channelAlpha });
+      if (rightLen > 0.5) lines.push({ x: rightTip, y: cy - hs, w: rightLen, h: sw, v: false, ex: rightTip, ey: cy, dx: 1, dy: 0, len: rightLen, flow: -1, alpha: channelAlpha });
+      if (topLen > 0.5) lines.push({ x: cx - hs, y: -hs, w: sw, h: topLen, v: true, ex: cx, ey: topTip, dx: 0, dy: -1, len: topLen, flow: -1, alpha: channelAlpha });
+      if (bottomLen > 0.5) lines.push({ x: cx - hs, y: bottomTip, w: sw, h: bottomLen, v: true, ex: cx, ey: bottomTip, dx: 0, dy: 1, len: bottomLen, flow: -1, alpha: channelAlpha });
     } else {
       var ax = clamp(st.ax, l + hs, r - hs);
       var ay = clamp(st.ay, t + hs, b - hs);
