@@ -174,13 +174,13 @@
   if (links.galaxyMapImage) map.setAttribute('src', links.galaxyMapImage);
 
   /* «Лаги» карты (/shared/lag-fx.js): полосы съезжают, волна, линии-преломления.
-     На время перехода — тишина: пока идёт прицел перехода и пока его финальный кадр
-     ждёт ухода со страницы. Поверх картинки, под хотспотами (слой идёт сразу после <img>). */
+     Во время выбора, снятия выбора и перехода они выключены, чтобы не разрывать
+     прорисовывающиеся границы. В покое эффект работает как обычно. */
   if (window.LagFx) {
     LagFx.attach(map, {
       busy: function () {
         var fx = window.FocusFx ? FocusFx.active() : null;
-        return busy || fx === 'go' || fx === 'idle';
+        return busy || fx === 'select' || fx === 'release' || fx === 'go' || fx === 'idle';
       }
     });
   }
