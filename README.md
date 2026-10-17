@@ -29,7 +29,7 @@ site/                  ← корень сайта (это публикуетс�
 ├── galaxy.js          логика карты галактики
 ├── galaxy.css         стили карты галактики
 ├── galaxy-fx.js       эффекты (фон, свечения)
-├── galaxy-ping.js     прицел перехода к сектору (в духе брифингов StarCraft II)
+├── galaxy-ping.js     прицел: выбор области и переход к ней (в духе брифингов StarCraft II)
 ├── sector/
 │   └── sector.html    полный атлас сектора
 ├── minimal/
@@ -70,13 +70,15 @@ docs/, tools/, .github/  служебное, вне site/
 
 Если там стоит «Deploy from a branch», Pages публикует корень репозитория через Jekyll, воркфлоу в публикации не участвует, и сайт оказывается под префиксом `/site/` — ссылки вида `/shared/…` и `/sector/sector.html` перестают находиться.
 
+Каждый PR проверяет воркфлоу [`.github/workflows/check.yml`](.github/workflows/check.yml): собирает сайт так же, как деплой, на Ubuntu 24.04 и 26.04 (с 19.10.2026 GitHub переводит `ubuntu-latest` на 26.04), проверяет синтаксис скриптов и обращения к необъявленным переменным (ESLint, настройки — `eslint.config.mjs`). Ничего не публикует. Python для сборки ставится через `actions/setup-python`, версия Pillow зафиксирована в `tools/requirements.txt` — от системного Python раннера сборка не зависит.
+
 ## Картинки и тайлы
 
 Исходники лежат в `assets/src/` — это единственное, что хранится в Git. Всё, что
 отдаётся в веб, собирается из них скриптом:
 
 ```bash
-pip install pillow
+python3 -m pip install -r tools/requirements.txt   # Pillow
 python3 tools/build_assets.py            # собрать то, что устарело
 python3 tools/build_assets.py --force    # пересобрать всё
 python3 tools/build_assets.py --check    # проверить свежесть, ничего не собирая
