@@ -8,39 +8,33 @@
    и упираются в рамку снаружи, внутрь не заходят. Рисуется на одном canvas.
 
    Выбор — select():
-     1. появление — маленькая рамка мигает в центре сцены, линии выстреливают к краям;
-     2. наведение — рамка едет к цели (оси чуть вразнобой, лёгкий перелёт);
-     3. захват — рамка поджимается к цели и дважды вспыхивает → onLock();
-     4. выделение — рамка раскрывается до области фокуса (frame: блок картинок
-        и надписей вокруг цели), линии остаются на осях цели;
-     5. удержание — рамка остаётся в экранных координатах, даже если карту вручную
-        панорамируют или масштабируют; при смене цели плавно переезжает к ней.
-   Выбор другой цели — рамка переезжает к ней, не появляясь заново.
-   Опция select({ instant: true }) сразу ставит рамку frame() на место, затем
-   коротко анимирует импульс/линии прицела на месте (без наведения и роста рамки).
+     1. первый выбор — борд обводит края карты;
+     2. рамка непрерывно сжимается от карты к области фокуса (frame);
+     3. после паузы камера переводит выбранную область и приближает карту;
+     4. рамка остаётся привязана к координатам карты и следует за ручным/программным видом.
+   При выборе другой цели уже нарисованная рамка плавно переезжает, не сбрасываясь.
+   Для вызовов без mapFrame остаётся режим select({ instant: true }) с коротким ping на месте.
    Снятие выбора — release(): контур выгружается обратно против часовой стрелки, импульсы уходят по каналам.
 
    Переход — start(); продолжает с удержания, без повторного появления:
-     6. сужение — область фокуса сужается до цели, захват → onLock(0);
-     7. центрирование — камера везёт цель в центр сцены, прицел едет вместе с ней;
-      затем выдерживается T.zoomDelay, чтобы фокус успел установиться;
-     8. приближение — камера приближается до zooms[0] (на карте галактики 1200 %),
-        рамка раскрывается до краёв сцены, её углы связаны с целью диагональными лучами;
-     9. сброс — маленькая рамка снова в центре, наведение и захват, приближение
-        до zooms[1] (2000 %) — и так по числу уровней; лучи остаются привязаны к цели.
-    10. финал — 'reveal': во время последнего, самого крупного приближения в квадрате
+     1. рамка сужается до квадрата цели, захват → onLock(0);
+     2. камера везёт цель в центр, рамка следует за картой;
+     3. после T.zoomDelay начинается приближение: углы рамки соединены с целью
+        диагональными лучами;
+     4. между уровнями — сброс, наведение и захват; лучи остаются привязаны к цели;
+     5. финал — 'reveal': во время последнего, самого крупного приближения в квадрате
         цели проявляется превью (preview), всё вокруг уходит в темноту → onEnd().
         Другие финалы: 'fade' — уход в темноту без превью; 'error' — срыв захвата;
         'deny' — отказ (вспышки на цели) сразу после захвата, без приближения.
    Если прицела на экране нет, переход начинается с появления.
 
    РАЗМЕРЫ
-   Во время этапов фокусирования и перехода положение цели и области читается из
-   функций target() и frame(). В режиме hold готовая рамка заморожена в экранных
-   координатах и не следует за ручной камерой; при новой цели она плавно переезжает.
+   Координаты mapFrame(), target() и frame() заданы в пикселях сцены, их выдаёт страница.
+   Во время фокусирования, перехода и hold модуль перечитывает их; готовая рамка хранит
+   положение и размер относительно карты и потому следует за её ручным/программным видом.
    Во время программного зума размер рамки следует настройке lockScreen: при false
    (переход Копрулу) она масштабируется вместе с камерой; при true остаётся экранного
-   размера. Толщина линий при этом остаётся долей меньшей стороны сцены (G).
+   размера. Толщина линий остаётся долей меньшей стороны сцены (G).
 
    ПОДКЛЮЧЕНИЕ
    1. Сцена — любой элемент с position: relative / absolute и overflow: hidden,
@@ -64,8 +58,10 @@
           stage:  stageEl,
           target: function () { return { l, t, r, b, cx, cy, w }; },  // квадрат цели
           frame:  function () { return { l, t, r, b }; },             // область фокуса или null
+          mapFrame: function () { return { l, t, r, b }; },            // полные границы карты для первого борда
           onLock: function () { … },                                 // цель захвачена
-          instant: true                                                // рамка на месте; проиграть короткий ping без наведения/раскрытия
+          onSettle: function () { … },                               // карта может начать фокусирование после паузы
+          instant: true                                                // борд карты → сжатие к frame → settle → удержание
         });
         FocusFx.release(function () { … });                          // выбор снят, прицел погас
         FocusFx.start({
@@ -118,8 +114,10 @@
     lock: 320,        // первый захват: поджатие и две вспышки
     relock: 240,      // повторный захват (после сброса, после сужения, при смене цели) — короче
     relocate: 520,    // существующая рамка плавно переезжает к новой выбранной области
+    mapOutline: 640,  // первый выбор: борд формируется по краям карты
+    contract: 420,    // борд карты сужается до выбранной области
     expand: 420,      // выделение: рамка раскрывается от цели до области фокуса
-    snap: 680,        // галактика: каналы сходятся от краёв и собирают рамку на месте
+    snap: 680,        // запасной режим: каналы сходятся от краёв и собирают рамку на месте
     narrow: 380,      // переход: область фокуса сужается до цели
     centerMin: 320,   // центрирование: не короче…
     centerMax: 640,   // …и не длиннее
@@ -372,6 +370,13 @@
     return { x: (f.l + f.r) / 2, y: (f.t + f.b) / 2, w: f.r - f.l, h: f.b - f.t };
   }
 
+  // Полные границы карты (в экранных координатах текущего вида), для первого борда.
+  function mapFrameOf(r) {
+    var f = r.o.mapFrame ? r.o.mapFrame() : null;
+    if (!f || !(f.r > f.l) || !(f.b > f.t)) return null;
+    return { x: (f.l + f.r) / 2, y: (f.t + f.b) / 2, w: f.r - f.l, h: f.b - f.t };
+  }
+
   /* ---------- сценарии ----------
      fresh — прицела на экране ещё нет: начинаем с появления. Иначе сценарий
      продолжает с того места, где прицел сейчас (смена цели, переход с удержания). */
@@ -487,7 +492,7 @@
     ph.from = {
       x: r.pos.x, y: r.pos.y, w: r.box.w, h: r.box.h, ax: r.aim.x, ay: r.aim.y,
       alpha: r.alpha, reach: r.reach, frameProgress: r.frameProgress, rayBuild: r.rayBuild,
-      tetherProgress: r.tetherProgress, veil: r.veil, reveal: r.reveal
+      channelAlpha: r.channelAlpha, tetherProgress: r.tetherProgress, veil: r.veil, reveal: r.reveal
     };
     var cb = null;
     switch (ph.kind) {
@@ -515,6 +520,11 @@
         break;
       case 'lock':
         if (r.o.onLock) cb = function () { r.o.onLock(ph.step); };
+        break;
+      case 'hold':
+        if (r.i > 0 && r.phases[r.i - 1].kind === 'settle' && r.o.onSettle) {
+          cb = function () { r.o.onSettle(); };
+        }
         break;
       case 'zoom':
         var level = r.o.zooms[Math.min(ph.step, r.o.zooms.length - 1)];
@@ -550,6 +560,7 @@
       x: f.x, y: f.y, w: f.w, h: f.h, ax: f.ax, ay: f.ay,
       frameProgress: f.frameProgress == null ? 1 : f.frameProgress,
       rayBuild: f.rayBuild,
+      channelAlpha: f.channelAlpha == null ? 1 : f.channelAlpha,
       tetherProgress: f.tetherProgress || 0,
       reach: f.reach == null ? 1 : f.reach,
       alpha: 1, vis: 1, fill: 0, hot: 0
@@ -589,6 +600,51 @@
         st.hot = st.fill;
         break;
 
+      case 'outline':
+        // Первый этап — полный борд по краям карты, без движения камеры.
+        lb = lockBox(r, tg, mt);
+        fr = mapFrameOf(r) || frameOf(r);
+        e = reduceMotion ? 1 : easeOutCubic(u);
+        st.x = fr ? fr.x : tg.cx; st.y = fr ? fr.y : tg.cy;
+        st.ax = tg.cx; st.ay = tg.cy;
+        st.w = fr ? fr.w : lb.w; st.h = fr ? fr.h : lb.h;
+        st.frameProgress = e;
+        st.rayBuild = null;
+        st.reach = 0;
+        st.channelAlpha = 0;
+        st.hot = 0.35 * pulse(u, 0, 1);
+        break;
+
+      case 'contract':
+        // Полный контур непрерывно сжимается с границ карты до data-frame.
+        lb = lockBox(r, tg, mt);
+        fr = frameOf(r);
+        e = reduceMotion ? 1 : easeInOutCubic(u);
+        st.x = lerp(f.x, fr ? fr.x : tg.cx, e);
+        st.y = lerp(f.y, fr ? fr.y : tg.cy, e);
+        st.ax = tg.cx; st.ay = tg.cy;
+        st.w = lerp(f.w, fr ? fr.w : lb.w, e);
+        st.h = lerp(f.h, fr ? fr.h : lb.h, e);
+        st.frameProgress = 1;
+        st.rayBuild = null;
+        st.reach = 0;
+        st.channelAlpha = 0;
+        st.hot = 0.35 * pulse(u, 0, 1);
+        break;
+
+      case 'settle':
+        // После сжатия фиксируем область на карте и постепенно оставляем слабые каналы.
+        lb = lockBox(r, tg, mt);
+        fr = frameOf(r);
+        st.x = fr ? fr.x : tg.cx; st.y = fr ? fr.y : tg.cy;
+        st.ax = tg.cx; st.ay = tg.cy;
+        st.w = fr ? fr.w : lb.w; st.h = fr ? fr.h : lb.h;
+        st.frameProgress = 1;
+        st.rayBuild = 1;
+        st.reach = 0;
+        st.channelAlpha = reduceMotion ? 1 : easeOutCubic(u);
+        break;
+
       case 'snap':
         // Четыре луча входят из-за краёв сцены к серединам сторон; каждый сразу
         // продолжает свой непрерывный путь по часовой стрелке вдоль рамки.
@@ -624,9 +680,15 @@
         break;
 
       case 'hold':
-        // В покое рамка зафиксирована в экранных координатах и не ездит за ручной камерой.
-        st.x = f.x; st.y = f.y; st.ax = f.ax; st.ay = f.ay;
-        st.w = f.w; st.h = f.h;
+        // Готовая рамка хранит координаты карты и следует за ней при панорамировании/зуме.
+        lb = lockBox(r, tg, mt);
+        fr = frameOf(r);
+        st.ax = tg.cx; st.ay = tg.cy;
+        if (fr) {
+          st.x = fr.x; st.y = fr.y; st.w = fr.w; st.h = fr.h;
+        } else {
+          st.x = tg.cx; st.y = tg.cy; st.w = lb.w; st.h = lb.h;
+        }
         break;
 
       case 'relocate':
@@ -816,7 +878,7 @@
       var lx = l + hs, rx = r - hs, ty = t + hs, by = b - hs;
       var halfW = Math.max(0, (bw - sw) / 2);
       var halfH = Math.max(0, (bh - sw) / 2);
-      var alpha = Math.max(0.32, 1 - 0.68 * p);
+      var alpha = Math.max(0.32, 1 - 0.68 * p) * (st.channelAlpha == null ? 1 : clamp(st.channelAlpha, 0, 1));
 
       function traceRoute(x, y, rayDx, rayDy, rayLen, dx1, dy1, len1, dx2, dy2, len2) {
         var distance = p * (rayLen + len1 + len2);
@@ -1062,6 +1124,7 @@
     r.reach = st.reach;
     r.frameProgress = st.frameProgress;
     r.rayBuild = st.rayBuild;
+    r.channelAlpha = st.channelAlpha;
     r.tetherProgress = st.tetherProgress;
   }
 
@@ -1113,6 +1176,7 @@
       reach: from.reach,
       frameProgress: from.frameProgress == null ? 1 : from.frameProgress,
       rayBuild: from.rayBuild,
+      channelAlpha: from.channelAlpha,
       tetherProgress: from.tetherProgress || 0,
       veil: 0,
       reveal: 0,
@@ -1137,7 +1201,8 @@
     run = null;
     return {
       pos: r.pos, box: r.box, aim: r.aim, alpha: r.alpha, reach: r.reach,
-      frameProgress: r.frameProgress, rayBuild: r.rayBuild, tetherProgress: r.tetherProgress
+      frameProgress: r.frameProgress, rayBuild: r.rayBuild,
+      channelAlpha: r.channelAlpha, tetherProgress: r.tetherProgress
     };
   }
 
@@ -1160,17 +1225,30 @@
     var o = {
       target: opts.target,
       frame: typeof opts.frame === 'function' ? opts.frame : null,
+      mapFrame: typeof opts.mapFrame === 'function' ? opts.mapFrame : null,
       onLock: opts.onLock || null,
+      onSettle: opts.onSettle || null,
       onEnd: null
     };
     if (opts.instant) {
       if (o.onLock) o.onLock(0);
-      if (isNew) {
-        // Первый выбор появляется сразу в нужном месте и проигрывает короткий ping.
+      if (isNew && o.mapFrame && o.frame) {
+        // Борд рисуется по всей карте, сжимается до области; затем камера ждёт и фокусируется.
+        begin(o, 'select', [
+          { kind: 'outline', ms: reduceMotion ? 0 : T.mapOutline },
+          { kind: 'contract', ms: reduceMotion ? 0 : T.contract },
+          { kind: 'settle', ms: reduceMotion ? 0 : T.zoomDelay },
+          { kind: 'hold', ms: Infinity }
+        ], from);
+      } else if (isNew) {
+        // Запасной режим: каналы сходятся к рамке на месте.
         begin(o, 'select', [{ kind: 'snap', ms: T.snap }, { kind: 'hold', ms: Infinity }], from);
       } else {
-        // При смене цели сохраняем уже нарисованную рамку и плавно переводим её.
-        begin(o, 'select', [{ kind: 'relocate', ms: reduceMotion ? 0 : T.relocate }, { kind: 'hold', ms: Infinity }], from);
+        // При смене цели существующая рамка переезжает без сброса и повторного появления.
+        var phases = [{ kind: 'relocate', ms: reduceMotion ? 0 : T.relocate }];
+        if (o.onSettle) phases.push({ kind: 'settle', ms: reduceMotion ? 0 : T.zoomDelay });
+        phases.push({ kind: 'hold', ms: Infinity });
+        begin(o, 'select', phases, from);
       }
       return;
     }
@@ -1219,8 +1297,8 @@
   function active() { return run ? run.mode : (canvas ? 'idle' : null); }
 
   function refresh() {
-    // здесь только подгоняем холст, если сцена сменила размер; в hold рамка остаётся
-    // на прежних экранных координатах, а во время этапов анимации цель читается заново.
+    // Подгоняем холст при изменении сцены; экранные координаты цели и рамки
+    // перечитываются следующим кадром, в том числе в режиме hold.
     if (run && canvas) fitCanvas();
   }
 
