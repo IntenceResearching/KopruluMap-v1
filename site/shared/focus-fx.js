@@ -8,9 +8,9 @@
    и упираются в рамку снаружи, внутрь не заходят. Рисуется на одном canvas.
 
    Выбор — select():
-     1. первый выбор — борд обводит края карты;
-     2. рамка непрерывно сжимается от карты к области фокуса (frame);
-     3. после паузы камера переводит выбранную область и приближает карту;
+     1. первый выбор — линии входят за границами viewport и рисуют борд карты;
+     2. рамка непрерывно сжимается от карты к области фокуса (frame), линии остаются связаны;
+     3. после сжатия страница центрирует область, затем после паузы отдельно приближает карту;
      4. рамка остаётся привязана к координатам карты и следует за ручным/программным видом.
    При выборе другой цели уже нарисованная рамка плавно переезжает, не сбрасываясь.
    Для вызовов без mapFrame остаётся режим select({ instant: true }) с коротким ping на месте.
@@ -60,8 +60,8 @@
           frame:  function () { return { l, t, r, b }; },             // область фокуса или null
           mapFrame: function () { return { l, t, r, b }; },            // полные границы карты для первого борда
           onLock: function () { … },                                 // цель захвачена
-          onSettle: function () { … },                               // карта может начать фокусирование после паузы
-          instant: true                                                // борд карты → сжатие к frame → settle → удержание
+          onContract: function () { … },                            // карта начинает центрирование после сжатия рамки
+          instant: true                                                // борд карты → сжатие к frame → центрирование страницы
         });
         FocusFx.release(function () { … });                          // выбор снят, прицел погас
         FocusFx.start({
@@ -522,8 +522,8 @@
         if (r.o.onLock) cb = function () { r.o.onLock(ph.step); };
         break;
       case 'hold':
-        if (r.i > 0 && r.phases[r.i - 1].kind === 'settle' && r.o.onSettle) {
-          cb = function () { r.o.onSettle(); };
+        if (r.i > 0 && ['contract', 'relocate'].indexOf(r.phases[r.i - 1].kind) >= 0 && r.o.onContract) {
+          cb = function () { r.o.onContract(); };
         }
         break;
       case 'zoom':
@@ -601,22 +601,22 @@
         break;
 
       case 'outline':
-        // Первый этап — полный борд по краям карты, без движения камеры.
+        // Лучи из-за границ viewport непрерывно рисуют внешний борд карты.
         lb = lockBox(r, tg, mt);
         fr = mapFrameOf(r) || frameOf(r);
-        e = reduceMotion ? 1 : easeOutCubic(u);
+        e = reduceMotion ? 1 : clamp(u, 0, 1); // линейно — без смены скорости на стыке с рамкой
         st.x = fr ? fr.x : tg.cx; st.y = fr ? fr.y : tg.cy;
         st.ax = tg.cx; st.ay = tg.cy;
         st.w = fr ? fr.w : lb.w; st.h = fr ? fr.h : lb.h;
         st.frameProgress = e;
-        st.rayBuild = null;
+        st.rayBuild = 1;
         st.reach = 0;
-        st.channelAlpha = 0;
+        st.channelAlpha = 1;
         st.hot = 0.35 * pulse(u, 0, 1);
         break;
 
       case 'contract':
-        // Полный контур непрерывно сжимается с границ карты до data-frame.
+        // Полностью собранные лучи остаются непрерывными, пока рамка сжимается к data-frame.
         lb = lockBox(r, tg, mt);
         fr = frameOf(r);
         e = reduceMotion ? 1 : easeInOutCubic(u);
@@ -626,23 +626,10 @@
         st.w = lerp(f.w, fr ? fr.w : lb.w, e);
         st.h = lerp(f.h, fr ? fr.h : lb.h, e);
         st.frameProgress = 1;
-        st.rayBuild = null;
-        st.reach = 0;
-        st.channelAlpha = 0;
-        st.hot = 0.35 * pulse(u, 0, 1);
-        break;
-
-      case 'settle':
-        // После сжатия фиксируем область на карте и постепенно оставляем слабые каналы.
-        lb = lockBox(r, tg, mt);
-        fr = frameOf(r);
-        st.x = fr ? fr.x : tg.cx; st.y = fr ? fr.y : tg.cy;
-        st.ax = tg.cx; st.ay = tg.cy;
-        st.w = fr ? fr.w : lb.w; st.h = fr ? fr.h : lb.h;
-        st.frameProgress = 1;
         st.rayBuild = 1;
         st.reach = 0;
-        st.channelAlpha = reduceMotion ? 1 : easeOutCubic(u);
+        st.channelAlpha = 1;
+        st.hot = 0.35 * pulse(u, 0, 1);
         break;
 
       case 'snap':
@@ -1227,28 +1214,27 @@
       frame: typeof opts.frame === 'function' ? opts.frame : null,
       mapFrame: typeof opts.mapFrame === 'function' ? opts.mapFrame : null,
       onLock: opts.onLock || null,
-      onSettle: opts.onSettle || null,
+      onContract: opts.onContract || null,
       onEnd: null
     };
     if (opts.instant) {
       if (o.onLock) o.onLock(0);
       if (isNew && o.mapFrame && o.frame) {
-        // Борд рисуется по всей карте, сжимается до области; затем камера ждёт и фокусируется.
+        // Лучи рисуют борд карты и продолжаются при сжатии; затем страница ведёт камеру.
         begin(o, 'select', [
           { kind: 'outline', ms: reduceMotion ? 0 : T.mapOutline },
           { kind: 'contract', ms: reduceMotion ? 0 : T.contract },
-          { kind: 'settle', ms: reduceMotion ? 0 : T.zoomDelay },
           { kind: 'hold', ms: Infinity }
         ], from);
       } else if (isNew) {
         // Запасной режим: каналы сходятся к рамке на месте.
         begin(o, 'select', [{ kind: 'snap', ms: T.snap }, { kind: 'hold', ms: Infinity }], from);
       } else {
-        // При смене цели существующая рамка переезжает без сброса и повторного появления.
-        var phases = [{ kind: 'relocate', ms: reduceMotion ? 0 : T.relocate }];
-        if (o.onSettle) phases.push({ kind: 'settle', ms: reduceMotion ? 0 : T.zoomDelay });
-        phases.push({ kind: 'hold', ms: Infinity });
-        begin(o, 'select', phases, from);
+        // При смене цели рамка переезжает без сброса, после чего камера центрирует область.
+        begin(o, 'select', [
+          { kind: 'relocate', ms: reduceMotion ? 0 : T.relocate },
+          { kind: 'hold', ms: Infinity }
+        ], from);
       }
       return;
     }
