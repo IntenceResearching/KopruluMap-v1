@@ -202,6 +202,7 @@
     focusZoom: 4.1,       // первый клик: зум до 410% (диапазон 400–420%)
     focusZoomBelow: 4.0,  // зум подтягиваем только если текущий меньше 400%
     focusZoomMs: 650,
+    focusZoomDelay: 1000, // пауза после центрирования перед приближением
     framePad: 0.06,       // первый клик: рамка выделения (data-frame) — по центру видимой области, с полями
                           // по 6 %; если на focusZoom она не помещается — зум меньше…
     frameMinVisible: 0.5, // видимая область уже половины сцены (телефон, панель на всю ширину) —
@@ -217,6 +218,7 @@
   var base = 0;
   var view = { s: 1, tx: 0, ty: 0 };
   var anim = null;
+  var focusTimer = null;
   var busy = false;
 
   function sceneSize() { return { w: stage.clientWidth, h: stage.clientHeight }; }
@@ -379,7 +381,13 @@
     window.requestAnimationFrame(step);
   }
 
-  function cancelAnim() { anim = null; }
+  function cancelAnim() {
+    anim = null;
+    if (focusTimer) {
+      window.clearTimeout(focusTimer);
+      focusTimer = null;
+    }
+  }
 
   /* ---------- колесо, drag, pinch, двойной клик ---------- */
   function scenePoint(e) {
@@ -714,17 +722,19 @@
 
   // Снять выбор (крестик панели, Esc, клик по пустому месту): прицел гаснет
   function hidePanel() {
+    cancelAnim();
     clearAreas();
     FocusFx.release(function () {
       stage.classList.remove('is-red-target', 'is-odz-ping');
     });
   }
 
-  /* Прицел при выборе (/shared/focus-fx.js): сначала обводит края карты, затем
-     сжимает рамку до data-frame и только после паузы передаёт камеру в focusArea.
-     Рамка привязана к карте, а при смене области плавно переезжает к новой точке.
+  /* Прицел при выборе (/shared/focus-fx.js): линии входят с границ viewport, рисуют
+     борд карты и ведут его при сжатии до data-frame. Затем камера сначала центрирует
+     область, а через паузу отдельно приближает её. Рамка остаётся привязана к карте.
      Цвет: Копрулу и ОЗД — зелёный, Зерус — красный. */
-  function selectArea(el, onSettle) {
+  function selectArea(el, onContract) {
+    cancelAnim();
     stage.classList.toggle('is-red-target', el === zerus);
     stage.classList.toggle('is-odz-ping', el === odz);
     FocusFx.select({
@@ -734,7 +744,7 @@
       mapFrame: mapFrame,
       instant: true,
       onLock: function () { if (panelArea === el) el.classList.add('is-locked'); },
-      onSettle: onSettle || null
+      onContract: onContract || null
     });
   }
 
@@ -962,18 +972,25 @@
   // На узком экране (видимая область уже frameMinVisible сцены) рамку не вписываем:
   // квадрат ставится по focusAnchorX, как раньше.
   function focusArea(el) {
+    // Сначала отменяем прежний фокус/отложенный зум, затем центрируем область
+    // на текущем масштабе; отдельный зум начинается после паузы в 1 секунду.
+    cancelAnim();
     var sz = sceneSize();
     var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
     var c = boxOf(el);
     var f = frameData(el);
     var want = view.s < CONFIG.focusZoomBelow ? CONFIG.focusZoom : view.s;
-    var nx, ny, ns, ms;
+    var nx, ny, ns, zoomMs = 0;
+    var centerMapX, centerMapY, anchorX;
     if (f && visibleW >= sz.w * CONFIG.frameMinVisible) {
       var fw = (f.r - f.l) / 100 * base, fh = (f.b - f.t) / 100 * base;   // рамка при s = 1
       var fit = Math.min(visibleW * (1 - 2 * CONFIG.framePad) / fw, sz.h * (1 - 2 * CONFIG.framePad) / fh);
       // Учитываем не только размер рамки, но и допустимый пан карты: иначе clampState
       // после расчёта мог сдвинуть её за край сцены.
       ns = clamp(Math.min(want, fit), CONFIG.minFactor, CONFIG.maxFactor);
+      centerMapX = (f.l + f.r) / 200;
+      centerMapY = (f.t + f.b) / 200;
+      anchorX = visibleW / 2;
 
       function placeFrame(scale) {
         var side = scale * base;
@@ -1010,22 +1027,55 @@
         nx = visibleW / 2 - (f.l + f.r) / 200 * fside;
         ny = sz.h / 2 - (f.t + f.b) / 200 * fside;
       }
-      ms = Math.abs(ns - view.s) > 0.01 ? CONFIG.focusZoomMs : CONFIG.focusMs;
+      zoomMs = Math.abs(ns - view.s) > 0.01 ? CONFIG.focusZoomMs : 0;
     } else if (view.s < CONFIG.focusZoomBelow) {
       ns = CONFIG.focusZoom;
       var side = ns * base;
-      var px = parseFloat(el.getAttribute('data-cx')) / 100 * side;
-      var py = parseFloat(el.getAttribute('data-cy')) / 100 * side;
-      nx = visibleW * CONFIG.focusAnchorX - px;
-      ny = sz.h / 2 - py;
-      ms = CONFIG.focusZoomMs;
+      var cx = parseFloat(el.getAttribute('data-cx')) / 100;
+      var cy = parseFloat(el.getAttribute('data-cy')) / 100;
+      nx = visibleW * CONFIG.focusAnchorX - cx * side;
+      ny = sz.h / 2 - cy * side;
+      centerMapX = cx;
+      centerMapY = cy;
+      anchorX = visibleW * CONFIG.focusAnchorX;
+      zoomMs = CONFIG.focusZoomMs;
     } else {
       ns = view.s;
       nx = view.tx + (visibleW * CONFIG.focusAnchorX - c.cx) * CONFIG.focusStrength;
       ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
-      ms = CONFIG.focusMs;
     }
-    animateTo(ns, nx, ny, ms);
+
+    var centerView;
+    if (centerMapX != null && centerMapY != null) {
+      var currentSide = view.s * base;
+      centerView = clampState({
+        s: view.s,
+        tx: anchorX - centerMapX * currentSide,
+        ty: sz.h / 2 - centerMapY * currentSide
+      });
+    } else {
+      centerView = clampState({ s: view.s, tx: nx, ty: ny });
+    }
+
+    function startZoom() {
+      focusTimer = null;
+      if (panelArea !== el || !el.classList.contains('is-selected')) return;
+      if (zoomMs > 0) animateTo(ns, nx, ny, zoomMs);
+    }
+
+    function afterCenter() {
+      if (zoomMs > 0) focusTimer = window.setTimeout(startZoom, CONFIG.focusZoomDelay);
+    }
+
+    var panMs = Math.hypot(centerView.tx - view.tx, centerView.ty - view.ty) > 1 ? CONFIG.focusMs : 0;
+    if (panMs) {
+      animateTo(view.s, centerView.tx, centerView.ty, panMs, afterCenter);
+    } else {
+      view.tx = centerView.tx;
+      view.ty = centerView.ty;
+      applyView();
+      afterCenter();
+    }
   }
 
   var ZERUS_SHOW_MS = 5000;   // сколько сообщение висит на экране
