@@ -58,7 +58,7 @@
           stage:  stageEl,
           target: function () { return { l, t, r, b, cx, cy, w }; },  // квадрат цели
           frame:  function () { return { l, t, r, b }; },             // область фокуса или null
-          mapFrame: function () { return { l, t, r, b }; },            // полные границы карты для первого борда
+          mapFrame: function () { return { l, t, r, b }; },            // видимое пересечение камеры и карты для борда
           onLock: function () { … },                                 // цель захвачена
           onContract: function () { … },                            // карта начинает центрирование после сжатия рамки
           instant: true                                                // борд карты → сжатие к frame → центрирование страницы
@@ -370,7 +370,7 @@
     return { x: (f.l + f.r) / 2, y: (f.t + f.b) / 2, w: f.r - f.l, h: f.b - f.t };
   }
 
-  // Полные границы карты (в экранных координатах текущего вида), для первого борда.
+  // Видимое пересечение карты и viewport в координатах текущего вида, для первого борда.
   function mapFrameOf(r) {
     var f = r.o.mapFrame ? r.o.mapFrame() : null;
     if (!f || !(f.r > f.l) || !(f.b > f.t)) return null;

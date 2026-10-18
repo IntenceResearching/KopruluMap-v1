@@ -196,11 +196,9 @@
     animateMs: 340,
     fitInset: 1,
     panMargin: 0.26,     // небольшой запас для кадрирования data-frame у края карты
-    focusStrength: 1,   // первый клик (телефон): доля пути до точки focusAnchorX (1 — точно)
     focusAnchorX: 0.4, // первый клик (телефон): где по горизонтали ставится квадрат в видимой области (0 — у левого края, 0.5 — по центру, 1 — у правого)
     focusMs: 520,
     focusZoom: 4.1,       // первый клик: зум до 410% (диапазон 400–420%)
-    focusZoomBelow: 4.0,  // зум подтягиваем только если текущий меньше 400%
     focusZoomMs: 650,
     focusZoomDelay: 1000, // пауза после центрирования перед приближением
     framePad: 0.06,       // первый клик: рамка выделения (data-frame) — по центру видимой области, с полями
@@ -282,11 +280,15 @@
     return { l: v[0], t: v[1], r: v[2], b: v[3] };
   }
 
-  // Полные границы слоя карты и области data-frame в координатах сцены.
-  // FocusFx использует mapFrame для первого борда, затем сжимает его до frameOf.
+  // Видимая часть карты: борд ограничен и камерой, и реальными краями карты.
+  // Если камера смотрит в угол карты, две стороны проходят по viewport, две — по карте.
   function mapFrame() {
+    var sz = sceneSize();
     var side = view.s * base;
-    return { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
+    return {
+      l: Math.max(0, view.tx), t: Math.max(0, view.ty),
+      r: Math.min(sz.w, view.tx + side), b: Math.min(sz.h, view.ty + side)
+    };
   }
 
   function frameOf(el) {
@@ -965,21 +967,18 @@
   var ZERUS_MESSAGE = 'Ошибка. Нет данных';
   var zerusTimer = null;
 
-  // Первый клик по области (Копрулу, Зерус, ОЗД): карта ставит рамку выделения
-  // (data-frame — блок области на карте) по центру видимой области, левее открытой
-  // панели. Зум — focusZoom (если текущий меньше focusZoomBelow, иначе текущий), но
-  // не больше, чем позволяет рамка с полями framePad: границы важнее желаемого зума.
-  // На узком экране (видимая область уже frameMinVisible сцены) рамку не вписываем:
-  // квадрат ставится по focusAnchorX, как раньше.
+  // Первый клик по области (Копрулу, Зерус, ОЗД): целевой масштаб — focusZoom,
+  // ограниченный размером data-frame и полями framePad. Если текущий масштаб выше
+  // целевого, после сжатия сразу отъезжаем до него; если ниже — центрируем,
+  // выдерживаем focusZoomDelay и приближаем, а при равном масштабе только центрируем.
   function focusArea(el) {
     // Сначала отменяем прежний фокус/отложенный зум, затем центрируем область
     // на текущем масштабе; отдельный зум начинается после паузы в 1 секунду.
     cancelAnim();
     var sz = sceneSize();
     var visibleW = sz.w - (panel && !panel.hidden ? panel.offsetWidth : 0);
-    var c = boxOf(el);
     var f = frameData(el);
-    var want = view.s < CONFIG.focusZoomBelow ? CONFIG.focusZoom : view.s;
+    var want = CONFIG.focusZoom;
     var nx, ny, ns, zoomMs = 0;
     var centerMapX, centerMapY, anchorX;
     if (f && visibleW >= sz.w * CONFIG.frameMinVisible) {
@@ -1027,8 +1026,10 @@
         nx = visibleW / 2 - (f.l + f.r) / 200 * fside;
         ny = sz.h / 2 - (f.t + f.b) / 200 * fside;
       }
-      zoomMs = Math.abs(ns - view.s) > 0.01 ? CONFIG.focusZoomMs : 0;
-    } else if (view.s < CONFIG.focusZoomBelow) {
+      zoomMs = Math.abs(ns - view.s) > 0.001 ? CONFIG.focusZoomMs : 0;
+    } else {
+      // На узком экране или без data-frame держим выбранный квадрат на focusAnchorX,
+      // но всё равно приводим и слишком малый, и слишком большой масштаб к focusZoom.
       ns = CONFIG.focusZoom;
       var side = ns * base;
       var cx = parseFloat(el.getAttribute('data-cx')) / 100;
@@ -1038,11 +1039,7 @@
       centerMapX = cx;
       centerMapY = cy;
       anchorX = visibleW * CONFIG.focusAnchorX;
-      zoomMs = CONFIG.focusZoomMs;
-    } else {
-      ns = view.s;
-      nx = view.tx + (visibleW * CONFIG.focusAnchorX - c.cx) * CONFIG.focusStrength;
-      ny = view.ty + (sz.h / 2 - c.cy) * CONFIG.focusStrength;
+      zoomMs = Math.abs(ns - view.s) > 0.001 ? CONFIG.focusZoomMs : 0;
     }
 
     var centerView;
@@ -1055,6 +1052,34 @@
       });
     } else {
       centerView = clampState({ s: view.s, tx: nx, ty: ny });
+    }
+
+    function finishImmediateZoomOut() {
+      if (panelArea !== el || !el.classList.contains('is-selected')) return;
+      var finalView = clampState({ s: ns, tx: nx, ty: ny });
+      var centerMs = Math.hypot(finalView.tx - view.tx, finalView.ty - view.ty) > 1 ? CONFIG.focusMs : 0;
+      if (centerMs) {
+        animateTo(ns, finalView.tx, finalView.ty, centerMs);
+      } else {
+        view.tx = finalView.tx;
+        view.ty = finalView.ty;
+        applyView();
+      }
+    }
+
+    // При масштабе выше целевого не ждём: сразу отъезжаем, удерживая область под
+    // тем же экранным центром, затем спокойно центрируем её на новом масштабе.
+    if (zoomMs > 0 && view.s > ns + 0.001 && centerMapX != null && centerMapY != null) {
+      var oldSide = view.s * base;
+      var focusScreenX = view.tx + centerMapX * oldSide;
+      var focusScreenY = view.ty + centerMapY * oldSide;
+      var outView = clampState({
+        s: ns,
+        tx: focusScreenX - centerMapX * ns * base,
+        ty: focusScreenY - centerMapY * ns * base
+      });
+      animateTo(ns, outView.tx, outView.ty, zoomMs, finishImmediateZoomOut);
+      return;
     }
 
     function startZoom() {
