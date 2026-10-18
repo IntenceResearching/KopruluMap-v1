@@ -280,7 +280,13 @@
     return { l: v[0], t: v[1], r: v[2], b: v[3] };
   }
 
-  // Та же рамка в координатах сцены при текущем виде
+  // Полные границы слоя карты и области data-frame в координатах сцены.
+  // FocusFx использует mapFrame для первого борда, затем сжимает его до frameOf.
+  function mapFrame() {
+    var side = view.s * base;
+    return { l: view.tx, t: view.ty, r: view.tx + side, b: view.ty + side };
+  }
+
   function frameOf(el) {
     var f = frameData(el);
     if (!f) return null;
@@ -714,20 +720,21 @@
     });
   }
 
-  /* Прицел при выборе (/shared/focus-fx.js): рамка сразу ставится на data-frame,
-     затем на месте проигрывается короткий ping линиями/светом — без наведения из
-     центра и роста границ. При ручном панорамировании/зуме рамка остаётся на экране;
-     при выборе другой области она плавно переезжает к новой точке. Цвет: Копрулу и ОЗД —
-     зелёный, Зерус — красный. */
-  function selectArea(el) {
+  /* Прицел при выборе (/shared/focus-fx.js): сначала обводит края карты, затем
+     сжимает рамку до data-frame и только после паузы передаёт камеру в focusArea.
+     Рамка привязана к карте, а при смене области плавно переезжает к новой точке.
+     Цвет: Копрулу и ОЗД — зелёный, Зерус — красный. */
+  function selectArea(el, onSettle) {
     stage.classList.toggle('is-red-target', el === zerus);
     stage.classList.toggle('is-odz-ping', el === odz);
     FocusFx.select({
       stage: stage,
       target: function () { return boxOf(el); },
       frame: function () { return frameOf(el); },
+      mapFrame: mapFrame,
       instant: true,
-      onLock: function () { if (panelArea === el) el.classList.add('is-locked'); }
+      onLock: function () { if (panelArea === el) el.classList.add('is-locked'); },
+      onSettle: onSettle || null
     });
   }
 
@@ -740,8 +747,7 @@
       return;
     }
     showPanel();
-    focusArea(hotspot);
-    selectArea(hotspot);
+    selectArea(hotspot, function () { focusArea(hotspot); });
   }
 
   hotspot.addEventListener('click', function (e) {
@@ -1092,8 +1098,7 @@
       return;
     }
     showPanel(zerus);
-    focusArea(zerus);
-    selectArea(zerus);
+    selectArea(zerus, function () { focusArea(zerus); });
   }
 
   if (zerus) {
@@ -1220,8 +1225,7 @@
       return;
     }
     showPanel(odz);
-    focusArea(odz);
-    selectArea(odz);
+    selectArea(odz, function () { focusArea(odz); });
   }
 
   if (odz) {
